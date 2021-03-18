@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     
     construct_application = gui.QApplication(sys.argv)
-    app_object = gui.App()
+    app_object = gui.Main_Screen()
         
     sys.exit(construct_application.exec_())
     
