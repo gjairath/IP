@@ -28,16 +28,19 @@ class New_Project_Window(QWidget):
         
         
     def display_data(self):
+        # A project may have many sublists.
+        # Make a giant string of all of them and simply display it.
         
-        # A button to add a new project
-        string_of_members = "Number of Members:" + str(self.project.sub_tasks[0].members)
-        label_members = QLabel(string_of_members, self)
-        label_members.resize(250,150)
-        label_members.move(200, 200)
         
-        string_of_eta = "ETA: " + str(self.project.sub_tasks[0].eta)
-        string_of_eta = QLabel(string_of_eta, self)
-        string_of_eta.resize(250,150)
-        string_of_eta.move(300, 300)
+        string_of_name = "Name of subtask: " +  str(self.project.sub_tasks[0].name) + "\n"
+        string_of_index = "Index: " +  str(self.project.sub_tasks[0].idx) + "\n"
+        string_of_members = "Number of Members:" + str(self.project.sub_tasks[0].members) + "\n"
+        string_of_eta = "ETA: " + str(self.project.sub_tasks[0].eta) + "\n"
+        string_of_finish_date = "Finish_date: " + str(self.project.sub_tasks[0].finish_date)
+        
+        one_giant_string = string_of_name + string_of_index + string_of_members + string_of_eta \
+                            + string_of_finish_date
 
-        
+        label_giant = QLabel(one_giant_string, self)
+        label_giant.resize(250,150)
+        label_giant.move(200, 200)

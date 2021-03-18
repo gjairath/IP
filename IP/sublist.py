@@ -20,3 +20,6 @@ class SubList:
         
         # The finish date for this project
         self.finish_date = "01/01/2099"
+        
+        
+        self.idx = 1
