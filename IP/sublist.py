@@ -16,7 +16,7 @@ class SubList:
         self.members = 1
         
         # Eta for this task in minutes.
-        self.eta = 0
+        self.eta = str(0) + " Minutes"
         
         # The finish date for this project
         self.finish_date = "01/01/2099"
