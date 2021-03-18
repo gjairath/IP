@@ -6,6 +6,8 @@ Created on Wed Mar 17 23:10:34 2021
 """
 
 import sys
+import gui_helper as gui_h
+
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDesktopWidget, QLabel
 from PyQt5.QtGui import QIcon
 
@@ -20,10 +22,10 @@ class App(QWidget):
         self.top = 10
         self.width = 640
         self.height = 480
-        
-        self.layout        
+ 
+        self.add_widgets()
         self.init_UI()
-        
+                
         # self indicates the screen moving to the center here self is the class object.
         self.center_object(self)
         
@@ -40,11 +42,21 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.show()
-
+    
+    def window2(self):                                             
+        self.dialog = gui_h.New_Project_Window() 
+        self.dialog.show()
+        #self.dialog.hide()
+    
+    def add_widgets(self):
+        
+        # A button to add a new project
+        new_project_btn = QPushButton("New Project", self)
+        new_project_btn.resize(250,150)
+        new_project_btn.clicked.connect(self.window2) 
+        
+    
+        new_project_btn.move(200, 200)
         
     def debug(self):
         print("Click me harder!")
-        
-        
-    def show_dialogs(self, object_to_show):
-        object_to_show.show()
