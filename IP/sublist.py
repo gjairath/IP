@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 17 23:16:51 2021
+
+@author: garvi
+"""
+
+
+class SubList:
+    # A sublist is a memeber of the class project.
+    
+    def __init__(self):
+        self.name = "Empty-Sub-Task"
+        
+        # Members working on this task.
+        self.members = 1
+        
+        # Eta for this task in minutes.
+        self.eta = 0
+        
+        # The finish date for this project
+        self.finish_date = "01/01/2099"
