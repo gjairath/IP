@@ -9,12 +9,18 @@ Created on Thu Mar 18 00:49:55 2021
 # Small Description:
     # A host of all dialogs that gui.py invokes FROM ip_main.py
 
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QLabel, QDesktopWidget, QPushButton
 from project import Project
 
 class New_Project_Window(QWidget):                           
     def __init__(self):
         super().__init__()
+
+        self.left = 10
+        self.top = 10
+        self.width = 640
+        self.height = 480
         
         # A project object is initialized, that contains various sub-tasks hosts to a TON of information.
             # This should ONLY be done if the new_project button is clicked otherwise why bother?
@@ -23,24 +29,40 @@ class New_Project_Window(QWidget):
         self.project = Project()
         
         self.setWindowTitle(self.project.name)
-        
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
         self.display_data()
         
+        self.center_object(self)
+
         
     def display_data(self):
         # A project may have many sublists.
         # Make a giant string of all of them and simply display it.
         
         
-        string_of_name = "Name of subtask: " +  str(self.project.sub_tasks[0].name) + "\n"
-        string_of_index = "Index: " +  str(self.project.sub_tasks[0].idx) + "\n"
-        string_of_members = "Number of Members:" + str(self.project.sub_tasks[0].members) + "\n"
-        string_of_eta = "ETA: " + str(self.project.sub_tasks[0].eta) + "\n"
-        string_of_finish_date = "Finish_date: " + str(self.project.sub_tasks[0].finish_date)
+        string_of_index = "[" +  str(self.project.sub_tasks[0].idx) + "]\n"
+        string_of_name = "\tName of subtask: \t\t" +  str(self.project.sub_tasks[0].name) + "\n"
+        string_of_members = "\tNumber of Members: \t\t" + str(self.project.sub_tasks[0].members) + "\n"
+        string_of_eta = "\tETA: \t\t\t" + str(self.project.sub_tasks[0].eta) + "\n"
+        string_of_finish_date = "\tFinish_date: \t\t" + str(self.project.sub_tasks[0].finish_date)
         
-        one_giant_string = string_of_name + string_of_index + string_of_members + string_of_eta \
+        one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
                             + string_of_finish_date
 
-        label_giant = QLabel(one_giant_string, self)
-        label_giant.resize(250,150)
-        label_giant.move(200, 200)
+        label_giant = QPushButton(one_giant_string, self)
+
+        #label_giant.resize(350,350)
+        # Do adjust size instead, its cleaner.
+        label_giant.adjustSize()
+
+        label_giant.setAlignment(QtCore.Qt.AlignCenter)
+        
+    
+    def center_object(self, desired_object):
+        # A function to center my screen to the screen of the person, hopefully works cross-os
+        centerPoint = QDesktopWidget().availableGeometry().center()
+        qtRectangle = self.frameGeometry()
+    
+        qtRectangle.moveCenter(centerPoint)
+        desired_object.move(qtRectangle.topLeft())
