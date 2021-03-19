@@ -8,7 +8,7 @@ Created on Wed Mar 17 23:10:34 2021
 import sys
 import gui_helper as gui_h
 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDesktopWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDesktopWidget, QLineEdit, QInputDialog
 from PyQt5.QtGui import QIcon
 
 from project import Project
@@ -60,7 +60,27 @@ class Main_Screen(QWidget):
     def init_UI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        
         self.show()
+        
+        
+    def get_text(self):
+        
+        dlg =  QInputDialog(self)                 
+        dlg.setInputMode( QInputDialog.TextInput) 
+        dlg.setLabelText("Project Name:")  
+        dlg.setWindowTitle("Enter Project Name")                      
+        dlg.resize(500,1500)                             
+        ok_pressed = dlg.exec_()                                
+        text = dlg.textValue()   
+        
+        print ("HEY", ok_pressed)
+        
+#        text, ok_pressed = QInputDialog.getText(self, "Enter text","Project Name:", QLineEdit.Normal, "")
+        if (ok_pressed == 1) and text != '':
+            return text
+        else:
+            return -1
     
     def find_button_by_text(self, text):
          """
@@ -98,7 +118,10 @@ class Main_Screen(QWidget):
                             
         Returns: Void.
         """
-        
+        button_name = self.get_text()
+        if (button_name == -1): return
+                   
+
         # Make a brand new project template.
         new_project = Project()
 
@@ -114,7 +137,7 @@ class Main_Screen(QWidget):
         self.counter += 1
         
         # Make a brand new button.
-        existing_project_btn = QPushButton("Testing + {}".format(self.counter), self)        
+        existing_project_btn = QPushButton("{} + {}".format(button_name, self.counter), self)        
         self.manager.add(new_project, new_window, existing_project_btn)
 
         new_posx = self.manager.projects[existing_project_btn][2]
