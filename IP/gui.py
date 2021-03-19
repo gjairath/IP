@@ -18,7 +18,7 @@ class Main_Screen(QWidget):
     
     def __init__(self, project_manager):
         super().__init__()
-        self.title = "TESTING-MODEL-0"
+        self.title = "TESTING-MODEL-1c (First version was 0a)"
         
         self.left = 10
         self.top = 10
@@ -93,28 +93,34 @@ class Main_Screen(QWidget):
 
         # Make a brand new window.
         new_window = gui_h.New_Project_Window(new_project)
+        
+        # show the window to confirm project-creation just once.
         new_window.show()
 
-        # Make a brand new button.        
-        new_exisiting_project_btn = QPushButton("Testing + {}".format(self.counter), self)
-        
-        # Adjust the positions of the new project labels.
-        self.tracker = 1
-        new_exisiting_project_btn.move(self.tracker,self.tracker)
-        self.tracker += 5
-        
-        new_exisiting_project_btn.clicked.connect(self.show_appropriate_window) 
-        new_exisiting_project_btn.show()
-        
         # Add the appropriate values to the project manager class object.
         self.manager.add(new_project, new_window)
+        
+        # Finally, increment the total tally of projects existing.
+        self.counter += 1
+        
+        # Make a brand new button.
+        existing_project_btn = QPushButton("Testing + {}".format(self.counter), self)
+        new_pos = self.manager.projects[self.counter][2]
+        existing_project_btn.move(new_pos, new_pos)
+        
+        
+        # This is broken, ? Each connect is being overwritten.
+        # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
+        self.manager.add_label(self.counter, existing_project_btn)
+        
+        existing_project_btn.clicked.connect(self.show_appropriate_window) 
+        existing_project_btn.show()
+        
         
         # Just debugging here.
         self.manager.show_all()
         
-        
-        # Finally, increment the total tally of projects existing.
-        self.counter += 1
+
     
     def add_new_project_button(self):
         """

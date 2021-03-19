@@ -8,7 +8,7 @@ Created on Wed Mar 17 23:01:37 2021
 from sublist import SubList
 
 class Project:
-    # A class that holds a new project instance. 
+    # A class/TEMPLATE that holds a new project instance. 
     # A project object contains subtasks which hold "to-do lists" with whatever people.
     
     # It goes like this:
@@ -24,7 +24,11 @@ class Project:
     def __init__(self):
         # A new class is made, provide the user with a basic template.
         
-        self.name = "Untitled_Project"
+        import random
+        placeholder = random.randint(1,10000)
+        self.name = "Untitled_Project {}".format(placeholder)
+
+        
         self.is_active = True
         
         
