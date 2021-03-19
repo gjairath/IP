@@ -84,8 +84,8 @@ class Main_Screen(QWidget):
         
         # Identify the label first, which was clicked. And show the appropriate project.
         
-        desired_button = find_button_by_text(self.sender().text())
-        self.manager.projects[self.counter][1].show()
+        desired_button = self.find_button_by_text(self.sender().text())
+        self.manager.projects[desired_button][1].show()
         
         print (self.sender().text())
         
@@ -109,17 +109,17 @@ class Main_Screen(QWidget):
         new_window.show()
 
         # Add the appropriate values to the project manager class object.
-        self.manager.add(new_project, new_window)
         
         # Finally, increment the total tally of projects existing.
         self.counter += 1
         
         # Make a brand new button.
-        existing_project_btn = QPushButton("Testing + {}".format(self.counter), self)
-        new_posx = self.manager.projects[self.counter][2]
-        new_posy = self.manager.projects[self.counter][3]
+        existing_project_btn = QPushButton("Testing + {}".format(self.counter), self)        
+        self.manager.add(new_project, new_window, existing_project_btn)
+
+        new_posx = self.manager.projects[existing_project_btn][2]
+        new_posy = self.manager.projects[existing_project_btn][3]
         existing_project_btn.move(new_posx, new_posy)
-        
         
         # This is broken, ? Each connect is being overwritten.
         

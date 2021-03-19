@@ -14,14 +14,15 @@ class Project_Manager:
         self.positionx = 0
         self.positiony = 0
         
-        # An array that holds tuples of all existing projects. [Created when user clicks new project]
-        self.projects = []        
+        # A dictionary that holds tuples of all existing projects. [Created when user clicks new project]
+                # The key here is the button that is shown in the main screen that segues to the new project.
+        self.projects = {}        
         # A dictionary that holds ctr:button in key-value pairs in a dictionary
         self.existing_project_labels = {}
         
-    def add(self, project, window):
+    def add(self, project, window, button):
         desired_tpl = (project, window, self.positionx, self.positiony)
-        self.projects.append(desired_tpl)
+        self.projects[button] = desired_tpl
         
         self.positiony += 50
         
@@ -32,8 +33,6 @@ class Project_Manager:
         
     def show_all(self):
         print ("Size Now: {}".format(len(self.projects)))
-        for values in self.projects:
-            print (values[0].name, values[1].project.name)
-            print ('\n')
-    
+        print (self.projects)
+        print ("\n\n")
         
