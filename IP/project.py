@@ -11,6 +11,16 @@ class Project:
     # A class that holds a new project instance. 
     # A project object contains subtasks which hold "to-do lists" with whatever people.
     
+    # It goes like this:
+        # Upper layer:          Project.
+        # Middle layer:         Tasks.
+        # Bottom layer:         Todo-lists.
+    
+        # An analogy would be a company, "Do quaterly review" -> has 15 people with many checkpoints.
+    
+    # A project class is a template to make a new project, thats it.
+        # This is for me I forgot what the fuck this is.
+    
     def __init__(self):
         # A new class is made, provide the user with a basic template.
         

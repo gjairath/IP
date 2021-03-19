@@ -9,6 +9,7 @@ import sys
 import gui as gui
 
 from project import Project
+from project_manager import Project_Manager
 
 
 # Existing projects -> Big Tasks [Quaterly Review] -> Tasks [Do something] -> People
@@ -38,8 +39,12 @@ if __name__ == "__main__":
     print(new_project.sub_tasks[0].members)
 
     
+    project_manager = Project_Manager()
+    
     construct_application = gui.QApplication(sys.argv)
-    app_object = gui.Main_Screen()
+    app_object = gui.Main_Screen(project_manager)
+    
+    project_manager.show_all()
         
     sys.exit(construct_application.exec_())
     

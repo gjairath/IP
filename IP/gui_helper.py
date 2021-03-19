@@ -13,8 +13,18 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QLabel, QDesktopWidget, QPushButton
 from project import Project
 
-class New_Project_Window(QWidget):                           
-    def __init__(self):
+class New_Project_Window(QWidget):       
+
+    # This class initiliazes a new window to open that is linked with each project instance.
+    # The project class inits a new project, that data is ABSTRACTED away from this class. 
+        # This just shows it, thats all. 
+    
+    
+    
+    # Like a supermodel who shows the lottery numbers, she's irrelevant, the numbers are not.
+    
+
+    def __init__(self, new_project):
         super().__init__()
 
         self.left = 10
@@ -26,7 +36,7 @@ class New_Project_Window(QWidget):
             # This should ONLY be done if the new_project button is clicked otherwise why bother?
 
         #init a new project object
-        self.project = Project()
+        self.project = new_project
         
         self.setWindowTitle(self.project.name)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -37,8 +47,14 @@ class New_Project_Window(QWidget):
 
         
     def display_data(self):
-        # A project may have many sublists.
-        # Make a giant string of all of them and simply display it.
+        """
+        Display all data in the NEW PROJECT window that is opened by clicking "new project" widget
+        
+        Returns
+        -------
+        None.
+
+        """
         
         
         string_of_index = "[" +  str(self.project.sub_tasks[0].idx) + "]\n"
@@ -56,7 +72,7 @@ class New_Project_Window(QWidget):
         # Do adjust size instead, its cleaner.
         label_giant.adjustSize()
 
-        label_giant.setAlignment(QtCore.Qt.AlignCenter)
+        #label_giant.setAlignment(QtCore.Qt.AlignCenter)
         
     
     def center_object(self, desired_object):

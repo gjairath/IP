@@ -7,7 +7,7 @@ Created on Wed Mar 17 23:16:51 2021
 
 
 class SubList:
-    # A sublist is a memeber of the class project.
+    # A sublist is the bottom-most layer.
     
     def __init__(self):
         self.name = "Empty-Sub-Task"
