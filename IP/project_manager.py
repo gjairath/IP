@@ -10,26 +10,25 @@ class Project_Manager:
     # Clementines are better than oranges and if you disagree you're racist.
     
     def __init__(self):
+
+        self.positionx = 0
+        self.positiony = 0
         
         # An array that holds tuples of all existing projects. [Created when user clicks new project]
-        self.projects = []
-        self.position = 10
-        
-        
-        self.existing_project_labels = []
+        self.projects = []        
+        # A dictionary that holds ctr:button in key-value pairs in a dictionary
+        self.existing_project_labels = {}
         
     def add(self, project, window):
-        desired_tpl = (project, window, self.position)
+        desired_tpl = (project, window, self.positionx, self.positiony)
         self.projects.append(desired_tpl)
         
-        self.position += 50
+        self.positiony += 50
         
-    def add_label(self, ctr, button):
-        # This adds labels that you see on the main screen once the user clicks "New Project"
-        desired_tpl = (ctr, button)
-        
-        # The pair-wise tuple here is in the form, identifier - label.
-        self.existing_project_labels.append(desired_tpl)
+    def add_label(self, button, button_text):
+        # Adds an identifier with each button text, so that its possible to figure out which button is pressed.
+
+        self.existing_project_labels[button_text] = button
         
     def show_all(self):
         print ("Size Now: {}".format(len(self.projects)))

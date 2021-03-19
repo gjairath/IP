@@ -62,7 +62,13 @@ class Main_Screen(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.show()
     
-    
+    def find_button_by_text(self, text):
+         """
+         Returns the QPushButton instance
+         :param text: the button text
+         """
+         return (self.manager.existing_project_labels[text])
+
     def show_appropriate_window(self):
         """
         This function shows the appropriate window for whatever project.
@@ -76,7 +82,12 @@ class Main_Screen(QWidget):
         """
         
         
+        # Identify the label first, which was clicked. And show the appropriate project.
+        
+        desired_button = find_button_by_text(self.sender().text())
         self.manager.projects[self.counter][1].show()
+        
+        print (self.sender().text())
         
         
     
@@ -105,13 +116,15 @@ class Main_Screen(QWidget):
         
         # Make a brand new button.
         existing_project_btn = QPushButton("Testing + {}".format(self.counter), self)
-        new_pos = self.manager.projects[self.counter][2]
-        existing_project_btn.move(new_pos, new_pos)
+        new_posx = self.manager.projects[self.counter][2]
+        new_posy = self.manager.projects[self.counter][3]
+        existing_project_btn.move(new_posx, new_posy)
         
         
         # This is broken, ? Each connect is being overwritten.
+        
         # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
-        self.manager.add_label(self.counter, existing_project_btn)
+        self.manager.add_label(existing_project_btn, existing_project_btn.text())
         
         existing_project_btn.clicked.connect(self.show_appropriate_window) 
         existing_project_btn.show()
