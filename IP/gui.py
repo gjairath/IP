@@ -144,7 +144,8 @@ class Main_Screen(QWidget):
         new_project_btn = QPushButton("New Project", self)
         new_project_btn.resize(250,150)
         new_project_btn.clicked.connect(self.new_project_window) 
-    
+        new_project_btn.setCheckable(True) 
+
         new_project_btn.move(200, 200)
         
     def debug(self):

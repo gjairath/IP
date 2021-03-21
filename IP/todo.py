@@ -16,13 +16,7 @@ Created on Thu Mar 18 01:51:32 2021
 3. Button text truncates.
 
 
-4. You can revert all the buttons/data that the screen initliazed with QSettings from HKEY.
-    Anything that is dynamically made must be done in a slightly more weirder way, with Project-Manager
-    OR
-    You could in the clicked connect merely output a file with number of buttons made, the positions, etc. and just
-    add them and give them settings.
-    OR
-    The settings remembers the last dynamically made widget so perhaps thats not super scalable.
-    Or you could just give it unique text, positions the rest is just simple pushing up right?
+4. not having layout in gui is not an issue because the default widgets are basically nothing.
+    In terms of basic class templates that works too, most data is passed safely i think.
     
 '''
