@@ -12,10 +12,9 @@ from project import Project
 from project_manager import Project_Manager
 
 # -=============================
-import test2 as t2
+#import test2 as t2
 # -=============================
 
-from os import path
 
 def dbug(new_project):
     print ("-" * 20)
@@ -37,8 +36,6 @@ def dbug(new_project):
 
 if __name__ == "__main__":
     print ("Hi!\n")
-    
-    
         
     # init a new project.
     new_project = Project()    
@@ -47,8 +44,9 @@ if __name__ == "__main__":
     project_manager = Project_Manager()
     
     # Setup and show the main window.
-    construct_application = t2.QApplication(sys.argv)
-    app_object = t2.Main_Screen(project_manager)
+        # See: gui.py [From the class template there]
+    construct_application = gui.QApplication(sys.argv)
+    app_object = gui.Main_Screen(project_manager)
     
     # Mainly for debugging on terminal.
     project_manager.show_all()

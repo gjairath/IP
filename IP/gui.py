@@ -9,14 +9,11 @@ import sys
 import gui_helper as gui_h
 
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDesktopWidget, QLineEdit, QInputDialog
-from PyQt5.QtGui import QIcon
 
 from project import Project
 
 class Main_Screen(QWidget):
-    
     # The template for the main-screen that is showed when the user boots up the software.
-    
     def __init__(self, project_manager):
         super().__init__()
         self.title = "TESTING-MODEL-2a (First version was 0a)"
@@ -63,6 +60,7 @@ class Main_Screen(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.center_object(self)
+        self.add_new_project_button()
         self.show()
         
         
@@ -84,52 +82,41 @@ class Main_Screen(QWidget):
         else: return -1
     
     def find_button_by_text(self, text):
+         '''
+         Params:
+             text - string that identifies each button.
+             self.manager - project manager objetc
          
+        Returns:
+            The button that is found with each text, so that the subproject data is appropriately shown.
+         '''
          return (self.manager.existing_project_labels[text])
 
     def show_appropriate_window(self):
-        """
-        This function shows the appropriate window for whatever project.
-        So if a user creates 10 projects, the 5th button shows the 5th window.
-        
-        The project manager contains all the existing projects as an object.
-            It contains an array called projects which has pair-wise tuples of:
-                    (project, window)
-        
-        Returns: Void
-        """
-        
-        
-        # Identify the label first, which was clicked. And show the appropriate project.
-        
+        '''
+        Once the button is found, show the appropriate window using project mangers dictionaries.
+        See: find_button_by_text()
+        '''                
         desired_button = self.find_button_by_text(self.sender().text())
         self.manager.projects[desired_button][1].show()
         
         print (self.sender().text())
         
-        
-    
     def new_project_window(self):                
-        """
-        Event that a new project button is clicked. 
-        Create a new project, update relevant stuff.
-                            
-        Returns: Void.
-        """
+        '''
+        Create a new project window,
+        Show it,
+        Update the project - manager.
+        Use Project, Subproject class to show default data for a NEW project.
+        '''
         button_name = self.get_text()
         if (button_name == -1): return
-                   
 
         # Make a brand new project template.
         new_project = Project()
-
         # Make a brand new window.
-        new_window = gui_h.New_Project_Window(new_project)
-        
-        # show the window to confirm project-creation just once.
+        new_window = gui_h.New_Project_Window(new_project)        
         new_window.show()
-
-        # Add the appropriate values to the project manager class object.
         
         # Finally, increment the total tally of projects existing.
         self.counter += 1
@@ -141,33 +128,22 @@ class Main_Screen(QWidget):
         new_posx = self.manager.projects[existing_project_btn][2]
         new_posy = self.manager.projects[existing_project_btn][3]
         existing_project_btn.move(new_posx, new_posy)
-        
-        # This is broken, ? Each connect is being overwritten.
-        
+                
         # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
         self.manager.add_label(existing_project_btn, existing_project_btn.text())
-        
         existing_project_btn.clicked.connect(self.show_appropriate_window) 
         existing_project_btn.show()
-        
-        
+                
         # Just debugging here.
         self.manager.show_all()
-        
-
     
     def add_new_project_button(self):
-        """
+        '''
         Adds the "new project" button on to the screen
-        Returns
-        -------
-        None.
-        """
-        
+        '''        
         new_project_btn = QPushButton("New Project", self)
         new_project_btn.resize(250,150)
         new_project_btn.clicked.connect(self.new_project_window) 
-        
     
         new_project_btn.move(200, 200)
         

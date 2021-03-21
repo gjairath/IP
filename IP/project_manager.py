@@ -7,11 +7,8 @@ Created on Thu Mar 18 23:18:13 2021
 
 from datetime import datetime
 
-
-class Project_Manager:
-        
+class Project_Manager:        
     def __init__(self):
-        
         # Projects:             A Dictionary that contains {button_id: (projects, window, x, y)}
         #                       Helps to retain data between sessions.
         
@@ -23,7 +20,6 @@ class Project_Manager:
         
         self.projects = {}        
         self.existing_project_labels = {}
-        
         
     def add(self, project, window, button):
         '''
@@ -42,7 +38,6 @@ class Project_Manager:
         
         # Save the state again.
         #self.save_state()
-
         
     def add_label(self, button, button_text):
         '''

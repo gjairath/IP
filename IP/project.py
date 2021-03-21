@@ -5,44 +5,32 @@ Created on Wed Mar 17 23:01:37 2021
 @author: garvi
 """
 
-from sublist import SubList
+from subproject import SubProject
+import random
 
 class Project:
     # A class/TEMPLATE that holds a new project instance. 
-    # A project object contains subtasks which hold "to-do lists" with whatever people.
-    
     # It goes like this:
         # Upper layer:          Project.
-        # Middle layer:         Tasks.
-        # Bottom layer:         Todo-lists.
+        # Bottom layer:         Sub-Projects/Tasks.
+   
+    # For eg:
+        # Top Layer:        Do quaterly review.
+        # Mid layer:        [1] Assemble balance sheets. [2] Contact the SEC. [3] Set date for invester calls.
     
-        # An analogy would be a company, "Do quaterly review" -> has 15 people with many checkpoints.
-    
-    # A project class is a template to make a new project, thats it.
-        # This is for me I forgot what the fuck this is.
+    # What a sexy sandwich. The bacon is the love of the people that make things happen.
     
     def __init__(self):
         # A new class is made, provide the user with a basic template.
-        
-        import random
         placeholder = random.randint(1,10000)
-        self.name = "Untitled_Project {}".format(placeholder)
-
-        
-        self.is_active = True
-        
-        
-        empty_sub_task = self.make_sub_list()
+        self.name = "Untitled_Project {}".format(placeholder)        
+        self.is_active = True                
+        empty_sub_task = self.make_sub_project_object()
         self.sub_tasks = []
         self.sub_tasks.append(empty_sub_task)
-        
         self.num_sub_tasks = len(self.sub_tasks)
-        
     
-    def make_sub_list(self):
+    def make_sub_project_object(self):
         # An object containing sublists
-        new_sub_list = SubList()
-        
-        return new_sub_list
-        
-    
+        new_sub_proj = SubProject()        
+        return new_sub_proj
