@@ -28,7 +28,9 @@ class Main_Screen(ta.QMainWindow):
     
     def __init__(self, project_manager, parent = None):
         super(Main_Screen, self).__init__(parent)
-      #  self._gui_restore()
+        if (self.restore() != []):
+            # There are values here, thus the user is starting this for the second time. 
+            pass
             
         self.title = "TESTING-MODEL-1c (First version was 0a)"
         
@@ -36,18 +38,12 @@ class Main_Screen(ta.QMainWindow):
         self.top = 10
         self.width = 640
         self.height = 480
- 
-        self.add_new_project_button()
-        self.init_UI()
-                
-        # self indicates the screen moving to the center here self is the class object.
-        self.center_object(self)
-        
-        
-        self.manager = project_manager
-        
         # A counter to track the projects, it helps to show which window to display.
         self.counter = -1
+        
+        self.manager = project_manager
+
+        self.init_UI()
         
         
     def center_object(self, desired_object):
@@ -70,6 +66,9 @@ class Main_Screen(ta.QMainWindow):
         desired_object.move(qtRectangle.topLeft())
         
     def init_UI(self):
+        self.center_object(self)
+        self.add_new_project_button()
+
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         
