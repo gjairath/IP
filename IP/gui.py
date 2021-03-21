@@ -14,24 +14,22 @@ from PyQt5.QtGui import QIcon
 from project import Project
 
 class Main_Screen(QWidget):
-    #not the best name for a class but honestly I cant think without this
+    
+    # The template for the main-screen that is showed when the user boots up the software.
     
     def __init__(self, project_manager):
         super().__init__()
-        self.title = "TESTING-MODEL-1c (First version was 0a)"
+        self.title = "TESTING-MODEL-2a (First version was 0a)"
         
         self.left = 10
         self.top = 10
         self.width = 640
         self.height = 480
- 
-        self.add_new_project_button()
+        
+        # Initilaize a UI to use
         self.init_UI()
-                
-        # self indicates the screen moving to the center here self is the class object.
-        self.center_object(self)
         
-        
+        # Initiliaze a Project Manager Class Object.
         self.manager = project_manager
         
         # A counter to track the projects, it helps to show which window to display.
@@ -40,14 +38,11 @@ class Main_Screen(QWidget):
         
     def center_object(self, desired_object):
         """
-        Parameters
-        ----------
-        desired_object : object to center
-                       This function centers an object on to the desktop screen NOT the screen's screen.
-
-        Returns
-        -------
-        None.
+        Params:
+            desired_obj - object to center
+            
+        Description:
+            Center object wrt desktop not the window.
         """
                 
 
@@ -58,14 +53,25 @@ class Main_Screen(QWidget):
         desired_object.move(qtRectangle.topLeft())
         
     def init_UI(self):
+        '''
+        Description:
+            Sets window title,
+            Sets geometry,
+            Centers the screen wrt desktop,
+            Shows the screen.
+        '''
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        
+        self.center_object(self)
         self.show()
         
         
     def get_text(self):
-        
+        '''
+        Description:
+            The dialog when the "New project" button is clicked.
+            Returns -1 if the user doesn't input anything or just closes the dialog.
+        '''
         dlg =  QInputDialog(self)                 
         dlg.setInputMode( QInputDialog.TextInput) 
         dlg.setLabelText("Project Name:")  
@@ -74,19 +80,11 @@ class Main_Screen(QWidget):
         ok_pressed = dlg.exec_()                                
         text = dlg.textValue()   
         
-        print ("HEY", ok_pressed)
-        
-#        text, ok_pressed = QInputDialog.getText(self, "Enter text","Project Name:", QLineEdit.Normal, "")
-        if (ok_pressed == 1) and text != '':
-            return text
-        else:
-            return -1
+        if (ok_pressed == 1) and text != '': return text
+        else: return -1
     
     def find_button_by_text(self, text):
-         """
-         Returns the QPushButton instance
-         :param text: the button text
-         """
+         
          return (self.manager.existing_project_labels[text])
 
     def show_appropriate_window(self):

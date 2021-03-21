@@ -25,4 +25,6 @@ Credit to:  Kenneth Reitz
             
 
 Je fais les reves 
+Clementines are better than oranges and if you disagree you're racist.
+
 """
