@@ -28,9 +28,6 @@ class Main_Screen(ta.QMainWindow):
     
     def __init__(self, project_manager, parent = None):
         super(Main_Screen, self).__init__(parent)
-        if (self.restore() != []):
-            # There are values here, thus the user is starting this for the second time. 
-            pass
             
         self.title = "TESTING-MODEL-1c (First version was 0a)"
         
@@ -43,7 +40,11 @@ class Main_Screen(ta.QMainWindow):
         
         self.manager = project_manager
 
-        self.init_UI()
+        if (self.restore() != []):
+            # There are values here, thus the user is starting this for the second time. 
+            pass
+        else:
+            self.init_UI()
         
         
     def center_object(self, desired_object):
