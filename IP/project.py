@@ -25,12 +25,14 @@ class Project:
         placeholder = random.randint(1,10000)
         self.name = "Untitled_Project {}".format(placeholder)        
         self.is_active = True                
-        empty_sub_task = self.make_sub_project_object()
+        empty_sub_task = self.make_sub_project_object(placeholder)
+        
+        # An array of subproject objects. Each has their own data.
         self.sub_tasks = []
         self.sub_tasks.append(empty_sub_task)
         self.num_sub_tasks = len(self.sub_tasks)
     
-    def make_sub_project_object(self):
+    def make_sub_project_object(self, idx):
         # An object containing sublists
-        new_sub_proj = SubProject()        
+        new_sub_proj = SubProject(idx)        
         return new_sub_proj

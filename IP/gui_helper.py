@@ -19,6 +19,9 @@ class New_Project_Window(QWidget):
         '''
         Params:
             New_project - A Project() Object for a newly created object.
+            
+        Desc:
+            Makes a new project window.
         '''
         super().__init__()        
         self.left = 10
@@ -30,7 +33,6 @@ class New_Project_Window(QWidget):
         
         self.setWindowTitle(self.project.name)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.display_data()
         self.center_object(self)
         
     def display_data(self):
@@ -47,9 +49,10 @@ class New_Project_Window(QWidget):
                             + string_of_finish_date
 
         label_giant = QPushButton(one_giant_string, self)
-
         # Do adjust size instead, its cleaner.
         label_giant.adjustSize()        
+
+        return one_giant_string    
     
     def center_object(self, desired_object):
         # A function to center my screen to the screen of the person, hopefully works cross-os

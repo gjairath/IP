@@ -10,6 +10,11 @@ Created on Thu Mar 18 01:51:32 2021
 
 
 '''
+Note to self:
+        I already have a class that opens a new window incase there is some need for cooky UI shit.
+        
+
+
 1. Fix alignment on button text.
 2. Make it so it happens on the same screen.
 

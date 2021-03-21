@@ -8,7 +8,7 @@ Created on Wed Mar 17 23:10:34 2021
 import sys
 import gui_helper as gui_h
 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDesktopWidget, QLineEdit, QInputDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QDesktopWidget, QInputDialog, QCheckBox
 
 from project import Project
 
@@ -31,7 +31,10 @@ class Main_Screen(QWidget):
         
         # A counter to track the projects, it helps to show which window to display.
         self.counter = -1
-        
+                
+        # To show only one relevant sub-project index for each project at one time.
+        self.isLabel = False
+
         
     def center_object(self, desired_object):
         """
@@ -98,13 +101,43 @@ class Main_Screen(QWidget):
         See: find_button_by_text()
         '''                
         desired_button = self.find_button_by_text(self.sender().text())
-        self.manager.projects[desired_button][1].show()
+        string = self.manager.projects[desired_button][0].sub_tasks[0].display_data()
+
+        # ----------------------- Debugging ------------------------------
+                                   # TODO        
+        if (self.debug_check.isChecked()):
+            self.manager.projects[desired_button][1].show()   
+        # ----------------------- Debugging ------------------------------
+        else:
+            self.show_new_sub_project(string)
+            print (self.sender().text())
+            
+    
+    def show_new_sub_project(self, string):
+        '''
+        A function to clear the subproject label on screen incase a new project is clicked.
+        I.e, 
+                Project a has x subtask. Project b has y subtask.
+                When a is clicked show x, when b is clicked, clear x and show y.
         
-        print (self.sender().text())
+        params:
+            string - contains the strings for each subprojct/task.
         
+        returns:
+            displays data on same window
+        '''
+        if(self.isLabel):
+            self.string_label.clear()
+            self.isLabel = False
+
+        self.string_label = QLabel(string, self)
+        self.string_label.move(250,0)
+        self.string_label.show()
+        self.isLabel = True            
+
     def new_project_window(self):                
         '''
-        Create a new project window,
+        Create a new project window when the button is clicked. Think of this as @onclickevent.
         Show it,
         Update the project - manager.
         Use Project, Subproject class to show default data for a NEW project.
@@ -115,9 +148,21 @@ class Main_Screen(QWidget):
         # Make a brand new project template.
         new_project = Project()
         # Make a brand new window.
-        new_window = gui_h.New_Project_Window(new_project)        
-        new_window.show()
+        new_window = gui_h.New_Project_Window(new_project)      
         
+            
+        new_project_sub_string = new_window.display_data()
+
+        # ----------------------- Debugging ------------------------------
+                                   # TODO
+        if (self.debug_check.isChecked()):
+            new_window.show()
+            new_window.display_data()
+        # ----------------------- Debugging ------------------------------
+        
+        self.show_new_sub_project(new_project_sub_string)
+        self.isLabel = True
+
         # Finally, increment the total tally of projects existing.
         self.counter += 1
         
@@ -131,6 +176,8 @@ class Main_Screen(QWidget):
                 
         # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
         self.manager.add_label(existing_project_btn, existing_project_btn.text())
+        
+        # Here the onclick event takes place to link each project with its subtasks.
         existing_project_btn.clicked.connect(self.show_appropriate_window) 
         existing_project_btn.show()
                 
@@ -147,6 +194,15 @@ class Main_Screen(QWidget):
         new_project_btn.setCheckable(True) 
 
         new_project_btn.move(200, 200)
+        
+        
+        # This adds a checkbox on the screen it will be removed later its just handy for debugging.
+        # ----------------------- Debugging ------------------------------        
+        # TODO
+        self.debug_check = QCheckBox("New Window? [Debug]", self)
+        self.debug_check.move(105,0)
+        self.debug_check.show()
+        # ----------------------- Debugging ------------------------------
         
     def debug(self):
         print("Click me harder!")
