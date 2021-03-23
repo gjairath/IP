@@ -13,5 +13,4 @@ x = [x[0] for x in t]
 print (x)
 
 
-if ('Wft? + 0' in x):
-    print ("yes")
+print (set(x))

@@ -28,7 +28,14 @@ class QMainWindow(QtWidgets.QMainWindow):
         print(self.settings.fileName()) 
         
         
-        self.restored_array = self.restore()
+        ra = self.restore()
+        self.restored_array = []
+
+        if (ra != []):
+            for i in ra: 
+                if i not in self.restored_array:                     
+                    self.restored_array.append(i) 
+
         
     def closeEvent(self, e):
         #self._gui_save()
