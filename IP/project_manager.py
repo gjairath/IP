@@ -36,9 +36,7 @@ class Project_Manager:
         self.projects[button] = desired_tpl
         self.positiony += 35
         
-        # Save the state again.
-        #self.save_state()
-        
+
     def add_label(self, button, button_text):
         '''
         Params:

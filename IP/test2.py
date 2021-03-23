@@ -17,7 +17,7 @@ import testing_random_snippets as ta
 class Main_Screen(ta.QMainWindow):
     # The template for the main-screen that is showed when the user boots up the software.
     def __init__(self, project_manager, parent = None):
-        super(Main_Screen, self).__init__(parent)
+        super(Main_Screen, self).__init__(project_manager, parent)
         self.title = "TESTING-MODEL-2d (First version was 0a \tCTRL+Q to quit)"
         
         self.left = 10

@@ -9,7 +9,7 @@ Created on Fri Mar 19 00:20:48 2021
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import QSettings
-
+import pickle
 
 class QMainWindow(QtWidgets.QMainWindow):
     comp_name = 'IP_inc'
@@ -19,7 +19,7 @@ class QMainWindow(QtWidgets.QMainWindow):
     
     names_to_avoid = {}
 
-    def __init__(self, parent=None):
+    def __init__(self, project_manager, parent=None):
         super(QMainWindow, self).__init__(parent)
         
         # init a QSettings object to begin saving
@@ -35,7 +35,39 @@ class QMainWindow(QtWidgets.QMainWindow):
             for i in ra: 
                 if i not in self.restored_array:                     
                     self.restored_array.append(i) 
+        
+        # A project manager object that holds mostly project-subproject bridge abstracted away safely.
+        self.manager = project_manager
+    
 
+    def save_sub_projects(self):
+        # Project manager has QPushButtons which cannot be pickled.
+        # However since self.save() saves the button objects, I can replace the buttons with 1, 2, 3, .. n. since the ...
+        # ... Labels are saved like so. That should work basically the same.
+        
+        # Upon reconstruction, the text can be replaced with buttons once again to basically have the same thing.
+        
+        #key = (project, window, self.positionx, self.positiony)
+        dict_projects = self.manager.projects
+        new_dict = {}
+
+        i = 1
+        for key in dict_projects.copy():
+            # Take existing dict with a mapping and replace it with a placeholder.
+            new_dict["button__{}".format(i)] = dict_projects[key]
+
+            # Let garbage collector dereference this
+            del dict_projects[key]            
+            i += 1
+        
+        print (new_dict)
+        pickle.dump(new_dict, open("subproj.dat", "wb"))        
+        reloaded_dict = pickle.load(open("subproj.dat", "rb"))
+        
+        
+        print (reloaded_dict)
+        
+        pass
         
     def closeEvent(self, e):
         #self._gui_save()
@@ -43,6 +75,8 @@ class QMainWindow(QtWidgets.QMainWindow):
             names_to_avoid = [x[0] for x in self.restored_array]
         else:
             names_to_avoid = []
+        
+        self.save_sub_projects()
         self.save(names_to_avoid)
         
     def get_handled_types(self):
