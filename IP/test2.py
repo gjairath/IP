@@ -41,6 +41,7 @@ class Main_Screen(ta.QMainWindow):
         if (arr != []):
             # There are values here, thus the user is starting this for the second time. 
             print(arr)
+            self.counter += 1
             self.reinit_UI(arr)
             
         else:
