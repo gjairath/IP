@@ -36,11 +36,13 @@ class Main_Screen(ta.QMainWindow):
         # To show only one relevant sub-project index for each project at one time.
         self.isLabel = False
 
-        arr = self.restore()
+        self.existing_offsety = 0
+        arr = self.restored_array
         if (arr != []):
             # There are values here, thus the user is starting this for the second time. 
             print(arr)
             self.reinit_UI(arr)
+            
         else:
             # Initilaize a UI to use
             self.init_UI()
@@ -97,9 +99,9 @@ class Main_Screen(ta.QMainWindow):
         self.add_new_project_button()
         
         for widget in dynamic_widgets:
-            button_name = widget[0][3]
+            button_name = widget[3]
             button_id = (button_name[len("button__"):])
-
+            if (button_id == "-1"): continue
             # (text, geometry, size, name of the widget in HKEY directory)
             new_widget = QPushButton(widget[0], self)
             
@@ -107,7 +109,12 @@ class Main_Screen(ta.QMainWindow):
             new_widget.resize(size.width(), size.height())
             new_widget.setCheckable(True)     
             
-            new_widget.move(size.x(), size.y())            
+            new_widget.move(size.x(), size.y())
+            new_widget.adjustSize()
+            
+            # Some random delta. This helps when you re-init shit.
+            self.existing_offsety += 35
+            self.counter += 1
         
         self.show()
         
@@ -177,6 +184,7 @@ class Main_Screen(ta.QMainWindow):
         self.string_label = QLabel(string, self)
         self.string_label.move(250,0)
         self.string_label.show()
+        self.string_label.adjustSize()
         self.isLabel = True            
 
     def new_project_window(self):                
@@ -215,14 +223,17 @@ class Main_Screen(ta.QMainWindow):
         self.manager.add(new_project, new_window, existing_project_btn)
 
         new_posx = self.manager.projects[existing_project_btn][2]
-        new_posy = self.manager.projects[existing_project_btn][3]
+        new_posy = self.manager.projects[existing_project_btn][3] + self.existing_offsety
+        
+        # TODO: Fix this based on existing labels in the dictionary.
         existing_project_btn.move(new_posx, new_posy)
                 
         # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
         self.manager.add_label(existing_project_btn, existing_project_btn.text())
         
         # Here the onclick event takes place to link each project with its subtasks.
-        existing_project_btn.clicked.connect(self.show_appropriate_window) 
+        existing_project_btn.clicked.connect(self.show_appropriate_window)
+        existing_project_btn.adjustSize()
         existing_project_btn.show()
                 
         # Just debugging here.
@@ -244,7 +255,8 @@ class Main_Screen(ta.QMainWindow):
         # ----------------------- Debugging ------------------------------        
         # TODO
         self.debug_check = QCheckBox("New Window? [Debug]", self)
-        self.debug_check.move(105,0)
+        self.debug_check.move(250,350)
+        self.debug_check.adjustSize()
         self.debug_check.show()
         # ----------------------- Debugging ------------------------------
         

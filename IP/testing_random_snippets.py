@@ -26,17 +26,27 @@ class QMainWindow(QtWidgets.QMainWindow):
         self.settings = QSettings(self.comp_name, self.software_name)
         self.counter = 1
         print(self.settings.fileName()) 
-                
+        
+        
+        self.restored_array = self.restore()
+        
     def closeEvent(self, e):
         #self._gui_save()
-        self.save()
+        if (self.restored_array != []):
+            names_to_avoid = [x[0] for x in self.restored_array]
+        else:
+            names_to_avoid = []
+        self.save(names_to_avoid)
         
     def get_handled_types(self):
         return [QPushButton]
 
-    def save(self):
+    def save(self, btns_to_avoid):
         """
         save "ui" controls and values to registry "setting"
+        
+        btns_to_avoid: buttons already saved dont save them again, it causes fascinating behavior like terminator 2
+                        if first time loading or there are no buttons, its empty list.
         :return:
         """
         name_prefix = f"{self.settings_ui_name}/"
@@ -54,6 +64,9 @@ class QMainWindow(QtWidgets.QMainWindow):
                         
                         child_text = obj.text()
                         if (child_text == "New Project"):
+                            continue
+                        
+                        if (btns_to_avoid != [] and child_text in btns_to_avoid):
                             continue
                         
                         # Store as much info as you can about this button it can help later lol
