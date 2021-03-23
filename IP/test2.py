@@ -5,18 +5,19 @@ Created on Wed Mar 17 23:10:34 2021
 @author: garvi
 """
 
-import sys
 import gui_helper as gui_h
 
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QDesktopWidget, QInputDialog, QCheckBox, QShortcut
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, QInputDialog, QCheckBox, QShortcut
 from PyQt5.QtGui import QKeySequence
 
 from project import Project
+import testing_random_snippets as ta
 
-class Main_Screen(QWidget):
+
+class Main_Screen(ta.QMainWindow):
     # The template for the main-screen that is showed when the user boots up the software.
-    def __init__(self, project_manager):
-        super().__init__()
+    def __init__(self, project_manager, parent = None):
+        super(Main_Screen, self).__init__(parent)
         self.title = "TESTING-MODEL-2d (First version was 0a \tCTRL+Q to quit)"
         
         self.left = 10
@@ -24,8 +25,7 @@ class Main_Screen(QWidget):
         self.width = 640
         self.height = 480
         
-        # Initilaize a UI to use
-        self.init_UI()
+        #self.init_UI()
         
         # Initiliaze a Project Manager Class Object.
         self.manager = project_manager
@@ -36,6 +36,14 @@ class Main_Screen(QWidget):
         # To show only one relevant sub-project index for each project at one time.
         self.isLabel = False
 
+        arr = self.restore()
+        if (arr != []):
+            # There are values here, thus the user is starting this for the second time. 
+            print(arr)
+            self.reinit_UI(arr)
+        else:
+            # Initilaize a UI to use
+            self.init_UI()
         
     def center_object(self, desired_object):
         """
@@ -71,7 +79,37 @@ class Main_Screen(QWidget):
         self.center_object(self)
         self.add_new_project_button()
         self.show()
+
+    def reinit_UI(self, dynamic_widgets):
+        '''
+        Description:
+            Reinit the window based on dynamically created widgets.
+        '''
         
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+ 
+        self.quitSc = QShortcut(QKeySequence('Ctrl+Q'), self)
+        self.quitSc.activated.connect(QApplication.instance().quit)
+
+    
+        self.center_object(self)
+        self.add_new_project_button()
+        
+        for widget in dynamic_widgets:
+            button_name = widget[0][3]
+            button_id = (button_name[len("button__"):])
+
+            # (text, geometry, size, name of the widget in HKEY directory)
+            new_widget = QPushButton(widget[0], self)
+            
+            size = widget[1]
+            new_widget.resize(size.width(), size.height())
+            new_widget.setCheckable(True)     
+            
+            new_widget.move(size.x(), size.y())            
+        
+        self.show()
         
     def get_text(self):
         '''
