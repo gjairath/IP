@@ -142,8 +142,8 @@ class Main_Screen(ta.QMainWindow):
         i = 0
         for key in reloaded_dict.keys():
             # The key contain the text.
-            button_text = reloaded_dict[key]
-            self.manager.add_label(dynamic_widgets[i], button_text)
+            button_text = key
+            self.manager.add_label(self.reinitialized_button_list[i], button_text)
                         
             # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
