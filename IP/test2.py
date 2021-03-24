@@ -91,39 +91,11 @@ class Main_Screen(ta.QMainWindow):
         '''
         
         # This loads the pickled subprojects. That is, tasks accompanying each projects.
+            # {button_text = (project, posx, posy)}
         reloaded_dict = pickle.load(open("subproj.dat", "rb"))
         
         print (reloaded_dict)
-#        print (reloaded_dict['button__1'][0].sub_tasks[0].display_data())
-        
-        # The manager class holds (project, window, posx, posy) 
-        # The reloaded dict for pickle reasons contains all but the second value. 
-        
-        # The button as a key is missing, however, the find_button_by_text implies that's not hard.
-        # Reinitiliaze the manager object and it should all work seemlessly. (is that how u spell it?)
-        
-        # the project dict in project_manager has the follwoing container:
-            # {button = (project, window, self.positionx, self.positiony)}
-
-        # The exisiting label dict has the following container:
-            # {button: button_text}
-        
-        new_project_dict = {}
-        new_existing_label_dict = {}
-        
-        for key in reloaded_dict.keys():
-            # The key contain the text.
-            button = self.find_button_by_text(reloaded_dict[key])
-            button_text = reloaded_dict[key]
-            
-            # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
-            
-            
-            # Second dict re-initialized, done.
-            new_existing_label_dict[button] = button_text
-            pass
-        
-        
+                        
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
  
@@ -135,6 +107,8 @@ class Main_Screen(ta.QMainWindow):
         self.add_new_project_button()
         
         # Restore the dynamically created widgets by the user.
+        
+        self.reinitialized_button_list = []
         for widget in dynamic_widgets:
             button_name = widget[3]
             button_id = (button_name[len("button__"):])
@@ -149,9 +123,45 @@ class Main_Screen(ta.QMainWindow):
             new_widget.move(size.x(), size.y())
             new_widget.adjustSize()
             
+            self.reinitialized_button_list.append(new_widget)
+        
             # Some random delta. This helps when you re-init shit.
             self.existing_offsety += 35
             self.counter += 1
+
+        # The manager class holds (project, window, posx, posy) 
+        # The reloaded dict for pickle reasons contains all but the second value. 
+        # Reinitiliaze the manager object and it should all work seemlessly. (is that how u spell it?)
+        
+        # the project dict in project_manager has the follwoing container:
+            # {button = (project, window, self.positionx, self.positiony)}
+
+        # The exisiting label dict has the following container:
+            # {button: button_text}
+        
+        i = 0
+        for key in reloaded_dict.keys():
+            # The key contain the text.
+            button_text = reloaded_dict[key]
+            self.manager.add_label(dynamic_widgets[i], button_text)
+                        
+            # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
+            generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
+            generic_window_sub_str = generic_window.display_data()
+
+            self.show_new_sub_project(generic_window_sub_str)
+            self.isLabel = True
+
+            # Finally, increment the total tally of projects existing.
+            self.counter += 1
+            
+            print ("\n\n")
+            self.reinitialized_button_list[i].clicked.connect(self.show_appropriate_window)
+            
+            self.manager.add(reloaded_dict[key][0], generic_window, self.reinitialized_button_list[i])
+            i += 1
+            pass
+
         
         self.show()
         
