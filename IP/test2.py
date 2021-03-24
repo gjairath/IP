@@ -42,7 +42,7 @@ class Main_Screen(ta.QMainWindow):
         if (arr != []):
             # There are values here, thus the user is starting this for the second time. 
             print(arr)
-            self.counter += 1
+            #self.counter += 1
             self.reinit_UI(arr)
             
         else:
@@ -126,7 +126,7 @@ class Main_Screen(ta.QMainWindow):
             self.reinitialized_button_list.append(new_widget)
         
             # Some random delta. This helps when you re-init shit.
-            self.existing_offsety += 35
+            #self.existing_offsety += 35
             self.counter += 1
 
         # The manager class holds (project, window, posx, posy) 
@@ -153,7 +153,7 @@ class Main_Screen(ta.QMainWindow):
             self.isLabel = True
 
             # Finally, increment the total tally of projects existing.
-            self.counter += 1
+        #    self.counter += 1
             
             print ("\n\n")
             self.reinitialized_button_list[i].clicked.connect(self.show_appropriate_window)
