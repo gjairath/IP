@@ -6,12 +6,13 @@ Created on Wed Mar 17 23:10:34 2021
 """
 
 import gui_helper as gui_h
+import testing_random_snippets as ta
+from project import Project
+
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, QInputDialog, QCheckBox, QShortcut
 from PyQt5.QtGui import QKeySequence
-
-from project import Project
-import testing_random_snippets as ta
+import pickle
 
 
 class Main_Screen(ta.QMainWindow):
@@ -89,6 +90,40 @@ class Main_Screen(ta.QMainWindow):
             Reinit the window based on dynamically created widgets.
         '''
         
+        # This loads the pickled subprojects. That is, tasks accompanying each projects.
+        reloaded_dict = pickle.load(open("subproj.dat", "rb"))
+        
+        print (reloaded_dict)
+#        print (reloaded_dict['button__1'][0].sub_tasks[0].display_data())
+        
+        # The manager class holds (project, window, posx, posy) 
+        # The reloaded dict for pickle reasons contains all but the second value. 
+        
+        # The button as a key is missing, however, the find_button_by_text implies that's not hard.
+        # Reinitiliaze the manager object and it should all work seemlessly. (is that how u spell it?)
+        
+        # the project dict in project_manager has the follwoing container:
+            # {button = (project, window, self.positionx, self.positiony)}
+
+        # The exisiting label dict has the following container:
+            # {button: button_text}
+        
+        new_project_dict = {}
+        new_existing_label_dict = {}
+        
+        for key in reloaded_dict.keys():
+            # The key contain the text.
+            button = self.find_button_by_text(reloaded_dict[key])
+            button_text = reloaded_dict[key]
+            
+            # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
+            
+            
+            # Second dict re-initialized, done.
+            new_existing_label_dict[button] = button_text
+            pass
+        
+        
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
  
@@ -99,6 +134,7 @@ class Main_Screen(ta.QMainWindow):
         self.center_object(self)
         self.add_new_project_button()
         
+        # Restore the dynamically created widgets by the user.
         for widget in dynamic_widgets:
             button_name = widget[3]
             button_id = (button_name[len("button__"):])

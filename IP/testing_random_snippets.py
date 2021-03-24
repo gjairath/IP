@@ -50,24 +50,34 @@ class QMainWindow(QtWidgets.QMainWindow):
         #key = (project, window, self.positionx, self.positiony)
         dict_projects = self.manager.projects
         new_dict = {}
+        
+        dict_keys = list(dict_projects.keys())
 
-        i = 1
+        i = 0
         for key in dict_projects.copy():
             # Take existing dict with a mapping and replace it with a placeholder.
-            new_dict["button__{}".format(i)] = dict_projects[key]
+            
+            # First replace the tuple's window instance because it cannot be pickled by pickle.
+            
+            # This is dumb but it's okay because append has constant time complexity AND the tuple only has 4objects.
+            placeholder_tuple = dict_projects[key]
+            empty_list = []
+            empty_list.append(placeholder_tuple[0])
+            empty_list.append(placeholder_tuple[2])
+            empty_list.append(placeholder_tuple[3])
+                        
+            # Now replace it as (project, self.posx, self.posy)
+            # So we hold the data for the project, we have all the labels reinit'ed, reinit the windows and it should...
+            # work.
+            new_dict[dict_keys[i].text()] = tuple(empty_list)
 
             # Let garbage collector dereference this
             del dict_projects[key]            
             i += 1
         
         print (new_dict)
-        pickle.dump(new_dict, open("subproj.dat", "wb"))        
-        reloaded_dict = pickle.load(open("subproj.dat", "rb"))
+        pickle.dump(new_dict, open("subproj.dat", "wb"))                
         
-        
-        print (reloaded_dict)
-        
-        pass
         
     def closeEvent(self, e):
         #self._gui_save()

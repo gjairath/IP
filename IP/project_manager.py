@@ -9,7 +9,7 @@ from datetime import datetime
 
 class Project_Manager:        
     def __init__(self):
-        # Projects:             A Dictionary that contains {button_id: (projects, window, x, y)}
+        # Projects:             A Dictionary that contains {button: (projects, window, x, y)}
         #                       Helps to retain data between sessions.
         
         # Existing_Labels:      A Dictionary that contains {button: button_text}
