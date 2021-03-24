@@ -39,7 +39,7 @@ class New_Project_Window(QWidget):
         '''
         Display all data, subprojects/people/ETA's etc.
         '''
-        string_of_index = "[" +  str(self.project.sub_tasks[0].idx) + "]\n"
+        string_of_index = "[" +  str(self.project.sub_tasks[0].idx) + "]" + "\t" + str(self.project.sub_tasks[0].project_name) + "\n\n"
         string_of_name = "\tName of subtask: \t\t" +  str(self.project.sub_tasks[0].name) + "\n"
         string_of_members = "\tNumber of Members: \t\t" + str(self.project.sub_tasks[0].members) + "\n"
         string_of_eta = "\tETA: \t\t\t" + str(self.project.sub_tasks[0].eta) + "\n"

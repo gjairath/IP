@@ -95,6 +95,8 @@ class Main_Screen(ta.QMainWindow):
         reloaded_dict = pickle.load(open("subproj.dat", "rb"))
         
         print (reloaded_dict)
+        
+        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again, this time dont fuck around."
                         
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -143,7 +145,11 @@ class Main_Screen(ta.QMainWindow):
         for key in reloaded_dict.keys():
             # The key contain the text.
             button_text = key
-            self.manager.add_label(self.reinitialized_button_list[i], button_text)
+            try:
+                self.manager.add_label(self.reinitialized_button_list[i], button_text)
+            except:
+                print ("one label was not added mate")
+                break
                         
             # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
@@ -246,6 +252,11 @@ class Main_Screen(ta.QMainWindow):
 
         # Make a brand new project template.
         new_project = Project()
+        
+        # Set the names based on user input
+        new_project.name = button_name
+        new_project.sub_tasks[0].project_name = button_name
+        
         # Make a brand new window.
         new_window = gui_h.New_Project_Window(new_project)      
         

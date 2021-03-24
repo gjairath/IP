@@ -10,6 +10,7 @@ class SubProject:
     # A sublist is the bottom-most layer.
 
     def __init__(self, idx):
+        self.project_name = "Empty-Project-Name"
         self.name = "Empty-Sub-Task"
         self.idx = idx
         # Members working on this task.
@@ -24,7 +25,7 @@ class SubProject:
         '''
         Display all data, subprojects/people/ETA's etc.
         '''
-        string_of_index = "[" +  str(self.idx) + "]\n"
+        string_of_index = "[" +  str(self.idx) + "]" + "\t" + str(self.project_name) + "\n\n"
         string_of_name = "\tName of subtask: \t\t" +  str(self.name) + "\n"
         string_of_members = "\tNumber of Members: \t\t" + str(self.members) + "\n"
         string_of_eta = "\tETA: \t\t\t" + str(self.eta) + "\n"
