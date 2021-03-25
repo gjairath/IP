@@ -173,9 +173,9 @@ class Main_Screen(su.QMainWindow):
             i += 1
             pass
 
-        
-        self.show()
-        
+        self.show()        
+        self.show_new_sub_project(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
+
     def get_text(self):
         '''
         Description:
@@ -246,7 +246,9 @@ class Main_Screen(su.QMainWindow):
         active_project = self.find_project_by_name(self.active_project_title)
         active_project.add_sub_project(self.sub_project_counter)
         self.sub_project_counter += 1
-            
+        
+#        self.show_appropriate_window()
+        self.show_new_sub_project(active_project.display_data())
     
     def show_new_sub_project(self, string):
         '''
@@ -292,7 +294,7 @@ class Main_Screen(su.QMainWindow):
         new_window = gui_h.New_Project_Window(new_project)      
         
             
-        new_project_sub_string = new_window.display_data()
+        new_project_sub_string = new_project.display_data()
 
         # ----------------------- Debugging ------------------------------
                                    # TODO
