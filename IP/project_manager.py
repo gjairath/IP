@@ -5,8 +5,6 @@ Created on Thu Mar 18 23:18:13 2021
 @author: garvi
 """
 
-from datetime import datetime
-
 class Project_Manager:        
     def __init__(self):
         # Projects:             A Dictionary that contains {button: (projects, window, x, y)}

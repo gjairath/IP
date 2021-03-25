@@ -11,11 +11,6 @@ import gui as gui
 from project import Project
 from project_manager import Project_Manager
 
-# -=============================
-#TODO
-import test2 as t2
-# -=============================
-
 
 def dbug(new_project):
     print ("-" * 20)
@@ -46,8 +41,8 @@ if __name__ == "__main__":
     
     # Setup and show the main window.
         # See: gui.py [From the class template there]
-    construct_application = t2.QApplication(sys.argv)
-    app_object = t2.Main_Screen(project_manager)
+    construct_application = gui.QApplication(sys.argv)
+    app_object = gui.Main_Screen(project_manager)
     
     # Mainly for debugging on terminal.
     project_manager.show_all()
