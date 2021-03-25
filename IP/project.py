@@ -36,3 +36,27 @@ class Project:
         # An object containing sublists
         new_sub_proj = SubProject(idx)        
         return new_sub_proj
+    
+    def add_sub_project(self, idx):
+        new_sub_proj = SubProject(idx)        
+        self.sub_tasks.append(new_sub_proj)
+        self.num_sub_tasks = len(self.sub_tasks)
+
+    def display_data(self):
+        '''
+        Display all data, subprojects/people/ETA's etc.
+        '''
+        ta = ''
+        for i in range(self.num_sub_tasks):
+            string_of_index = "[" +  str(i) + "]" + "\t" + str(self.sub_tasks[i].name) + "\n\n"
+            string_of_name = "\tName of subtask: \t\t" +  str(self.name) + "\n"
+            string_of_members = "\tNumber of Members: \t\t" + str(self.sub_tasks[i].members) + "\n"
+            string_of_eta = "\tETA: \t\t\t" + str(self.sub_tasks[i].eta) + "\n"
+            string_of_finish_date = "\tFinish_date: \t\t" + str(self.sub_tasks[i].finish_date)
+            new_line = "\n\n"
+            
+            one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
+                                + string_of_finish_date + new_line
+            ta += one_giant_string
+            
+        return ta

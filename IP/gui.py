@@ -47,6 +47,12 @@ class Main_Screen(su.QMainWindow):
         else:
             # Initilaize a UI to use
             self.init_UI()
+            
+        # By default, the active project title is the first project itself.
+        if (arr != []):
+            self.active_project_title = self.manager.projects[list(self.manager.projects.keys())[0]][0].name
+        else:
+            self.active_project_title = ""
         
     def center_object(self, desired_object):
         """
@@ -206,12 +212,10 @@ class Main_Screen(su.QMainWindow):
         desired_button = self.find_button_by_text(self.sender().text())
         # The [0] here is the project subclass in the dictionary with manager object. [note to self]
         active_project = self.manager.projects[desired_button][0]
+        string = active_project.display_data()
         
-        total_sub_projects = active_project.num_sub_tasks
         self.active_project_title = active_project.name
 
-        # ].sub_tasks[0].display_data()
-        
         # Whatever project is active, that is being displayed on the right hand side.
 
         # ----------------------- Debugging ------------------------------
@@ -240,7 +244,7 @@ class Main_Screen(su.QMainWindow):
         '''
         self.sub_project_counter = 2 # 1 is made by default.
         active_project = self.find_project_by_name(self.active_project_title)
-        active_project.make_sub_project_object(self.sub_project_counter)
+        active_project.add_sub_project(self.sub_project_counter)
         self.sub_project_counter += 1
             
     
@@ -320,6 +324,9 @@ class Main_Screen(su.QMainWindow):
         existing_project_btn.clicked.connect(self.show_appropriate_window)
         existing_project_btn.adjustSize()
         existing_project_btn.show()
+        
+        if (self.active_project_title == ""):
+            self.active_project_title = new_project.name
                 
         # Just debugging here.
         self.manager.show_all()
@@ -331,10 +338,7 @@ class Main_Screen(su.QMainWindow):
         
         This happens both in reinit or init.
         '''   
-        
-        # By default, the active project title is the first project itself.
-        self.active_project_title = self.manager.projects[0][0]
-        
+                
         new_project_btn = QPushButton("New Project", self)
         new_project_btn.resize(250,150)
         new_project_btn.setCheckable(True) 
