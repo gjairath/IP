@@ -268,7 +268,7 @@ class Main_Screen(su.QMainWindow):
             self.isLabel = False
 
         self.string_label = QLabel(string, self)
-        self.string_label.move(250,0)
+        self.string_label.move(550,0)
         self.string_label.show()
         self.string_label.adjustSize()
         self.isLabel = True            

@@ -46,10 +46,10 @@ class Project:
         '''
         Display all data, subprojects/people/ETA's etc.
         '''
-        ta = ''
+        ta = self.name + "\n\n"
         for i in range(self.num_sub_tasks):
-            string_of_index = "[" +  str(i) + "]" + "\t" + str(self.sub_tasks[i].name) + "\n\n"
-            string_of_name = "\tName of subtask: \t\t" +  str(self.name) + "\n"
+            string_of_index = "[" +  str(i) + "]" + "\t" + "\n"
+            string_of_name = "\tName of subtask: \t\t" +  str(self.sub_tasks[i].name) + "\n"
             string_of_members = "\tNumber of Members: \t\t" + str(self.sub_tasks[i].members) + "\n"
             string_of_eta = "\tETA: \t\t\t" + str(self.sub_tasks[i].eta) + "\n"
             string_of_finish_date = "\tFinish_date: \t\t" + str(self.sub_tasks[i].finish_date)
