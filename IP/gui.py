@@ -9,7 +9,8 @@ import gui_helper as gui_h
 import saving_utility as su
 from project import Project
 
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, QInputDialog, QCheckBox, QShortcut
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
+                            QInputDialog, QCheckBox, QShortcut, QTextEdit, QMessageBox
 from PyQt5.QtGui import QKeySequence
 import pickle
 
@@ -222,6 +223,7 @@ class Main_Screen(su.QMainWindow):
                                    # TODO        
         if (self.debug_check.isChecked()):
             self.manager.projects[desired_button][1].show()   
+            self.manager.projects[desired_button][1].display_data()   
         # ----------------------- Debugging ------------------------------
         else:
             self.show_new_sub_project(string)
@@ -235,20 +237,47 @@ class Main_Screen(su.QMainWindow):
         for key in self.manager.projects.keys():
             if (self.manager.projects[key][0].name == title):
                 return self.manager.projects[key][0]
-            
+    
+    def add_delete_sp(self, project, ctr):
+        '''
+        A function to delete subproject with the use of the delete_button_list found in each Project() object.
+        '''
+                    # Delet button for whatever SP was created to remove that SP if needed.
+        delete_button_existing_sp = QPushButton("X", self)
+        
+    # TODO
+    # -----------------------------------------------------------
+            #   This uses manual coords which blows use frame geometry instead.
+            #   (550,0) +/35.            
+        posy = 40 + ctr*35
+        delete_button_existing_sp.move(550,posy)
+    # -----------------------------------------------------------
+        delete_button_existing_sp.resize(20,20)
+        delete_button_existing_sp.show()
+
+        
     
     def add_sub_project_to_projects(self):
         '''
         First, check which project class is active.
         Second, add a sub-project to it.
         '''
-        self.sub_project_counter = 2 # 1 is made by default.
+        self.sub_project_counter += 1 # 1 is made by default.
         active_project = self.find_project_by_name(self.active_project_title)
-        active_project.add_sub_project(self.sub_project_counter)
-        self.sub_project_counter += 1
-        
-#        self.show_appropriate_window()
-        self.show_new_sub_project(active_project.display_data())
+                
+        try:
+            active_project.add_sub_project(self.sub_project_counter)
+            self.sub_project_counter += 1            
+            self.show_new_sub_project(active_project.display_data())
+
+            self.add_delete_sp(active_project, self.sub_project_counter)
+        except:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText('Add a project first!')
+            msg.setWindowTitle("Error")
+            msg.exec_()
     
     def show_new_sub_project(self, string):
         '''
@@ -271,8 +300,8 @@ class Main_Screen(su.QMainWindow):
         self.string_label.move(550,0)
         self.string_label.show()
         self.string_label.adjustSize()
-        self.isLabel = True            
-
+        self.isLabel = True          
+    
     def new_project_window(self):                
         '''
         Create a new project window when the button is clicked. Think of this as @onclickevent.
@@ -312,6 +341,14 @@ class Main_Screen(su.QMainWindow):
         # Make a brand new button.
         existing_project_btn = QPushButton("{} + {}".format(button_name, self.counter), self)        
         self.manager.add(new_project, new_window, existing_project_btn)
+        
+    # TODO
+    # ----------------------- Debugging ------------------------------
+        # each project comes with one sublist so add a delet button as well.
+        self.sub_project_counter = 1
+
+        self.add_delete_sp(new_project, self.sub_project_counter)
+    # ----------------------- Debugging ------------------------------
 
         new_posx = self.manager.projects[existing_project_btn][2]
         new_posy = self.manager.projects[existing_project_btn][3] + self.existing_offsety
@@ -351,8 +388,7 @@ class Main_Screen(su.QMainWindow):
         new_sub_project_btn.resize(100,20)
         new_sub_project_btn.move(140,0)
         new_sub_project_btn.clicked.connect(self.add_sub_project_to_projects)
-        
-        
+
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
         # TODO

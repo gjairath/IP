@@ -15,4 +15,19 @@ Note to self:
          
         
 I just use the IP planner itself to use todo now this is outdated.
+
+
+Change all the moves because cross platform it will blow ass
+
+
+AttributeError: 'Main_Screen' object has no attribute 'sub_project_counter'
+	when you click new sub project imediately	
+	its because it immediately goes to add_subproject and subproject counter is not	initialiezd.
+	when u reintialize this counter is at 1  not 3.
+
+the position of X sucks. it goes up or down make it relative to the label itself somehow get the labels pos and add it.
+	this is easy.
+
+connect the button to something.
+
 '''

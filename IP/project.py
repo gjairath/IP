@@ -31,7 +31,8 @@ class Project:
         self.sub_tasks = []
         self.sub_tasks.append(empty_sub_task)
         self.num_sub_tasks = len(self.sub_tasks)
-    
+        
+            
     def make_sub_project_object(self, idx):
         # An object containing sublists
         new_sub_proj = SubProject(idx)        
@@ -48,7 +49,7 @@ class Project:
         '''
         ta = self.name + "\n\n"
         for i in range(self.num_sub_tasks):
-            string_of_index = "[" +  str(i) + "]" + "\t" + "\n"
+            string_of_index = "[" +  str(i+1) + "]" + "\t" + "\n"
             string_of_name = "\tName of subtask: \t\t" +  str(self.sub_tasks[i].name) + "\n"
             string_of_members = "\tNumber of Members: \t\t" + str(self.sub_tasks[i].members) + "\n"
             string_of_eta = "\tETA: \t\t\t" + str(self.sub_tasks[i].eta) + "\n"
@@ -58,5 +59,5 @@ class Project:
             one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
                                 + string_of_finish_date + new_line
             ta += one_giant_string
-            
+        
         return ta

@@ -19,6 +19,7 @@ class SubProject:
         self.eta = str(0) + " Minutes"
         # The finish date for this project
         self.finish_date = "01/01/2099"
+        
 
 
     def display_data(self):

@@ -10,7 +10,7 @@ Created on Thu Mar 18 00:49:55 2021
     # A host of all dialogs that gui.py invokes FROM ip_main.py
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QLabel, QDesktopWidget, QPushButton, QTextEdit
+from PyQt5.QtWidgets import QWidget, QDesktopWidget, QPushButton
 from project import Project
 
 class New_Project_Window(QWidget):       
@@ -42,7 +42,7 @@ class New_Project_Window(QWidget):
         ta = self.project.name + "\n\n"
         posy = 0
         for i in range(self.project.num_sub_tasks):
-            string_of_index = "[" +  str(i) + "]" + "\t" + "\n"
+            string_of_index = "[" +  str(i+1) + "]" + "\t" + "\n"
             string_of_name = "\tName of subtask: \t\t" +  str(self.project.sub_tasks[i].name) + "\n"
             string_of_members = "\tNumber of Members: \t\t" + str(self.project.sub_tasks[i].members) + "\n"
             string_of_eta = "\tETA: \t\t\t" + str(self.project.sub_tasks[i].eta) + "\n"
@@ -53,7 +53,7 @@ class New_Project_Window(QWidget):
                                 + string_of_finish_date + new_line
             ta += one_giant_string
 
-            label_giant = QTextEdit(one_giant_string, self)
+            label_giant = QPushButton(one_giant_string, self)
             # Do adjust size instead, its cleaner.
             label_giant.adjustSize()
             label_giant.move(0,posy)

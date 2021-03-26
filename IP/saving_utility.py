@@ -114,7 +114,7 @@ class QMainWindow(QtWidgets.QMainWindow):
                         child_name = obj.objectName()
                         
                         child_text = obj.text()
-                        if (child_text == "New Project" or child_text == "New Sub-Project"):
+                        if (child_text == "New Project" or child_text == "New Sub-Project" or child_text == "X"):
                             continue
                         
                         if (btns_to_avoid != [] and child_text in btns_to_avoid):
