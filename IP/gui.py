@@ -54,7 +54,16 @@ class Main_Screen(su.QMainWindow):
             self.active_project_title = self.manager.projects[list(self.manager.projects.keys())[0]][0].name
         else:
             self.active_project_title = ""
+            
         
+        # ----------------------- Debugging ------------------------------        
+        # TODO
+        # Widgets to delte subtasks.
+        self.delete_widgets = []
+        self.num_delete_widgets = len(self.delete_widgets)
+
+        self.testing = 0
+                
     def center_object(self, desired_object):
         """
         Params:
@@ -102,6 +111,18 @@ class Main_Screen(su.QMainWindow):
         
         print (reloaded_dict)
         
+        
+        delete_widgets = []
+        for widget in dynamic_widgets:
+            button_name = widget[0]
+            button_id = (button_name[len("button__"):])
+            
+            if (button_name.startswith('Delete')):
+                # Delete widgets.
+                delete_widgets.append(widget)
+                dynamic_widgets.remove(widget)
+
+        
         assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again, this time dont fuck around."
                         
         self.setWindowTitle(self.title)
@@ -120,6 +141,7 @@ class Main_Screen(su.QMainWindow):
         for widget in dynamic_widgets:
             button_name = widget[3]
             button_id = (button_name[len("button__"):])
+            
             if (button_id == "-1"): continue
             # (text, geometry, size, name of the widget in HKEY directory)
             new_widget = QPushButton(widget[0], self)
@@ -137,10 +159,7 @@ class Main_Screen(su.QMainWindow):
             #self.existing_offsety += 35
             self.counter += 1
 
-        # The manager class holds (project, window, posx, posy) 
-        # The reloaded dict for pickle reasons contains all but the second value. 
-        # Reinitiliaze the manager object and it should all work seemlessly. (is that how u spell it?)
-        
+        # The manager class holds (project, window, posx, posy)         
         # the project dict in project_manager has the follwoing container:
             # {button = (project, window, self.positionx, self.positiony)}
 
@@ -211,19 +230,20 @@ class Main_Screen(su.QMainWindow):
         See: find_button_by_text()
         '''                
         desired_button = self.find_button_by_text(self.sender().text())
-        # The [0] here is the project subclass in the dictionary with manager object. [note to self]
+            # {button = (project, window, self.positionx, self.positiony)}
         active_project = self.manager.projects[desired_button][0]
         string = active_project.display_data()
         
         self.active_project_title = active_project.name
 
-        # Whatever project is active, that is being displayed on the right hand side.
-
         # ----------------------- Debugging ------------------------------
                                    # TODO        
         if (self.debug_check.isChecked()):
-            self.manager.projects[desired_button][1].show()   
-            self.manager.projects[desired_button][1].display_data()   
+                # {button = (project, window, self.positionx, self.positiony)}
+            desired_window = self.manager.projects[desired_button][1]
+            desired_window.update_project(active_project)
+            desired_window.display_data()
+            desired_window.show()
         # ----------------------- Debugging ------------------------------
         else:
             self.show_new_sub_project(string)
@@ -238,23 +258,17 @@ class Main_Screen(su.QMainWindow):
             if (self.manager.projects[key][0].name == title):
                 return self.manager.projects[key][0]
     
-    def add_delete_sp(self, project, ctr):
+    def connect_delete(self):
+        pass
+    
+    
+    def get_sub_project_counter(self, active_project):
         '''
-        A function to delete subproject with the use of the delete_button_list found in each Project() object.
+        A function to retrieve existing sub projects, if there are 4, return that.
+        params:
+            active_project: the project being displayed on the screen.
         '''
-                    # Delet button for whatever SP was created to remove that SP if needed.
-        delete_button_existing_sp = QPushButton("X", self)
-        
-    # TODO
-    # -----------------------------------------------------------
-            #   This uses manual coords which blows use frame geometry instead.
-            #   (550,0) +/35.            
-        posy = 40 + ctr*35
-        delete_button_existing_sp.move(550,posy)
-    # -----------------------------------------------------------
-        delete_button_existing_sp.resize(20,20)
-        delete_button_existing_sp.show()
-
+        return active_project.num_sub_tasks
         
     
     def add_sub_project_to_projects(self):
@@ -262,15 +276,29 @@ class Main_Screen(su.QMainWindow):
         First, check which project class is active.
         Second, add a sub-project to it.
         '''
-        self.sub_project_counter += 1 # 1 is made by default.
+        
         active_project = self.find_project_by_name(self.active_project_title)
+        # get the existing number of sub projects.
+        self.sub_project_counter = self.get_sub_project_counter(active_project)
                 
         try:
             active_project.add_sub_project(self.sub_project_counter)
             self.sub_project_counter += 1            
-            self.show_new_sub_project(active_project.display_data())
 
-            self.add_delete_sp(active_project, self.sub_project_counter)
+        # ----------------------- Debugging ------------------------------        
+        # TODO
+
+            testing = QPushButton("Delete {}".format(self.sub_project_counter), self)
+            testing.resize(20,20)
+            testing.move(830,self.testing)
+            testing.adjustSize()
+            testing.show()
+            
+            self.add_delete_widget(testing)
+            self.testing += 20
+        # ----------------------- Debugging ------------------------------        
+                    
+            self.show_new_sub_project(active_project.display_data())
         except:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
@@ -314,24 +342,15 @@ class Main_Screen(su.QMainWindow):
 
         # Make a brand new project template.
         new_project = Project()
-        
+                
         # Set the names based on user input
         new_project.name = button_name
         new_project.sub_tasks[0].project_name = button_name
         
         # Make a brand new window.
-        new_window = gui_h.New_Project_Window(new_project)      
-        
-            
+        new_window = gui_h.New_Project_Window(new_project)
         new_project_sub_string = new_project.display_data()
 
-        # ----------------------- Debugging ------------------------------
-                                   # TODO
-        if (self.debug_check.isChecked()):
-            new_window.show()
-            new_window.display_data()
-        # ----------------------- Debugging ------------------------------
-        
         self.show_new_sub_project(new_project_sub_string)
         self.isLabel = True
 
@@ -342,18 +361,9 @@ class Main_Screen(su.QMainWindow):
         existing_project_btn = QPushButton("{} + {}".format(button_name, self.counter), self)        
         self.manager.add(new_project, new_window, existing_project_btn)
         
-    # TODO
-    # ----------------------- Debugging ------------------------------
-        # each project comes with one sublist so add a delet button as well.
-        self.sub_project_counter = 1
-
-        self.add_delete_sp(new_project, self.sub_project_counter)
-    # ----------------------- Debugging ------------------------------
-
         new_posx = self.manager.projects[existing_project_btn][2]
         new_posy = self.manager.projects[existing_project_btn][3] + self.existing_offsety
         
-        # TODO: Fix this based on existing labels in the dictionary.
         existing_project_btn.move(new_posx, new_posy)
                 
         # Add the button on the main menu, with an unique identifier as pair-wise tuples to the project manager.
@@ -369,6 +379,21 @@ class Main_Screen(su.QMainWindow):
                 
         # Just debugging here.
         self.manager.show_all()
+        
+        
+        
+        # ----------------------- Debugging ------------------------------        
+        # TODO
+        testing = QPushButton("Delete {}".format(new_project.num_sub_tasks), self)
+        testing.resize(20,20)
+        testing.move(830,self.testing)
+        testing.adjustSize()
+        testing.show()
+        
+        self.add_delete_widget(testing)
+        self.testing += 20
+        # ----------------------- Debugging ------------------------------        
+
     
     def add_new_project_button(self):
         '''
@@ -397,6 +422,10 @@ class Main_Screen(su.QMainWindow):
         self.debug_check.adjustSize()
         self.debug_check.show()
         # ----------------------- Debugging ------------------------------
-        
+     
+    def add_delete_widget(self, btn):
+        self.delete_widgets.append(btn)
+        self.num_delete_widgets = len(self.delete_widgets)
+
     def debug(self):
         print("Click me harder!")

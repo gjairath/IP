@@ -34,6 +34,15 @@ class New_Project_Window(QWidget):
         self.setWindowTitle(self.project.name)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.center_object(self)
+        
+        
+    def update_project(self, updated_project):
+        '''
+        When a project object is changed, it changes associated subprojects.
+        In order to make it real time, the self.project instance must be changed so display_data works
+        real time.
+        '''
+        self.project = updated_project
 
     def display_data(self):
         '''
