@@ -37,6 +37,9 @@ class Main_Screen(su.QMainWindow):
         # To show only one relevant sub-project index for each project at one time.
         self.isLabel = False
 
+        self.delete_widgets = []
+
+
         self.existing_offsety = 0
         arr = self.restored_array
         if (arr != []):
@@ -59,9 +62,6 @@ class Main_Screen(su.QMainWindow):
         # ----------------------- Debugging ------------------------------        
         # TODO
         # Widgets to delte subtasks.
-        self.delete_widgets = []
-        self.num_delete_widgets = len(self.delete_widgets)
-
         self.testing = 0
                 
     def center_object(self, desired_object):
@@ -112,17 +112,6 @@ class Main_Screen(su.QMainWindow):
         print (reloaded_dict)
         
         
-        delete_widgets = []
-        for widget in dynamic_widgets:
-            button_name = widget[0]
-            button_id = (button_name[len("button__"):])
-            
-            if (button_name.startswith('Delete')):
-                # Delete widgets.
-                delete_widgets.append(widget)
-                dynamic_widgets.remove(widget)
-
-        
         assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again, this time dont fuck around."
                         
         self.setWindowTitle(self.title)
@@ -148,7 +137,7 @@ class Main_Screen(su.QMainWindow):
             
             size = widget[1]
             new_widget.resize(size.width(), size.height())
-            new_widget.setCheckable(True)     
+           # new_widget.setCheckable(True)     
             
             new_widget.move(size.x(), size.y())
             new_widget.adjustSize()
@@ -182,9 +171,6 @@ class Main_Screen(su.QMainWindow):
 
             self.show_new_sub_project(generic_window_sub_str)
             self.isLabel = True
-
-            # Finally, increment the total tally of projects existing.
-        #    self.counter += 1
             
             print ("\n\n")
             self.reinitialized_button_list[i].clicked.connect(self.show_appropriate_window)
@@ -193,8 +179,35 @@ class Main_Screen(su.QMainWindow):
             i += 1
             pass
 
+
+        self.reload_delete_keys(self.manager.projects[list(self.manager.projects.keys())[0]][0])
         self.show()        
         self.show_new_sub_project(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
+
+
+    def reload_delete_keys(self, some_project):
+        '''
+        Reload all the delete_keys for whichever project being displayed.
+        '''
+        if (self.delete_widgets != []):
+            print (self.delete_widgets)
+            # There is already a bunch of deletes on screen, delete them.
+            for widget in self.delete_widgets:
+                widget.deleteLater()
+            
+            self.delete_widgets = []
+                
+        posy = 0
+        for i in range(some_project.num_sub_tasks):
+            testing = QPushButton("Delete {}".format(i+1), self)
+            testing.resize(20,20)
+            testing.move(830,posy)
+            testing.adjustSize()
+            testing.show()
+            
+            self.delete_widgets.append(testing)
+            posy += 20
+
 
     def get_text(self):
         '''
@@ -246,7 +259,7 @@ class Main_Screen(su.QMainWindow):
             desired_window.show()
         # ----------------------- Debugging ------------------------------
         else:
-            self.show_new_sub_project(string)
+            self.show_new_sub_project(string, active_project)
             print (self.sender().text())
             
     def find_project_by_name(self, title):
@@ -294,7 +307,6 @@ class Main_Screen(su.QMainWindow):
             testing.adjustSize()
             testing.show()
             
-            self.add_delete_widget(testing)
             self.testing += 20
         # ----------------------- Debugging ------------------------------        
                     
@@ -307,7 +319,7 @@ class Main_Screen(su.QMainWindow):
             msg.setWindowTitle("Error")
             msg.exec_()
     
-    def show_new_sub_project(self, string):
+    def show_new_sub_project(self, string, project=None):
         '''
         A function to clear the subproject label on screen incase a new project is clicked.
         I.e, 
@@ -328,7 +340,10 @@ class Main_Screen(su.QMainWindow):
         self.string_label.move(550,0)
         self.string_label.show()
         self.string_label.adjustSize()
-        self.isLabel = True          
+        self.isLabel = True 
+
+        if (project != None):
+            self.reload_delete_keys(project)
     
     def new_project_window(self):                
         '''
@@ -390,7 +405,6 @@ class Main_Screen(su.QMainWindow):
         testing.adjustSize()
         testing.show()
         
-        self.add_delete_widget(testing)
         self.testing += 20
         # ----------------------- Debugging ------------------------------        
 
@@ -423,9 +437,6 @@ class Main_Screen(su.QMainWindow):
         self.debug_check.show()
         # ----------------------- Debugging ------------------------------
      
-    def add_delete_widget(self, btn):
-        self.delete_widgets.append(btn)
-        self.num_delete_widgets = len(self.delete_widgets)
 
     def debug(self):
         print("Click me harder!")
