@@ -193,6 +193,7 @@ class Main_Screen(su.QMainWindow):
             print (self.delete_widgets)
             # There is already a bunch of deletes on screen, delete them.
             for widget in self.delete_widgets:
+                widget.clicked.connect(self.doNothing)
                 widget.deleteLater()
             
             self.delete_widgets = []
@@ -207,7 +208,38 @@ class Main_Screen(su.QMainWindow):
             
             self.delete_widgets.append(testing)
             posy += 20
+            
+            # Connect the newly formed fresh keys from the oven.
+            self.connect_delete_keys()
+            
+        self.active_project = some_project
 
+    def doNothing(self):
+        return
+    
+    def connect_delete_keys(self):
+        '''
+        See: reload_Delete_keys, pretty self explanatory.
+        '''
+        for keys in self.delete_widgets:
+            keys.clicked.connect(self.delete_sub_project)
+            #value_to_delete = int(self.delete_widgets[keys][len("Delete "):]) - 1
+            #print(value_to_delete)
+        
+    def delete_sub_project(self):
+        '''
+        See: connect_delete_keys.
+        '''
+        value_to_delete = int((self.sender().text())[len("Delete "):]) - 1
+        
+        # Value to delete holds the subtask for whichever project that needs deletion.
+        print(value_to_delete)
+        
+        # self.active_project holds the current project on screen.
+            # The way the buttons are created it programatically creates a CLICK event.
+            # It is almost guaranteed with 69% certainty that active project is indeed active project.
+            # Still, put a warning on screen.
+        print(self.active_project.num_sub_tasks)
 
     def get_text(self):
         '''
