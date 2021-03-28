@@ -112,7 +112,7 @@ class Main_Screen(su.QMainWindow):
         print (reloaded_dict)
         
         
-        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again, this time dont fuck around."
+        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY and subproj.data to start again, this time dont fuck around."
                         
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -298,17 +298,8 @@ class Main_Screen(su.QMainWindow):
             active_project.add_sub_project(self.sub_project_counter)
             self.sub_project_counter += 1            
 
-        # ----------------------- Debugging ------------------------------        
-        # TODO
-
-            testing = QPushButton("Delete {}".format(self.sub_project_counter), self)
-            testing.resize(20,20)
-            testing.move(830,self.testing)
-            testing.adjustSize()
-            testing.show()
-            
-            self.testing += 20
-        # ----------------------- Debugging ------------------------------        
+            # The project on screen has changed, reload delete keys for this project.
+            self.reload_delete_keys(active_project)
                     
             self.show_new_sub_project(active_project.display_data())
         except:
@@ -389,26 +380,17 @@ class Main_Screen(su.QMainWindow):
         existing_project_btn.adjustSize()
         existing_project_btn.show()
         
+        existing_project_btn.click()
+        
         if (self.active_project_title == ""):
             self.active_project_title = new_project.name
                 
         # Just debugging here.
         self.manager.show_all()
         
-        
-        
-        # ----------------------- Debugging ------------------------------        
-        # TODO
-        testing = QPushButton("Delete {}".format(new_project.num_sub_tasks), self)
-        testing.resize(20,20)
-        testing.move(830,self.testing)
-        testing.adjustSize()
-        testing.show()
-        
-        self.testing += 20
-        # ----------------------- Debugging ------------------------------        
+        # The project on screen has changed, reload delete keys.
+        self.reload_delete_keys(new_project)
 
-    
     def add_new_project_button(self):
         '''
         Adds the "new project" button on to the screen
