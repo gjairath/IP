@@ -48,9 +48,9 @@ class Project:
         '''
         dash = '-' * (len(self.name) + 1)
         ta = self.name + "\n{}\n".format(dash)
-        
+
         for i in range(self.num_sub_tasks):
-            string_of_index = "[" +  str(i+1) + "]" + "\t" + "\n"
+            string_of_index = "[" +  str(self.sub_tasks[i].idx)  + "]" + "\t" + "\n"
 
             string_of_name = "\tName of subtask: \t\t" +  str(self.sub_tasks[i].name) + "\n"
             string_of_members = "\tNumber of Members: \t\t" + str(self.sub_tasks[i].members) + "\n"

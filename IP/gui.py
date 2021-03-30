@@ -270,7 +270,7 @@ class Main_Screen(su.QMainWindow):
         
         
         # click the button programatically to real-time update deleted subprojects.
-        self.find_button_by_project(self.active_project.name).click()
+        self.find_button_by_project(self.active_project).click()
         
         
     def get_text(self):
