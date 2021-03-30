@@ -99,6 +99,14 @@ class Main_Screen(su.QMainWindow):
         self.add_new_project_button()
         self.show()
 
+
+    def sort(self, sub_li):
+        '''
+        Credit: https://stackoverflow.com/questions/17555218/python-how-to-sort-a-list-of-lists-by-the-fourth-element-in-each-list/17555237
+        This snippet is not mine.
+        '''
+        return sorted(sub_li, key = lambda x: int(x[3][len("button__"):]))
+    
     def reinit_UI(self, dynamic_widgets):
         '''
         Description:
@@ -130,6 +138,10 @@ class Main_Screen(su.QMainWindow):
         # Restore the dynamically created widgets by the user.
         
         self.reinitialized_button_list = []
+        
+        # sometimes the REGEDIT takes in values that are clonky.
+            # If wrong order, all the stuff is fucked.
+        dynamic_widgets = self.sort(dynamic_widgets)
         for widget in dynamic_widgets:
             button_name = widget[3]
             button_id = (button_name[len("button__"):])
@@ -233,6 +245,8 @@ class Main_Screen(su.QMainWindow):
         '''
         See: connect_delete_keys.
         '''
+        if (isinstance(self.sender(), QPushButton) == False): return
+        
         value_to_delete = int((self.sender().text())[len("Delete "):]) - 1
         
         # Value to delete holds the subtask for whichever project that needs deletion.
@@ -244,12 +258,20 @@ class Main_Screen(su.QMainWindow):
             # Still, put a warning on screen.
         print(self.active_project.num_sub_tasks)
         
-        # TODO
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        
+        # Value to delete holds the sub task that needs to go.
+        
+        del self.active_project.sub_tasks[value_to_delete]
+        self.active_project.num_sub_tasks = len(self.active_project.sub_tasks)
+        
+        
+        # Reload the delete keys.
+        self.reload_delete_keys(self.active_project)
+        
+        
+        # click the button programatically to real-time update deleted subprojects.
+        self.find_button_by_project(self.active_project.name).click()
+        
         
     def get_text(self):
         '''
@@ -267,6 +289,11 @@ class Main_Screen(su.QMainWindow):
         
         if (ok_pressed == 1) and text != '': return text
         else: return -1
+    
+    def find_button_by_project(self, project):
+        for key, value in self.manager.projects.items():
+            if (value[0] == project):
+                return key
     
     def find_button_by_text(self, text):
          '''
