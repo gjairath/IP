@@ -107,8 +107,11 @@ class Main_Screen(su.QMainWindow):
         
         # This loads the pickled subprojects. That is, tasks accompanying each projects.
             # {button_text = (project, posx, posy)}
-        reloaded_dict = pickle.load(open("subproj.dat", "rb"))
-        
+        try:
+            reloaded_dict = pickle.load(open("subproj.dat", "rb"))
+        except:
+            su.closeEvent()
+            
         print (reloaded_dict)
         
         
@@ -240,7 +243,14 @@ class Main_Screen(su.QMainWindow):
             # It is almost guaranteed with 69% certainty that active project is indeed active project.
             # Still, put a warning on screen.
         print(self.active_project.num_sub_tasks)
-
+        
+        # TODO
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        
     def get_text(self):
         '''
         Description:

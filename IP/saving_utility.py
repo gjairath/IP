@@ -38,6 +38,9 @@ class QMainWindow(QtWidgets.QMainWindow):
         
         # A project manager object that holds mostly project-subproject bridge abstracted away safely.
         self.manager = project_manager
+        
+        
+        self.save_counter = 0
     
 
     def save_sub_projects(self):
@@ -110,7 +113,7 @@ class QMainWindow(QtWidgets.QMainWindow):
                 
                 if (obj):
                     if isinstance(obj, QPushButton):
-                        obj.setObjectName("button__{}".format(self.counter))
+                        obj.setObjectName("button__{}".format(self.save_counter))
                         child_name = obj.objectName()
                         
                         child_text = obj.text()
@@ -118,6 +121,7 @@ class QMainWindow(QtWidgets.QMainWindow):
                             continue
                         
                         if (btns_to_avoid != [] and child_text in btns_to_avoid):
+                            self.save_counter += 1
                             continue
                         
                         # Store as much info as you can about this button it can help later lol
@@ -128,6 +132,7 @@ class QMainWindow(QtWidgets.QMainWindow):
                         
                     if value is not None:
                         self.settings.setValue(name_prefix + child_name, value)
+                        self.save_counter += 1
 
     def split_N(self, source, step):   
         return [source[i::step] for i in range(step)]
