@@ -14,6 +14,8 @@ from project import Project
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
                             QInputDialog, QCheckBox, QShortcut, QTextEdit, QMessageBox
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import QSettings
+
 import pickle
 
 
@@ -245,8 +247,10 @@ class Main_Screen(su.QMainWindow):
             # Also, make the button vanish.
         
         project_dict = self.manager.projects
+        last_project = None
         try:
             button_to_delete = self.find_button_by_project(self.active_project)
+            last_project = self.active_project
             del project_dict[button_to_delete]
             button_to_delete.deleteLater()
             
@@ -258,6 +262,28 @@ class Main_Screen(su.QMainWindow):
             my_Error.add_a_project(self)
             return
         
+        
+        # The deletion is successful, update the restored array to make sure this button is not saved.
+            # If it's removed it will trigger assertion fail.
+        
+        if (last_project == None):
+            return
+        
+        for idx, items in enumerate(self.restored_array):
+            # ------------------------------------------------------
+            # TODO
+            # DEBUGGING
+                # For now projects have a + 0 + 1 + 2 tag, that exists only for debugging.
+                # TO make it so that it works now I'm appending my project string with this tag.
+                # Remove it later.
+            # ------------------------------------------------------
+            some_str = last_project.name + " + " + str(idx)
+            if (items[0] == some_str):
+                del self.restored_array[idx]
+        
+                #update regedit
+                self.settings.remove("User Settings/button__{}".format(idx))
+
         print(self.active_project.name)
     
     def connect_delete_keys(self):
