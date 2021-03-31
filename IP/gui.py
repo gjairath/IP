@@ -7,6 +7,8 @@ Created on Wed Mar 17 23:10:34 2021
 
 import gui_helper as gui_h
 import saving_utility as su
+from my_Error import my_Error
+
 from project import Project
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
@@ -232,6 +234,32 @@ class Main_Screen(su.QMainWindow):
     def doNothing(self):
         return
     
+    
+    def delete_project(self):
+        '''
+        Delete the active project on screen.
+        Onclick for "Delete This Project" QPushButton
+        '''
+        
+        # When a project is removed, simply update project manager, that should be enough.
+            # Also, make the button vanish.
+        
+        project_dict = self.manager.projects
+        try:
+            button_to_delete = self.find_button_by_project(self.active_project)
+            del project_dict[button_to_delete]
+            button_to_delete.deleteLater()
+            
+            if (list(project_dict.keys()) != []):
+                new_project_btn = list(project_dict.keys())[0]
+                new_project_btn.click()
+
+        except:
+            my_Error.add_a_project(self)
+            return
+        
+        print(self.active_project.name)
+    
     def connect_delete_keys(self):
         '''
         See: reload_Delete_keys, pretty self explanatory.
@@ -350,8 +378,12 @@ class Main_Screen(su.QMainWindow):
         params:
             active_project: the project being displayed on the screen.
         '''
-        return active_project.num_sub_tasks
         
+        if (active_project == None):
+            my_Error.add_a_project(self)
+            return
+            
+        return active_project.num_sub_tasks
     
     def add_sub_project_to_projects(self):
         '''
@@ -372,12 +404,7 @@ class Main_Screen(su.QMainWindow):
                     
             self.show_new_sub_project(active_project.display_data())
         except:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-            msg.setText("Error")
-            msg.setInformativeText('Add a project first!')
-            msg.setWindowTitle("Error")
-            msg.exec_()
+            my_Error.add_a_project(self)
     
     def show_new_sub_project(self, string, project=None):
         '''
@@ -478,6 +505,13 @@ class Main_Screen(su.QMainWindow):
         new_sub_project_btn.resize(100,20)
         new_sub_project_btn.move(140,0)
         new_sub_project_btn.clicked.connect(self.add_sub_project_to_projects)
+
+
+        new_sub_project_btn = QPushButton("Delete This Project", self)
+        new_sub_project_btn.resize(100,20)
+        new_sub_project_btn.move(140,20)
+        new_sub_project_btn.clicked.connect(self.delete_project)
+
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
