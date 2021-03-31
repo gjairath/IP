@@ -247,10 +247,9 @@ class Main_Screen(su.QMainWindow):
             # Also, make the button vanish.
         
         project_dict = self.manager.projects
-        last_project = None
+        idx = 0
         try:
-            button_to_delete = self.find_button_by_project(self.active_project)
-            last_project = self.active_project
+            idx, button_to_delete = self.find_button_by_project(self.active_project)
             del project_dict[button_to_delete]
             button_to_delete.deleteLater()
             
@@ -263,26 +262,29 @@ class Main_Screen(su.QMainWindow):
             return
         
         
+        if (self.restored_array == []):
+            # Done. First time loading, no need to update regedit or whatever.
+            return
+            
+        
         # The deletion is successful, update the restored array to make sure this button is not saved.
             # If it's removed it will trigger assertion fail.
         
-        if (last_project == None):
+        if (project_dict == {}):
+            # THe user deleted the last project that happened to NOT be the first one.
+            # in this scenario, 
+            setting_to_delete = "User Settings/" + str(self.restored_array[0][3])
+            del self.restored_array[0]
+            self.settings.remove(setting_to_delete)
             return
         
-        for idx, items in enumerate(self.restored_array):
-            # ------------------------------------------------------
-            # TODO
-            # DEBUGGING
-                # For now projects have a + 0 + 1 + 2 tag, that exists only for debugging.
-                # TO make it so that it works now I'm appending my project string with this tag.
-                # Remove it later.
-            # ------------------------------------------------------
-            some_str = last_project.name + " + " + str(idx)
-            if (items[0] == some_str):
-                del self.restored_array[idx]
         
-                #update regedit
-                self.settings.remove("User Settings/button__{}".format(idx))
+        setting_to_delete = "User Settings/" + str(self.restored_array[idx][3])
+        del self.restored_array[idx]
+        
+        
+        #update regedit
+        self.settings.remove(setting_to_delete)
 
         print(self.active_project.name)
     
@@ -324,7 +326,8 @@ class Main_Screen(su.QMainWindow):
         
         
         # click the button programatically to real-time update deleted subprojects.
-        self.find_button_by_project(self.active_project).click()
+        _, btn = self.find_button_by_project(self.active_project)
+        btn.click()
         
         
     def get_text(self):
@@ -345,10 +348,12 @@ class Main_Screen(su.QMainWindow):
         else: return -1
     
     def find_button_by_project(self, project):
+        count = 0
         for key, value in self.manager.projects.items():
             if (value[0] == project):
-                return key
-    
+                return count, key
+            count += 1
+            
     def find_button_by_text(self, text):
          '''
          Params:
