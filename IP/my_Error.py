@@ -23,3 +23,16 @@ class my_Error:
         msg.setInformativeText('Add a project first!')
         msg.setWindowTitle("Error")
         msg.exec_()
+        
+        
+    def click_button_first(self):
+        '''
+        If you try moving a button without clicking it, it will cause an error.
+        '''
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('Click on a button before moving it first!')
+        msg.setWindowTitle("Error")
+        msg.exec_()
+

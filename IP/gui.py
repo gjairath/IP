@@ -13,11 +13,32 @@ from project import Project
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
                             QInputDialog, QCheckBox, QShortcut, QTextEdit, QMessageBox
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QKeySequence, QDrag
+from PyQt5.QtCore import QSettings, Qt, QMimeData
 
 import pickle
 
+class Button(QPushButton):
+    
+    def __init__(self, title, parent):
+        super().__init__(title, parent)
+
+    def mouseMoveEvent(self, e):
+        '''
+        Enable drag for buttons.
+        '''
+        if e.buttons() != Qt.RightButton:
+            return
+
+        mimeData = QMimeData()
+
+        drag = QDrag(self)
+        drag.setMimeData(mimeData)
+        drag.setHotSpot(e.pos() - self.rect().topLeft())
+        drag.exec_(Qt.MoveAction)
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
 
 class Main_Screen(su.QMainWindow):
     # The template for the main-screen that is showed when the user boots up the software.
@@ -43,6 +64,7 @@ class Main_Screen(su.QMainWindow):
 
         self.delete_widgets = []
 
+        self.setAcceptDrops(True)
 
         self.existing_offsety = 0
         arr = self.restored_array
@@ -152,7 +174,7 @@ class Main_Screen(su.QMainWindow):
             
             if (button_id == "-1"): continue
             # (text, geometry, size, name of the widget in HKEY directory)
-            new_widget = QPushButton(widget[0], self)
+            new_widget = Button(widget[0], self)
             
             size = widget[1]
             new_widget.resize(size.width(), size.height())
@@ -376,6 +398,7 @@ class Main_Screen(su.QMainWindow):
         string = active_project.display_data()
         
         self.active_project_title = active_project.name
+        self.active_button = desired_button
 
         # ----------------------- Debugging ------------------------------
                                    # TODO        
@@ -398,10 +421,6 @@ class Main_Screen(su.QMainWindow):
         for key in self.manager.projects.keys():
             if (self.manager.projects[key][0].name == title):
                 return self.manager.projects[key][0]
-    
-    def connect_delete(self):
-        pass
-    
     
     def get_sub_project_counter(self, active_project):
         '''
@@ -491,7 +510,7 @@ class Main_Screen(su.QMainWindow):
         self.counter += 1
         
         # Make a brand new button.
-        existing_project_btn = QPushButton("{} + {}".format(button_name, self.counter), self)        
+        existing_project_btn = Button("{} + {}".format(button_name, self.counter), self)        
         self.manager.add(new_project, new_window, existing_project_btn)
         
         new_posx = self.manager.projects[existing_project_btn][2]
@@ -518,6 +537,22 @@ class Main_Screen(su.QMainWindow):
         # The project on screen has changed, reload delete keys.
         self.reload_delete_keys(new_project)
 
+    def dragEnterEvent(self, e):
+        e.accept()
+
+    def dropEvent(self, e):
+        position = e.pos()
+        #self.button.move(position)
+        
+        # Find the button screen that is active, and move it.
+        try:
+            self.active_button.move(position)
+        except:
+            my_Error.click_button_first(self)
+        
+        e.setDropAction(Qt.MoveAction)
+        e.accept()
+
     def add_new_project_button(self):
         '''
         Adds the "new project" button on to the screen
@@ -525,10 +560,8 @@ class Main_Screen(su.QMainWindow):
         
         This happens both in reinit or init.
         '''   
-                
         new_project_btn = QPushButton("New Project", self)
         new_project_btn.resize(250,150)
-        new_project_btn.setCheckable(True) 
         new_project_btn.move(200, 200)
         new_project_btn.clicked.connect(self.new_project_window) 
         
@@ -542,7 +575,12 @@ class Main_Screen(su.QMainWindow):
         new_sub_project_btn.resize(100,20)
         new_sub_project_btn.move(140,20)
         new_sub_project_btn.clicked.connect(self.delete_project)
-
+        
+        
+        information_label = QLabel("Left click on a project button to move it!", self)
+        information_label.resize(100,20)
+        information_label.move(250,370)
+        information_label.adjustSize()
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
