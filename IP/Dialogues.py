@@ -1,8 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr  8 01:43:40 2021
+
+@author: garvi
+"""
+
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
 QDialogButtonBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit,
 QVBoxLayout)
 
-import sys
 
 class Dialog(QDialog):
     NumGridRows = 3
@@ -21,10 +27,10 @@ class Dialog(QDialog):
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
         
-        self.setWindowTitle("Form Layout - pythonspot.com")
+        self.setWindowTitle("Change")
         
     def createFormGroupBox(self):
-        self.formGroupBox = QGroupBox("Form layout")
+        self.formGroupBox = QGroupBox("Project Name")
         layout = QFormLayout()
         
         self.comboBox_2 = QComboBox()
@@ -38,8 +44,7 @@ class Dialog(QDialog):
         self.comboBox_2.addItems(list1)
 
         self.formGroupBox.setLayout(layout)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    dialog = Dialog()
-    sys.exit(dialog.exec_())
+        
+    def edit_project(self):
+        dialog = Dialog()
+        dialog.exec_()

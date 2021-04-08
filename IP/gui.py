@@ -7,8 +7,9 @@ Created on Wed Mar 17 23:10:34 2021
 
 import gui_helper as gui_h
 import saving_utility as su
-from my_Error import my_Error
 
+from my_Error import my_Error
+from Dialogues import Dialog
 from project import Project
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
@@ -41,7 +42,6 @@ class Button(QPushButton):
         super().mousePressEvent(e)
 
 class Main_Screen(su.QMainWindow):
-    # The template for the main-screen that is showed when the user boots up the software.
     def __init__(self, project_manager, parent = None):
         super(Main_Screen, self).__init__(project_manager, parent)
         self.title = "TESTING-MODEL-2d from 0a (CTRL+Q to quit)"
@@ -50,81 +50,64 @@ class Main_Screen(su.QMainWindow):
         self.top = 10
         self.width = 640
         self.height = 480
-        
-        #self.init_UI()
-        
-        # Initiliaze a Project Manager Class Object.
-        self.manager = project_manager
-        
-        # A counter to track the projects, it helps to show which window to display.
-        self.counter = -1
+        self.existing_offsety = 0
                 
-        # To show only one relevant sub-project index for each project at one time.
+        # Initiliaze a Project Manager Class Object.
+        self.manager = project_manager        
+    
+        # A counter to track the projects.
+        self.counter = -1
+    
+        # Islabel on screen for project?
         self.isLabel = False
 
+        # Delete each project widgets, dynamically made.
         self.delete_widgets = []
-
         self.setAcceptDrops(True)
 
-        self.existing_offsety = 0
+        # Taken from saving_utility.py Check superclass
         arr = self.restored_array
+        
         if (arr != []):
-            # There are values here, thus the user is starting this for the second time. 
-            print(arr)
-            #self.counter += 1
-            self.reinit_UI(arr)
-            
+            # Re-initialize all data.
+            self.reinit_UI(arr)            
         else:
-            # Initilaize a UI to use
             self.init_UI()
             
-        # By default, the active project title is the first project itself.
         if (arr != []):
             self.active_project_title = self.manager.projects[list(self.manager.projects.keys())[0]][0].name
         else:
             self.active_project_title = ""
-            
-        
-        # ----------------------- Debugging ------------------------------        
-        # TODO
-        # Widgets to delte subtasks.
-        self.testing = 0
-                
+            self.active_project = None
+                            
     def center_object(self, desired_object):
         """
-        Params:
-            desired_obj - object to center
-            
-        Description:
-            Center object wrt desktop not the window.
+        Centers any object on to the desktop.
+        desired_object is the object of choice
         """
-                
-
         centerPoint = QDesktopWidget().availableGeometry().center()
         qtRectangle = self.frameGeometry()
 
         qtRectangle.moveCenter(centerPoint)
         desired_object.move(qtRectangle.topLeft())
         
-    def init_UI(self):
+    def init_UI(self, show = 1):
         '''
         Description:
-            Sets window title,
-            Sets geometry,
-            Centers the screen wrt desktop,
-            Shows the screen.
+            Sets window title, geometry, Centers the screen wrt desktop, Shows the screen.
         '''
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
- 
-        self.quitSc = QShortcut(QKeySequence('Ctrl+Q'), self)
-        self.quitSc.activated.connect(QApplication.instance().quit)
-
-    
         self.center_object(self)
-        self.add_new_project_button()
-        self.show()
 
+        self.add_new_project_button()
+
+        self.quitSc = QShortcut(QKeySequence('Ctrl+Q'), self)
+        self.quitSc.activated.connect(QApplication.instance().quit)    
+
+        # To stop deduplicating code, reinit uses the same code block above.
+        if (show == 1):
+            self.show()
 
     def sort(self, sub_li):
         '''
@@ -137,37 +120,20 @@ class Main_Screen(su.QMainWindow):
         '''
         Description:
             Reinit the window based on dynamically created widgets.
-        '''
-        
-        # This loads the pickled subprojects. That is, tasks accompanying each projects.
-            # {button_text = (project, posx, posy)}
+        '''        
         try:
             reloaded_dict = pickle.load(open("subproj.dat", "rb"))
         except:
             su.closeEvent()
-            
-        print (reloaded_dict)
         
+        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again."
         
-        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY and subproj.data to start again, this time dont fuck around."
-                        
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
- 
-        self.quitSc = QShortcut(QKeySequence('Ctrl+Q'), self)
-        self.quitSc.activated.connect(QApplication.instance().quit)
-
-    
-        self.center_object(self)
-        self.add_new_project_button()
-        
-        # Restore the dynamically created widgets by the user.
-        
+        # Do what init UI does on first run minus the show, until data processing is done.
+        self.init_UI(show = 0)
         self.reinitialized_button_list = []
-        
-        # sometimes the REGEDIT takes in values that are clonky.
-            # If wrong order, all the stuff is fucked.
+                # sometimes the REGEDIT takes in values that are clonky. Fix with sort.
         dynamic_widgets = self.sort(dynamic_widgets)
+
         for widget in dynamic_widgets:
             button_name = widget[3]
             button_id = (button_name[len("button__"):])
@@ -242,7 +208,6 @@ class Main_Screen(su.QMainWindow):
         posy = 0
         for i in range(some_project.num_sub_tasks):
             testing = QPushButton("Delete {}".format(i+1), self)
-            testing.resize(20,20)
             testing.move(830,posy)
             testing.adjustSize()
             testing.show()
@@ -254,7 +219,22 @@ class Main_Screen(su.QMainWindow):
             self.connect_delete_keys()
             
         self.active_project = some_project
-
+        
+    
+    
+# TODO
+            
+    
+    def todo_shit(self):
+      
+        try:
+            my_Error.add_a_project(self)       
+        except:
+            sub_task_name = Dialog.edit_project(self)
+            self.active_project.sub_tasks[0].name = sub_task_name
+ 
+# ======================================================================================================
+        
     def doNothing(self):
         return
     
@@ -264,10 +244,6 @@ class Main_Screen(su.QMainWindow):
         Delete the active project on screen.
         Onclick for "Delete This Project" QPushButton
         '''
-        
-        # When a project is removed, simply update project manager, that should be enough.
-            # Also, make the button vanish.
-        
         project_dict = self.manager.projects
         idx = 0
         try:
@@ -455,6 +431,7 @@ class Main_Screen(su.QMainWindow):
             self.show_new_sub_project(active_project.display_data())
         except:
             my_Error.add_a_project(self)
+            return
     
     def show_new_sub_project(self, string, project=None):
         '''
@@ -484,10 +461,7 @@ class Main_Screen(su.QMainWindow):
     
     def new_project_window(self):                
         '''
-        Create a new project window when the button is clicked. Think of this as @onclickevent.
-        Show it,
-        Update the project - manager.
-        Use Project, Subproject class to show default data for a NEW project.
+        Think of this as @onclickevent for new project
         '''
         button_name = self.get_text()
         if (button_name == -1): return
@@ -530,13 +504,16 @@ class Main_Screen(su.QMainWindow):
         
         if (self.active_project_title == ""):
             self.active_project_title = new_project.name
+            
+        if (self.active_project == None):
+            self.active_project = new_project
                 
         # Just debugging here.
         self.manager.show_all()
         
         # The project on screen has changed, reload delete keys.
         self.reload_delete_keys(new_project)
-
+        
     def dragEnterEvent(self, e):
         e.accept()
 
@@ -577,10 +554,19 @@ class Main_Screen(su.QMainWindow):
         new_sub_project_btn.clicked.connect(self.delete_project)
         
         
-        information_label = QLabel("Left click on a project button to move it!", self)
+        information_label = QLabel("Click on a project button and hold right click to drag it!", self)
         information_label.resize(100,20)
         information_label.move(250,370)
         information_label.adjustSize()
+        
+        
+        change_project_data_btn = QPushButton("Edit This Project", self)
+        change_project_data_btn.move(140,40)
+        
+        change_project_data_btn.resize(100,20)
+        change_project_data_btn.clicked.connect(self.todo_shit)
+        change_project_data_btn.show()
+
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
