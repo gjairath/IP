@@ -135,66 +135,65 @@ class Main_Screen(su.QMainWindow):
         dynamic_widgets = self.sort(dynamic_widgets)
 
         for widget in dynamic_widgets:
+            # format: (text, geometry, size, name of the widget in HKEY directory)
+                    # This format is how saving_utility.py saves it.
+
             button_name = widget[3]
             button_id = (button_name[len("button__"):])
             
             if (button_id == "-1"): continue
-            # (text, geometry, size, name of the widget in HKEY directory)
             new_widget = Button(widget[0], self)
             
             size = widget[1]
             new_widget.resize(size.width(), size.height())
-           # new_widget.setCheckable(True)     
             
             new_widget.move(size.x(), size.y())
             new_widget.adjustSize()
             
             self.reinitialized_button_list.append(new_widget)
-        
-            # Some random delta. This helps when you re-init shit.
-            #self.existing_offsety += 35
+            # Add to counter (project tracker)
             self.counter += 1
 
         # The manager class holds (project, window, posx, posy)         
-        # the project dict in project_manager has the follwoing container:
-            # {button = (project, window, self.positionx, self.positiony)}
-
-        # The exisiting label dict has the following container:
-            # {button: button_text}
+            # the project dict in project_manager has the follwoing container:
+                    # {button = (project, window, self.positionx, self.positiony)}
+            # The exisiting label dict has the following container:
+                    # {button: button_text}
         
-        i = 0
+        widget_idx = 0
         for key in reloaded_dict.keys():
-            # The key contain the text.
             button_text = key
             try:
-                self.manager.add_label(self.reinitialized_button_list[i], button_text)
+                self.manager.add_label(self.reinitialized_button_list[widget_idx], button_text)
             except:
-                print ("one label was not added mate")
+                print ("Label addition failed")
                 break
-                        
+            
             # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
             generic_window_sub_str = generic_window.display_data()
-
+            
             self.show_new_sub_project(generic_window_sub_str)
             self.isLabel = True
             
             print ("\n\n")
-            self.reinitialized_button_list[i].clicked.connect(self.show_appropriate_window)
+            self.reinitialized_button_list[widget_idx].clicked.connect(self.show_appropriate_window)
             
-            self.manager.add(reloaded_dict[key][0], generic_window, self.reinitialized_button_list[i])
-            i += 1
+            self.manager.add(reloaded_dict[key][0], generic_window, self.reinitialized_button_list[widget_idx])
+            widget_idx += 1
             pass
 
-
+        # Reload delete keys, show the window, show-new-sub-project button.
         self.reload_delete_keys(self.manager.projects[list(self.manager.projects.keys())[0]][0])
         self.show()        
         self.show_new_sub_project(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
 
-
     def reload_delete_keys(self, some_project):
         '''
         Reload all the delete_keys for whichever project being displayed.
+        
+        Project Y may have 3 subtasks and X has 4...
+        Delete 3 and 4 wrt which is being showed on-screen.
         '''
         if (self.delete_widgets != []):
             print (self.delete_widgets)
@@ -217,27 +216,24 @@ class Main_Screen(su.QMainWindow):
             
             # Connect the newly formed fresh keys from the oven.
             self.connect_delete_keys()
-            
-        self.active_project = some_project
         
+        # Change self.active_project important line here
+        self.active_project = some_project
     
-    
-# TODO
-            
-    
-    def todo_shit(self):
-      
+# TODO        
+    def todo_shit(self):  
         try:
-            my_Error.add_a_project(self)       
+            sub_task_name = Dialog.edit_project(self, self.active_project)
         except:
-            sub_task_name = Dialog.edit_project(self)
-            self.active_project.sub_tasks[0].name = sub_task_name
- 
+            my_Error.add_a_project(self)       
+
 # ======================================================================================================
         
     def doNothing(self):
+        '''
+        Does nothing this is actually very useful code I'm not joking.
+        '''
         return
-    
     
     def delete_project(self):
         '''
@@ -259,31 +255,35 @@ class Main_Screen(su.QMainWindow):
             my_Error.add_a_project(self)
             return
         
-        
         if (self.restored_array == []):
             # Done. First time loading, no need to update regedit or whatever.
-            return
-            
+            # OR the user has deleted the first entry or project now theres nothing left.
+            if (project_dict == {}):
+                self.string_label.clear()
+                self.string_label.show()
+
+            return            
         
         # The deletion is successful, update the restored array to make sure this button is not saved.
             # If it's removed it will trigger assertion fail.
         
         if (project_dict == {}):
             # THe user deleted the last project that happened to NOT be the first one.
-            # in this scenario, 
             setting_to_delete = "User Settings/" + str(self.restored_array[0][3])
             del self.restored_array[0]
             self.settings.remove(setting_to_delete)
-            return
-        
+
+            self.string_label.clear()
+            self.string_label.show()
+            return        
         
         setting_to_delete = "User Settings/" + str(self.restored_array[idx][3])
         del self.restored_array[idx]
-        
-        
+
         #update regedit
         self.settings.remove(setting_to_delete)
-
+        
+        # sometimes, the user deletes the last project, dont leave the lingering subtasks on screen
         print(self.active_project.name)
     
     def connect_delete_keys(self):
@@ -292,8 +292,6 @@ class Main_Screen(su.QMainWindow):
         '''
         for keys in self.delete_widgets:
             keys.clicked.connect(self.delete_sub_project)
-            #value_to_delete = int(self.delete_widgets[keys][len("Delete "):]) - 1
-            #print(value_to_delete)
         
     def delete_sub_project(self):
         '''
@@ -301,38 +299,25 @@ class Main_Screen(su.QMainWindow):
         '''
         if (isinstance(self.sender(), QPushButton) == False): return
         
-        value_to_delete = int((self.sender().text())[len("Delete "):]) - 1
-        
+        value_to_delete = int((self.sender().text())[len("Delete "):]) - 1        
         # Value to delete holds the subtask for whichever project that needs deletion.
         print(value_to_delete)
-        
-        # self.active_project holds the current project on screen.
-            # The way the buttons are created it programatically creates a CLICK event.
-            # It is almost guaranteed with 69% certainty that active project is indeed active project.
-            # Still, put a warning on screen.
         print(self.active_project.num_sub_tasks)
-        
-        
-        # Value to delete holds the sub task that needs to go.
-        
+                
         del self.active_project.sub_tasks[value_to_delete]
         self.active_project.num_sub_tasks = len(self.active_project.sub_tasks)
         
-        
         # Reload the delete keys.
         self.reload_delete_keys(self.active_project)
-        
-        
+                
         # click the button programatically to real-time update deleted subprojects.
         _, btn = self.find_button_by_project(self.active_project)
-        btn.click()
-        
+        btn.click()        
         
     def get_text(self):
         '''
-        Description:
-            The dialog when the "New project" button is clicked.
-            Returns -1 if the user doesn't input anything or just closes the dialog.
+        The dialog when the "New project" button is clicked.
+        Returns -1 if the user doesn't input anything or just closes the dialog.
         '''
         dlg =  QInputDialog(self)                 
         dlg.setInputMode( QInputDialog.TextInput) 
@@ -346,6 +331,9 @@ class Main_Screen(su.QMainWindow):
         else: return -1
     
     def find_button_by_project(self, project):
+        '''
+        Navigate project manager to find button by project object.
+        '''
         count = 0
         for key, value in self.manager.projects.items():
             if (value[0] == project):
@@ -354,18 +342,13 @@ class Main_Screen(su.QMainWindow):
             
     def find_button_by_text(self, text):
          '''
-         Params:
-             text - string that identifies each button.
-             self.manager - project manager objetc
-         
-        Returns:
-            The button that is found with each text, so that the subproject data is appropriately shown.
+         Navigate project manager to find button by project title text.
          '''
          return (self.manager.existing_project_labels[text])
 
     def show_appropriate_window(self):
         '''
-        Once the button is found, show the appropriate window using project mangers dictionaries.
+        Show the appropriate window using project mangers dictionaries.
         See: find_button_by_text()
         '''                
         desired_button = self.find_button_by_text(self.sender().text())
@@ -391,7 +374,7 @@ class Main_Screen(su.QMainWindow):
             
     def find_project_by_name(self, title):
         '''
-        Find project object by its title from the project manager class and associated dictionaries.
+        Navigate project manager to find project by title of project.
         The projects dict in project_manager contains: {button: (projects, window, x, y)}
         '''
         for key in self.manager.projects.keys():
@@ -400,34 +383,34 @@ class Main_Screen(su.QMainWindow):
     
     def get_sub_project_counter(self, active_project):
         '''
-        A function to retrieve existing sub projects, if there are 4, return that.
-        params:
-            active_project: the project being displayed on the screen.
-        '''
+        I dont know what this does. My comment was a funny joke which is pretty unfunny now.
         
+        Finds the number of tasks for whichever active project on screen.
+        If  there is no active project, return nothing.
+        '''
         if (active_project == None):
             my_Error.add_a_project(self)
-            return
+            return -1
             
         return active_project.num_sub_tasks
     
     def add_sub_project_to_projects(self):
         '''
-        First, check which project class is active.
-        Second, add a sub-project to it.
+        -> Check which project class is active.
+        -> Add a sub-project to it.
         '''
-        
         active_project = self.find_project_by_name(self.active_project_title)
         # get the existing number of sub projects.
         self.sub_project_counter = self.get_sub_project_counter(active_project)
-                
+        
+        # Save CPU
+        if (self.sub_project_counter == -1): return
+        
         try:
             active_project.add_sub_project(self.sub_project_counter)
-            self.sub_project_counter += 1            
-
+            self.sub_project_counter += 1
             # The project on screen has changed, reload delete keys for this project.
-            self.reload_delete_keys(active_project)
-                    
+            self.reload_delete_keys(active_project)    
             self.show_new_sub_project(active_project.display_data())
         except:
             my_Error.add_a_project(self)
@@ -439,12 +422,6 @@ class Main_Screen(su.QMainWindow):
         I.e, 
                 Project a has x subtask. Project b has y subtask.
                 When a is clicked show x, when b is clicked, clear x and show y.
-        
-        params:
-            string - contains the strings for each subprojct/task.
-        
-        returns:
-            displays data on same window
         '''
         if(self.isLabel):
             self.string_label.clear()
@@ -513,22 +490,6 @@ class Main_Screen(su.QMainWindow):
         
         # The project on screen has changed, reload delete keys.
         self.reload_delete_keys(new_project)
-        
-    def dragEnterEvent(self, e):
-        e.accept()
-
-    def dropEvent(self, e):
-        position = e.pos()
-        #self.button.move(position)
-        
-        # Find the button screen that is active, and move it.
-        try:
-            self.active_button.move(position)
-        except:
-            my_Error.click_button_first(self)
-        
-        e.setDropAction(Qt.MoveAction)
-        e.accept()
 
     def add_new_project_button(self):
         '''
@@ -548,10 +509,10 @@ class Main_Screen(su.QMainWindow):
         new_sub_project_btn.clicked.connect(self.add_sub_project_to_projects)
 
 
-        new_sub_project_btn = QPushButton("Delete This Project", self)
-        new_sub_project_btn.resize(100,20)
-        new_sub_project_btn.move(140,20)
-        new_sub_project_btn.clicked.connect(self.delete_project)
+        delete_project_btn = QPushButton("Delete This Project", self)
+        delete_project_btn.resize(100,20)
+        delete_project_btn.move(140,20)
+        delete_project_btn.clicked.connect(self.delete_project)
         
         
         information_label = QLabel("Click on a project button and hold right click to drag it!", self)
@@ -577,6 +538,22 @@ class Main_Screen(su.QMainWindow):
         self.debug_check.show()
         # ----------------------- Debugging ------------------------------
      
+        
+    def dragEnterEvent(self, e):
+        e.accept()
+
+    def dropEvent(self, e):
+        position = e.pos()
+        #self.button.move(position)
+        
+        # Find the button screen that is active, and move it.
+        try:
+            self.active_button.move(position)
+        except:
+            my_Error.click_button_first(self)
+        
+        e.setDropAction(Qt.MoveAction)
+        e.accept()
 
     def debug(self):
         print("Click me harder!")

@@ -14,10 +14,12 @@ class Dialog(QDialog):
     NumGridRows = 3
     NumButtons = 4
 
-    def __init__(self):
+    def __init__(self, active_project):
         super(Dialog, self).__init__()
+        self.active_project = active_project
+ 
         self.createFormGroupBox()
-        
+                
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttonBox.accepted.connect(self.accept)
         buttonBox.rejected.connect(self.reject)
@@ -27,24 +29,30 @@ class Dialog(QDialog):
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
         
-        self.setWindowTitle("Change")
+        self.setWindowTitle("Change Project - {}".format(self.active_project.name))
         
     def createFormGroupBox(self):
-        self.formGroupBox = QGroupBox("Project Name")
-        layout = QFormLayout()
-        
+        self.formGroupBox = QGroupBox("{}".format(self.active_project.name))
+    
         self.comboBox_2 = QComboBox()
-        
-        layout.addRow(QLabel("Change Project Name:"), QLineEdit())
-        layout.addRow(QLabel("Project Index:"), self.comboBox_2)
-        layout.addRow(QLabel("Name:"), QLineEdit())
 
-        list1 = ['1', '2']
+        layout = QFormLayout()
+                
+        layout.addRow(QLabel("Change Project Name:"), QLineEdit())
+        layout.addRow(QLabel("SubProject Index to change:"), self.comboBox_2)
+        layout.addRow(QLabel("Name:"), QLineEdit())
+        
+        # indices is a word? Yeah no we speak my english here.
+        sub_task_indexes = []
+        for subprojects in self.active_project.sub_tasks:
+            sub_task_indexes.append(str(subprojects.idx))
+            
         self.comboBox_2.clear()
-        self.comboBox_2.addItems(list1)
+        self.comboBox_2.addItems(sub_task_indexes)
 
         self.formGroupBox.setLayout(layout)
         
-    def edit_project(self):
-        dialog = Dialog()
+    def edit_project(self, active_project):
+        
+        dialog = Dialog(active_project)
         dialog.exec_()
