@@ -56,7 +56,7 @@ class Project:
             string_of_members = "\tNumber of Members: \t\t" + str(self.sub_tasks[i].members) + "\n"
             string_of_eta = "\tETA: \t\t\t" + str(self.sub_tasks[i].eta) + "\n"
             string_of_finish_date = "\tFinish_date: \t\t" + str(self.sub_tasks[i].finish_date)
-            new_line = "\n"
+            new_line = "\n\n\n\n"
             
             one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
                                 + string_of_finish_date + new_line

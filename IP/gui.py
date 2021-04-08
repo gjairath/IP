@@ -220,6 +220,15 @@ class Main_Screen(su.QMainWindow):
         # Change self.active_project important line here
         self.active_project = some_project
     
+    def find_sub_task_by_index(self, project, index_to_find):
+        '''
+        Given index say a subtask has 20, find that if we only have 20. The actual subtask might be the
+        .. second item on the screen.
+        '''
+        
+        for index, subprojects in enumerate(project.sub_tasks):
+            if (subprojects.idx == index_to_find):
+                return index
 
     def edit_project(self):  
         '''
@@ -232,10 +241,22 @@ class Main_Screen(su.QMainWindow):
             ok_pressed = dialog.exec_()
             
             if (ok_pressed == 1):
-                data = dialog.extract_data()
+                data = dialog.extract_data()    
+            else:
+                return
             
-            # data must be in the form [projectname, subtaskindex, subtaskname]
-            print (data)
+            # data must be in the form [projectname, subtaskindex, subtaskname, subtaskmemebers, subtask ETA]
+            if (data[0] != ""): self.active_project.name = data[0]
+            
+            index_of_subtask = self.find_sub_task_by_index(self.active_project, int(data[1]))
+
+            if(data[2] != ""): self.active_project.sub_tasks[index_of_subtask].name = data[2]
+            if(data[3] != ""): self.active_project.sub_tasks[index_of_subtask].members = str(data[3])
+            if (data[4] != ""): self.active_project.sub_tasks[index_of_subtask].eta = data[4]
+            
+            _, project_btn = self.find_button_by_project(self.active_project)
+            project_btn.click()
+        
         
         except:
             my_Error.add_a_project(self)       
@@ -538,7 +559,7 @@ class Main_Screen(su.QMainWindow):
         change_project_data_btn.move(140,40)
         
         change_project_data_btn.resize(100,20)
-        change_project_data_btn.clicked.connect(self.todo_shit)
+        change_project_data_btn.clicked.connect(self.edit_project)
         change_project_data_btn.show()
 
 
