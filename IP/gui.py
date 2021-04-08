@@ -220,10 +220,23 @@ class Main_Screen(su.QMainWindow):
         # Change self.active_project important line here
         self.active_project = some_project
     
-# TODO        
-    def todo_shit(self):  
+
+    def edit_project(self):  
+        '''
+        Edits the project based on the Dialogues.py file.
+        Show the dialog -> Get data -> Change the project manager.
+        Saving drives the rest.
+        '''
         try:
-            sub_task_name = Dialog.edit_project(self, self.active_project)
+            dialog = Dialog(self.active_project)
+            ok_pressed = dialog.exec_()
+            
+            if (ok_pressed == 1):
+                data = dialog.extract_data()
+            
+            # data must be in the form [projectname, subtaskindex, subtaskname]
+            print (data)
+        
         except:
             my_Error.add_a_project(self)       
 

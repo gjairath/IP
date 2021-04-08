@@ -35,12 +35,14 @@ class Dialog(QDialog):
         self.formGroupBox = QGroupBox("{}".format(self.active_project.name))
     
         self.comboBox_2 = QComboBox()
-
-        layout = QFormLayout()
+        self.new_project_name = QLineEdit()
+        self.new_sub_task_name = QLineEdit()
+        
+        self.layout = QFormLayout()
                 
-        layout.addRow(QLabel("Change Project Name:"), QLineEdit())
-        layout.addRow(QLabel("SubProject Index to change:"), self.comboBox_2)
-        layout.addRow(QLabel("Name:"), QLineEdit())
+        self.layout.addRow(QLabel("New Project Name:"), self.new_project_name)
+        self.layout.addRow(QLabel("Sub-Project Index to change:"), self.comboBox_2)
+        self.layout.addRow(QLabel("New Name of this Subtask:"), self.new_sub_task_name)
         
         # indices is a word? Yeah no we speak my english here.
         sub_task_indexes = []
@@ -50,9 +52,27 @@ class Dialog(QDialog):
         self.comboBox_2.clear()
         self.comboBox_2.addItems(sub_task_indexes)
 
-        self.formGroupBox.setLayout(layout)
+        self.formGroupBox.setLayout(self.layout)
         
-    def edit_project(self, active_project):
+    def extract_data(self):
+        data = []
         
-        dialog = Dialog(active_project)
-        dialog.exec_()
+        # Get the new project name
+        i, j = self.layout.getWidgetPosition(self.new_project_name)
+        widget_item = self.layout.itemAt(i, j)
+        widget = widget_item.widget()
+        new_project_name = widget.text()
+
+        # Get the Subtask that needs changing.
+        i, j = self.layout.getWidgetPosition(self.comboBox_2)
+        widget_item = self.layout.itemAt(i, j)
+        widget = widget_item.widget()
+        sub_task_to_change = widget.currentText()
+        
+        # Get the new subproject name
+        i, j = self.layout.getWidgetPosition(self.new_sub_task_name)
+        widget_item = self.layout.itemAt(i, j)
+        widget = widget_item.widget()
+        new_sub_task_name = widget.text()
+        
+        return [new_project_name, sub_task_to_change, new_sub_task_name]
