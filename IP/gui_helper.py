@@ -74,6 +74,8 @@ class New_Project_Window(QWidget):
     
     def center_object(self, desired_object):
         # A function to center my screen to the screen of the person, hopefully works cross-os
+        
+        # Alot of stuff doenst work cross-os
         centerPoint = QDesktopWidget().availableGeometry().center()
         qtRectangle = self.frameGeometry()
         qtRectangle.moveCenter(centerPoint)

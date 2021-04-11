@@ -188,8 +188,14 @@ class Main_Screen(su.QMainWindow):
 
         # Reload delete keys, show the window, show-new-sub-project button.
         self.reload_delete_keys(self.manager.projects[list(self.manager.projects.keys())[0]][0])
-        self.show()        
-        self.show_new_sub_project_clutter(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
+        self.show()
+        
+        # This scary line just shows the first projects subproject instances on a REINIT.
+            # lol I saw a video called "Trust by Design" on TedEx where the airbnb guy talked about how ...
+            # ... People trust his app without fear of getting sodomized.
+        
+        self.show_sub_project_names(self.manager.projects[list(self.manager.projects.keys())[0]][0].get_data())
+#        self.show_new_sub_project_clutter(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
 
     def reload_delete_keys(self, some_project):
         '''
@@ -300,8 +306,6 @@ class Main_Screen(su.QMainWindow):
             # OR the user has deleted the first entry or project now theres nothing left.
             if (project_dict == {}):
                 self.flush_delete_sp_buttons()
-                #self.string_label.clear()
-                #self.string_label.show()
 
             return            
         
@@ -313,9 +317,6 @@ class Main_Screen(su.QMainWindow):
             setting_to_delete = "User Settings/" + str(self.restored_array[0][3])
             del self.restored_array[0]
             self.settings.remove(setting_to_delete)
-
-            self.string_label.clear()
-            self.string_label.show()
             return        
         
         setting_to_delete = "User Settings/" + str(self.restored_array[idx][3])
