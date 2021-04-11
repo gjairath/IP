@@ -13,9 +13,9 @@ from Dialogues import Dialog
 from project import Project
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
-                            QInputDialog, QCheckBox, QShortcut, QTextEdit, QMessageBox
+                            QInputDialog, QCheckBox, QShortcut
 from PyQt5.QtGui import QKeySequence, QDrag
-from PyQt5.QtCore import QSettings, Qt, QMimeData
+from PyQt5.QtCore import Qt, QMimeData
 
 import pickle
 
@@ -380,6 +380,16 @@ class Main_Screen(su.QMainWindow):
             if (value[0] == project):
                 return count, key
             count += 1
+
+    def find_project_by_button(self, button):
+        '''
+        Navigate project manager to find project by button object.
+        '''
+                # Projects:             A Dictionary that contains {button: (projects, window, x, y)}
+        
+        for key, value in self.manager.projects.items():
+            if (key == button):
+                return value[0]
             
     def find_button_by_text(self, text):
          '''
@@ -395,7 +405,6 @@ class Main_Screen(su.QMainWindow):
         desired_button = self.find_button_by_text(self.sender().text())
             # {button = (project, window, self.positionx, self.positiony)}
         active_project = self.manager.projects[desired_button][0]
-        string = active_project.display_data()
         
         self.active_project_title = active_project.name
         self.active_button = desired_button
@@ -460,11 +469,7 @@ class Main_Screen(su.QMainWindow):
         except:
             my_Error.add_a_project(self)
             return
-    
-    
-    # TODO
-
-    
+        
     def show_sub_project_names(self, sub_project_list):
         '''
         A modification to the function below this function.
@@ -542,6 +547,7 @@ class Main_Screen(su.QMainWindow):
         self.counter += 1
         
         # Make a brand new button.
+        
         existing_project_btn = Button("{} + {}".format(button_name, self.counter), self)        
         self.manager.add(new_project, new_window, existing_project_btn)
         
@@ -608,7 +614,6 @@ class Main_Screen(su.QMainWindow):
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
-        # TODO
         self.debug_check = QCheckBox("New Window? [Debug]", self)
         self.debug_check.move(400,0)
         self.debug_check.adjustSize()

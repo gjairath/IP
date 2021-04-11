@@ -117,9 +117,14 @@ class QMainWindow(QtWidgets.QMainWindow):
                         child_name = obj.objectName()
                         
                         child_text = obj.text()
-                        if (child_text == "New Project\n Click on a project and hold right-click for drag!" or child_text == "New Sub-Project" or child_text.startswith('Delete')\
-                            or child_text.startswith('Edit')):
+                        
+                        if (child_text.find("+") != -1):
+                            pass
+                        else:
                             continue
+#                        if (child_text == "New Project\n Click on a project and hold right-click for drag!" or child_text == "New Sub-Project" or child_text.startswith('Delete')\
+ #                           or child_text.startswith('Edit')):
+  #                          continue
                         
                         if (btns_to_avoid != [] and child_text in btns_to_avoid):
                             self.save_counter += 1
