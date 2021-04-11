@@ -88,6 +88,7 @@ class Main_Screen(su.QMainWindow):
         
         # Active SP on the screen.
         self.active_sp = None
+        self.test_label = None
                             
     def center_object(self, desired_object):
         """
@@ -531,7 +532,29 @@ class Main_Screen(su.QMainWindow):
         # initialize this sp so that we can use the "Add members" button.
         self.active_sp = self.active_project.sub_tasks[desired_sp_idx]
         
+        # Each SP class holds data like so:
+        #                       self.sp_dict[data[0]] = (data[1], data[2])
+        #           OR,         IT has a dict that holds {person: (ETA, FinishDate)}
+        # Thus, each SP class has people that through TOTALLY intentional coding skills is being saved.
+        # I dont know how but I dont care. Saving was a bitch to pull off, no documentaiton no stackoverflow
+        # Cant even do what a coder does best, google [Ben Awad]. Like 90% of this project was not online.
+        # Also, I'm trying to invest in dogehouse before Microsoft acquires them.
+
         print(self.active_sp.sp_dict)
+
+        if(self.isLabel == True and self.test_label != None):
+            self.test_label.clear()
+            self.isLabel = False
+        
+        test_string = ""
+        for person in self.active_sp.sp_dict:
+            test_string += person
+        
+        self.test_label = QLabel(test_string, self)
+        self.test_label.move(950, 80)
+        self.test_label.resize(100,100)
+        self.test_label.show()
+        self.isLabel = True 
 
         pass
     
@@ -708,7 +731,10 @@ class Main_Screen(su.QMainWindow):
         add_members_btn.move(950, 0)
         add_members_btn.resize(100, 20)
         add_members_btn.clicked.connect(self.add_new_member_to_sp)
-        
+
+        delete_members_btn = QPushButton("Delete Members", self)
+        delete_members_btn.move(1050, 0)
+        delete_members_btn.resize(100, 20)
         
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
