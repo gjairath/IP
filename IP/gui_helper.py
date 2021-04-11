@@ -54,12 +54,10 @@ class New_Project_Window(QWidget):
             string_of_index = "[" +  str(i+1) + "]" + "\t" + "\n"
             string_of_name = "\tName of subtask: \t\t" +  str(self.project.sub_tasks[i].name) + "\n"
             string_of_members = "\tNumber of Members: \t\t" + str(self.project.sub_tasks[i].members) + "\n"
-            string_of_eta = "\tETA: \t\t\t" + str(self.project.sub_tasks[i].eta) + "\n"
-            string_of_finish_date = "\tFinish_date: \t\t" + str(self.project.sub_tasks[i].finish_date)
             new_line = "\n\n"
             
-            one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
-                                + string_of_finish_date + new_line
+            one_giant_string = string_of_index + string_of_name + string_of_members \
+                                 + new_line
             ta += one_giant_string
 
             label_giant = QPushButton(one_giant_string, self)

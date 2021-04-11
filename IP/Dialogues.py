@@ -117,12 +117,10 @@ class Dialog(QDialog):
         # Get the new project name
         new_project_name = self.extract_qline(self.new_project_name)
         new_sub_task_name = self.extract_qline(self.new_sub_task_name)
-        new_sub_task_members = self.extract_qline(self.new_sub_task_members)
-        new_sub_task_ETA = self.extract_qline(self.new_sub_task_ETA)        
         # Get the Subtask that needs changing.
         sub_task_to_change = self.extract_qbox(self.comboBox_2)
         
-        return [new_project_name, sub_task_to_change, new_sub_task_name, new_sub_task_members, new_sub_task_ETA]
+        return [new_project_name, sub_task_to_change, new_sub_task_name]
 
 
     def extract_sp_data(self):

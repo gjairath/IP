@@ -284,8 +284,6 @@ class Main_Screen(su.QMainWindow):
             index_of_subtask = self.find_sub_task_by_index(self.active_project, int(data[1]))
 
             if(data[2] != ""): self.active_project.sub_tasks[index_of_subtask].name = data[2]
-            if(data[3] != ""): self.active_project.sub_tasks[index_of_subtask].members = str(data[3])
-            if (data[4] != ""): self.active_project.sub_tasks[index_of_subtask].eta = data[4]
             
             _, project_btn = self.find_button_by_project(self.active_project)
             project_btn.click()
@@ -528,10 +526,12 @@ class Main_Screen(su.QMainWindow):
                 break
             sp_index += substr
         
-        desired_sp = self.find_sub_task_by_index(self.active_project, int(sp_index))
+        desired_sp_idx = self.find_sub_task_by_index(self.active_project, int(sp_index))
         
         # initialize this sp so that we can use the "Add members" button.
-        self.active_sp = desired_sp
+        self.active_sp = self.active_project.sub_tasks[desired_sp_idx]
+        
+        print(self.active_sp.sp_dict)
 
         pass
     

@@ -50,7 +50,7 @@ class my_Error:
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
         msg.setText("Error")
-        msg.setInformativeText('Click a SP first!')
+        msg.setInformativeText('Click a Sub-Project first!')
         msg.setWindowTitle("Error")
         msg.exec_()
         

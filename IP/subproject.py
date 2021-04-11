@@ -31,3 +31,6 @@ class SubProject:
         self.sp_dict[data[0]] = (data[1], data[2])
         self.members += 1
         
+        
+        print ("Aded data to: {}\t{}".format(self.name, self.sp_dict))
+        
