@@ -7,28 +7,35 @@ Created on Tue Mar 30 21:25:35 2021
 
 from PyQt5.QtWidgets import QMessageBox, QInputDialog
 
-#Error.py
+IP_VERSION = "IP Version 2f"
 
 class my_Error:
-    
+    #Error.py    
     def __init__(self):
         pass
     
     
-    def confirm_deletion(self):
-   msg = QMessageBox()
-   msg.setIcon(QMessageBox.Information)
-
-   msg.setText("This is a message box")
-   msg.setInformativeText("This is additional information")
-   msg.setWindowTitle("MessageBox demo")
-   msg.setDetailedText("The details are as follows:")
-   msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-   msg.buttonClicked.connect(msgbtn)
-	
-   retval = msg.exec_()
-   print "value of pressed message box button:", retval
+    def confirm_deletion(self, name_project, num_sps):
+        '''
+        Params: name_project is the name of the project that is about to be deleted.
+                num_sps      is the number of subprojects in this project.
+        '''
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Question)
         
+        msg.setText("Are you sure you want to delete: \"{}\" with {} sub-projects?".format(name_project, num_sps))
+        msg.setWindowTitle(IP_VERSION)
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        
+        retval = msg.exec_()
+        
+        # This OK thing is a macro that is 0x000400 or something.
+            # This is because the dialog contains a button in itself, OK and CANCEL.
+        if (retval == QMessageBox.Ok):
+            return 1
+        else:
+            return -1
+ 
         
     def add_a_project(self):
         msg = QMessageBox()

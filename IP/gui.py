@@ -19,6 +19,8 @@ from PyQt5.QtCore import Qt, QMimeData
 
 import pickle
 
+IP_VERSION = "IP Version 2f"
+
 class Button(QPushButton):
     
     def __init__(self, title, parent):
@@ -44,7 +46,7 @@ class Button(QPushButton):
 class Main_Screen(su.QMainWindow):
     def __init__(self, project_manager, parent = None):
         super(Main_Screen, self).__init__(project_manager, parent)
-        self.title = "TESTING-MODEL-2d from 0a (CTRL+Q to quit)"
+        self.title = "{} (CTRL+Q to quit)".format(IP_VERSION)
         
         self.left = 10
         self.top = 10
@@ -286,6 +288,11 @@ class Main_Screen(su.QMainWindow):
         Delete the active project on screen.
         Onclick for "Delete This Project" QPushButton
         '''
+        confirmation_status = my_Error.confirm_deletion(self, self.active_project.name, self.active_project.num_sub_tasks)
+        
+        # 1 is okay, -1 is cancel.
+        if (confirmation_status == -1): return
+        
         project_dict = self.manager.projects
         idx = 0
         try:
@@ -296,6 +303,11 @@ class Main_Screen(su.QMainWindow):
             if (list(project_dict.keys()) != []):
                 new_project_btn = list(project_dict.keys())[0]
                 new_project_btn.click()
+            
+            else:
+                # You deleted the last project, flush all the UI stuff.
+                self.flush_delete_sp_buttons()
+            
 
         except:
             my_Error.add_a_project(self)
@@ -319,11 +331,19 @@ class Main_Screen(su.QMainWindow):
             self.settings.remove(setting_to_delete)
             return        
         
-        setting_to_delete = "User Settings/" + str(self.restored_array[idx][3])
-        del self.restored_array[idx]
+        try:
+            # The only time this try block fails is if you delete a project that you made after a reinit.
+            # Technically, that project will only save AFTER the program exits, with my saving_utility.py.
+            
+            # In that case, it doesn't exist on the regedit YET.
+            setting_to_delete = "User Settings/" + str(self.restored_array[idx][3])
+            del self.restored_array[idx]
 
-        #update regedit
-        self.settings.remove(setting_to_delete)
+            #update regedit
+            self.settings.remove(setting_to_delete)
+            
+        except:
+            pass
         
         # sometimes, the user deletes the last project, dont leave the lingering subtasks on screen
         print(self.active_project.name)

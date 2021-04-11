@@ -10,6 +10,9 @@ QDialogButtonBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLin
 QVBoxLayout)
 
 
+# Lol I wrote this i forgot what it does.
+# NOte to self: This is the dialog class for "EDIT PROJECT"
+
 class Dialog(QDialog):
     NumGridRows = 3
     NumButtons = 4
