@@ -263,6 +263,21 @@ class Main_Screen(su.QMainWindow):
             # data must be in the form [projectname, subtaskindex, subtaskname, subtaskmemebers, subtask ETA]
             if (data[0] != ""): self.active_project.name = data[0]
             
+
+# ----------------------------------------------------------------------------------------
+# TODO
+            # change the name of the button.
+      #      _, self.active_button = self.find_button_by_project(self.active_project)
+       #     unique_id = self.active_button.text()[len(self.active_button.text()) - 4:]
+        #    new_button_name = data[0] + unique_id
+         #   self.active_button.setText(new_button_name)
+            
+            # Project manager must be changed as well to ripple out those changes.
+            
+            # Further, the button holding this value in the local cache should ALSO be changed.
+            
+# ----------------------------------------------------------------------------------------
+            
             index_of_subtask = self.find_sub_task_by_index(self.active_project, int(data[1]))
 
             if(data[2] != ""): self.active_project.sub_tasks[index_of_subtask].name = data[2]
@@ -366,7 +381,10 @@ class Main_Screen(su.QMainWindow):
         print(value_to_delete)
         print(self.active_project.num_sub_tasks)
                 
-        del self.active_project.sub_tasks[value_to_delete]
+        try:
+            del self.active_project.sub_tasks[value_to_delete]
+        except:
+            return
         self.active_project.num_sub_tasks = len(self.active_project.sub_tasks)
         
         # Reload the delete keys.
@@ -520,6 +538,10 @@ class Main_Screen(su.QMainWindow):
             new_sp_btn.show()
             
             self.subproject_widgets.append(new_sp_btn)
+            
+        if (self.active_project != None):
+            self.reload_delete_keys(self.active_project)
+
     
     def show_new_sub_project_clutter(self, string, project=None):
         '''
