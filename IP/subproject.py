@@ -14,25 +14,20 @@ class SubProject:
         self.name = "Empty-Sub-Task"
         self.idx = idx
         # Members working on this task.
-        self.members = 1
-        # Eta for this task in minutes.
-        self.eta = str(0) + " Minutes"
-        # The finish date for this project
-        self.finish_date = "01/01/2099"
+        self.members = 0
+        
+        # Sp dict holds data like so:
+            # person_name: (eta, fin_date)
+        
+        # The len of this dict is numm_members
+        self.sp_dict = {}
         
 
-
-    def display_data(self):
+    def add_data(self, data):
         '''
-        Display all data, subprojects/people/ETA's etc.
+        Accepts data from the "Add member" button.
+                return [team_member_name, eta, fin_date]
         '''
-        string_of_index = "[" +  str(self.idx) + "]" + "\t" + str(self.project_name) + "\n\n"
-        string_of_name = "\tName of subtask: \t\t" +  str(self.name) + "\n"
-        string_of_members = "\tNumber of Members: \t\t" + str(self.members) + "\n"
-        string_of_eta = "\tETA: \t\t\t" + str(self.eta) + "\n"
-        string_of_finish_date = "\tFinish_date: \t\t" + str(self.finish_date)
+        self.sp_dict[data[0]] = (data[1], data[2])
+        self.members += 1
         
-        one_giant_string = string_of_index + string_of_name + string_of_members + string_of_eta \
-                            + string_of_finish_date
-
-        return one_giant_string

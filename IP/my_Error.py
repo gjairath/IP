@@ -46,6 +46,14 @@ class my_Error:
         msg.exec_()
         
         
+    def click_sp_first(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('Click a SP first!')
+        msg.setWindowTitle("Error")
+        msg.exec_()
+        
     def click_button_first(self):
         '''
         If you try moving a button without clicking it, it will cause an error.

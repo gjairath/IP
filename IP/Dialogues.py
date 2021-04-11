@@ -17,32 +17,58 @@ class Dialog(QDialog):
     NumGridRows = 3
     NumButtons = 4
 
-    def __init__(self, active_project):
+    def __init__(self, active_project, default = True):
         super(Dialog, self).__init__()
         self.active_project = active_project
  
-        self.createFormGroupBox()
+        if (default == True):
+            # To avoid de duplication, this smae code block is reused when a user adds team members to SPs
+            # for a given project.
+            
+            # Define SP: Sub-project
+            self.create_group_box()    
+        else:
+            self.create_group_box_add_members()
                 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        buttonBox.accepted.connect(self.accept)
-        buttonBox.rejected.connect(self.reject)
+        btn_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        btn_box.accepted.connect(self.accept)
+        btn_box.rejected.connect(self.reject)
         
-        mainLayout = QVBoxLayout()
-        mainLayout.addWidget(self.formGroupBox)
-        mainLayout.addWidget(buttonBox)
-        self.setLayout(mainLayout)
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(self.form_group_box)
+        main_layout.addWidget(btn_box)
+        self.setLayout(main_layout)
         
         self.setWindowTitle("Change Project - {}".format(self.active_project.name))
         
-    def createFormGroupBox(self):
-        self.formGroupBox = QGroupBox("{}".format(self.active_project.name))
+    def create_group_box_add_members(self):
+        '''
+        Does exactly the same as below but for adding members to a SP.
+        '''
+        self.form_group_box = QGroupBox("{}".format(self.active_project.name))
+        
+        self.team_member_name = QLineEdit()
+        self.eta = QLineEdit()
+        self.fin_date = QLineEdit()
+
+        self.layout = QFormLayout()
+
+        self.layout.addRow(QLabel("New Team-Member Name:"), self.team_member_name)
+        self.layout.addRow(QLabel("New ETA:"), self.eta)
+        self.layout.addRow(QLabel("New Finish Date:"), self.fin_date)
+
+        self.team_member_name.setPlaceholderText("Name of Member")
+        self.eta.setPlaceholderText("ETA Of Subtask")
+        self.fin_date.setPlaceholderText("01/01/2022")
+
+        self.form_group_box.setLayout(self.layout)
+        
+    def create_group_box(self):
+        self.form_group_box = QGroupBox("{}".format(self.active_project.name))
     
         self.comboBox_2 = QComboBox()
         self.new_project_name = QLineEdit()
         self.new_sub_task_name = QLineEdit()
-        self.new_sub_task_members = QLineEdit()
-        self.new_sub_task_ETA = QLineEdit()
-        #self.new_sub_task_finish_date = 
         
         
         self.layout = QFormLayout()
@@ -53,8 +79,6 @@ class Dialog(QDialog):
         
         self.layout.addRow(QLabel("Sub-Project Index to change:"), self.comboBox_2)
         self.layout.addRow(QLabel("New Name of this Subtask:"), self.new_sub_task_name)
-        self.layout.addRow(QLabel("New Members of this Subtask:"), self.new_sub_task_members)
-        self.layout.addRow(QLabel("New ETA this Subtask:"), self.new_sub_task_ETA)
 
         # indices is a word? Yeah no we speak my english here.
         sub_task_indexes = []
@@ -68,10 +92,8 @@ class Dialog(QDialog):
 
         self.new_project_name.setPlaceholderText(self.active_project.name)
         self.new_sub_task_name.setPlaceholderText("Name of Subtask")
-        self.new_sub_task_members.setPlaceholderText("1")
-        self.new_sub_task_ETA.setPlaceholderText("ETA Of Subtask")
 
-        self.formGroupBox.setLayout(self.layout)
+        self.form_group_box.setLayout(self.layout)
         
         
     def extract_qline(self, widget_name):
@@ -101,3 +123,14 @@ class Dialog(QDialog):
         sub_task_to_change = self.extract_qbox(self.comboBox_2)
         
         return [new_project_name, sub_task_to_change, new_sub_task_name, new_sub_task_members, new_sub_task_ETA]
+
+
+    def extract_sp_data(self):
+        '''
+        A function like above, but extract SP data.
+        '''
+        team_member_name = self.extract_qline(self.team_member_name)
+        eta = self.extract_qline(self.eta)
+        fin_date = self.extract_qline(self.fin_date)
+
+        return [team_member_name, eta, fin_date]

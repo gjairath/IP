@@ -84,6 +84,10 @@ class Main_Screen(su.QMainWindow):
         else:
             self.active_project_title = ""
             self.active_project = None
+            
+        
+        # Active SP on the screen.
+        self.active_sp = None
                             
     def center_object(self, desired_object):
         """
@@ -108,7 +112,7 @@ class Main_Screen(su.QMainWindow):
         self.add_new_project_button()
 
         self.quitSc = QShortcut(QKeySequence('Ctrl+Q'), self)
-        self.quitSc.activated.connect(QApplication.instance().quit)    
+        self.quitSc.activated.connect(QApplication.instance().quit)
 
         # To stop deduplicating code, reinit uses the same code block above.
         if (show == 1):
@@ -237,10 +241,9 @@ class Main_Screen(su.QMainWindow):
     
     def find_sub_task_by_index(self, project, index_to_find):
         '''
-        Given index say a subtask has 20, find that if we only have 20. The actual subtask might be the
-        .. second item on the screen.
+        Given raw index, find that index in the project subtask array. It may vary.
+        Find first such occurance as indexes are all unique.
         '''
-        
         for index, subprojects in enumerate(project.sub_tasks):
             if (subprojects.idx == index_to_find):
                 return index
@@ -451,7 +454,6 @@ class Main_Screen(su.QMainWindow):
         self.active_project = active_project
 
         # ----------------------- Debugging ------------------------------
-                                   # TODO        
         if (self.debug_check.isChecked()):
                 # {button = (project, window, self.positionx, self.positiony)}
             desired_window = self.manager.projects[desired_button][1]
@@ -509,6 +511,50 @@ class Main_Screen(su.QMainWindow):
             my_Error.add_a_project(self)
             return
         
+        
+    #TODO - 0
+        # Once team members are added properly, Just show that data here once the button is clicked.
+    def connect_sp_keys(self):
+        '''
+        A function to connect the SP keys once they're made.
+        Each project tab has subprojects, this function links them.
+        
+        Think as @onclick for subproject btns.
+        '''
+        sp_details = self.sender().text()
+        sp_index = ""
+        for substr in sp_details:
+            if (substr == "."):
+                break
+            sp_index += substr
+        
+        desired_sp = self.find_sub_task_by_index(self.active_project, int(sp_index))
+        
+        # initialize this sp so that we can use the "Add members" button.
+        self.active_sp = desired_sp
+
+        pass
+    
+    def add_new_member_to_sp(self):
+        '''
+        @Onclickevent for "Add Member"
+        '''
+        
+        if (self.active_sp == None):
+            my_Error.click_sp_first(self)
+            return
+                
+        new_dialog = Dialog(self.active_project, default=False)
+        ok_pressed = new_dialog.exec_()
+            
+        if (ok_pressed == 1):
+            # return [team_member_name, eta, fin_date]
+            data = new_dialog.extract_sp_data()    
+        else:
+            return
+        
+        self.active_sp.add_data(data)
+        
     def show_sub_project_names(self, sub_project_list):
         '''
         A modification to the function below this function.
@@ -529,7 +575,7 @@ class Main_Screen(su.QMainWindow):
         posy = 25
         for sp in sub_project_list:
             new_sp_btn = QPushButton(str(sp.idx) + ".\t" + sp.name, self)
-            
+            new_sp_btn.clicked.connect(self.connect_sp_keys)
             # The delete key above it is at (540,0)
             new_sp_btn.move(540, posy)
             new_sp_btn.resize(400, 35)
@@ -546,9 +592,11 @@ class Main_Screen(su.QMainWindow):
     def show_new_sub_project_clutter(self, string, project=None):
         '''
         A function to clear the subproject label on screen incase a new project is clicked.
-        I.e, 
-                Project a has x subtask. Project b has y subtask.
-                When a is clicked show x, when b is clicked, clear x and show y.
+        This shows a dirty label.
+        
+        
+        It's useless now since I changed the SP class, I dont have the will to remove it. 
+        It took me a while to write this.
         '''
         return
     
@@ -653,6 +701,14 @@ class Main_Screen(su.QMainWindow):
         delete_project_btn.move(300,0)
         delete_project_btn.resize(100,20)
         delete_project_btn.clicked.connect(self.delete_project)
+        
+        
+        
+        add_members_btn = QPushButton("Add Members", self)
+        add_members_btn.move(950, 0)
+        add_members_btn.resize(100, 20)
+        add_members_btn.clicked.connect(self.add_new_member_to_sp)
+        
         
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
