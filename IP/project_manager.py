@@ -32,7 +32,7 @@ class Project_Manager:
         desired_tpl = (project, window, self.positionx, self.positiony)
         
         self.projects[button] = desired_tpl
-        self.positiony += 35
+        self.positiony += 50
         
 
     def add_label(self, button, button_text):

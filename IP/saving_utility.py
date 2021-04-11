@@ -117,7 +117,7 @@ class QMainWindow(QtWidgets.QMainWindow):
                         child_name = obj.objectName()
                         
                         child_text = obj.text()
-                        if (child_text == "New Project" or child_text == "New Sub-Project" or child_text.startswith('Delete')\
+                        if (child_text == "New Project\n Click on a project and hold right-click for drag!" or child_text == "New Sub-Project" or child_text.startswith('Delete')\
                             or child_text.startswith('Edit')):
                             continue
                         

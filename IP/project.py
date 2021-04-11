@@ -47,7 +47,7 @@ class Project:
         Display all data, subprojects/people/ETA's etc.
         '''
         dash = '-' * (len(self.name) + 1)
-        ta = self.name + "\n{}\n".format(dash)
+        ta = "\n\n" + self.name + "\n{}\n".format(dash)
 
         for i in range(self.num_sub_tasks):
             string_of_index = "[" +  str(self.sub_tasks[i].idx)  + "]" + "\t" + "\n"

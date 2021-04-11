@@ -12,6 +12,12 @@ from my_Error import my_Error
 from Dialogues import Dialog
 from project import Project
 
+
+
+from testing_dtta import Canvas
+
+
+
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
                             QInputDialog, QCheckBox, QShortcut, QTextEdit, QMessageBox
 from PyQt5.QtGui import QKeySequence, QDrag
@@ -19,6 +25,9 @@ from PyQt5.QtCore import QSettings, Qt, QMimeData
 
 import pickle
 
+
+
+        
 class Button(QPushButton):
     
     def __init__(self, title, parent):
@@ -50,7 +59,7 @@ class Main_Screen(su.QMainWindow):
         self.top = 10
         self.width = 640
         self.height = 480
-        self.existing_offsety = 25
+        self.existing_offsety = 0
                 
         # Initiliaze a Project Manager Class Object.
         self.manager = project_manager        
@@ -148,7 +157,7 @@ class Main_Screen(su.QMainWindow):
             new_widget.resize(size.width(), size.height())
             
             new_widget.move(size.x(), size.y())
-            #new_widget.adjustSize()
+            new_widget.adjustSize()
             
             self.reinitialized_button_list.append(new_widget)
             # Add to counter (project tracker)
@@ -203,27 +212,27 @@ class Main_Screen(su.QMainWindow):
                 widget.deleteLater()
             
             self.delete_widgets = []
-                    
-        
-        #        self.debug_check.move(400,0)    
-        #   The delete keys go to the right of the check mark. so this is useful if someone fiddles with this.
-        posx = 540
-        #        new_sub_project_btn.resize(100,20)
+                
+        posy = 0
         for i in range(some_project.num_sub_tasks):
-            new_del_btn = QPushButton("Delete {}".format(i+1), self)
-            new_del_btn.move(posx,0)
-            new_del_btn.resize(85,20)
-            new_del_btn.show()
+            testing = QPushButton("Delete {}".format(i+1), self)
+            testing.move(830,posy)
+            testing.adjustSize()
+            testing.show()
             
-            self.delete_widgets.append(new_del_btn)
-            posx += 85
+            self.delete_widgets.append(testing)
+            posy += 20
             
             # Connect the newly formed fresh keys from the oven.
             self.connect_delete_keys()
         
         # Change self.active_project important line here
         self.active_project = some_project
-    
+        
+        
+        canvas = Canvas(self.active_project, self)
+        canvas.move(820,0)
+        
     def find_sub_task_by_index(self, project, index_to_find):
         '''
         Given index say a subtask has 20, find that if we only have 20. The actual subtask might be the
@@ -512,9 +521,7 @@ class Main_Screen(su.QMainWindow):
         
         # Here the onclick event takes place to link each project with its subtasks.
         existing_project_btn.clicked.connect(self.show_appropriate_window)
-        
-        existing_project_btn.resize(520,50)
-#        existing_project_btn.adjustSize()
+        existing_project_btn.adjustSize()
         existing_project_btn.show()
         
         existing_project_btn.click()
@@ -538,36 +545,42 @@ class Main_Screen(su.QMainWindow):
         
         This happens both in reinit or init.
         '''   
-        new_project_btn = QPushButton("New Project\n Click on a project and hold right-click for drag!", self)
-        new_project_btn.move(0,0)
-        new_project_btn.resize(100,20)
+        new_project_btn = QPushButton("New Project", self)
+        new_project_btn.resize(250,150)
+        new_project_btn.move(200, 200)
         new_project_btn.clicked.connect(self.new_project_window) 
         
+        new_sub_project_btn = QPushButton("New Sub-Project", self)
+        new_sub_project_btn.resize(100,20)
+        new_sub_project_btn.move(140,0)
+        new_sub_project_btn.clicked.connect(self.add_sub_project_to_projects)
 
+
+        delete_project_btn = QPushButton("Delete This Project", self)
+        delete_project_btn.resize(100,20)
+        delete_project_btn.move(140,20)
+        delete_project_btn.clicked.connect(self.delete_project)
+        
+        
+        information_label = QLabel("Click on a project button and hold right click to drag it!", self)
+        information_label.resize(100,20)
+        information_label.move(250,370)
+        information_label.adjustSize()
+        
+        
         change_project_data_btn = QPushButton("Edit This Project", self)
-        change_project_data_btn.move(100,0)        
+        change_project_data_btn.move(140,40)
+        
         change_project_data_btn.resize(100,20)
         change_project_data_btn.clicked.connect(self.edit_project)
         change_project_data_btn.show()
 
 
-        new_sub_project_btn = QPushButton("New Sub-Project", self)
-        new_sub_project_btn.move(200,0)
-        new_sub_project_btn.resize(100,20)
-        new_sub_project_btn.clicked.connect(self.add_sub_project_to_projects)
-
-
-        delete_project_btn = QPushButton("Delete This Project", self)
-        delete_project_btn.move(300,0)
-        delete_project_btn.resize(100,20)
-        delete_project_btn.clicked.connect(self.delete_project)
-        
-
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
         # TODO
         self.debug_check = QCheckBox("New Window? [Debug]", self)
-        self.debug_check.move(400,0)
+        self.debug_check.move(250,350)
         self.debug_check.adjustSize()
         self.debug_check.show()
         # ----------------------- Debugging ------------------------------
