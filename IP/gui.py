@@ -299,8 +299,9 @@ class Main_Screen(su.QMainWindow):
             # Done. First time loading, no need to update regedit or whatever.
             # OR the user has deleted the first entry or project now theres nothing left.
             if (project_dict == {}):
-                self.string_label.clear()
-                self.string_label.show()
+                self.flush_delete_sp_buttons()
+                #self.string_label.clear()
+                #self.string_label.show()
 
             return            
         
@@ -462,6 +463,7 @@ class Main_Screen(su.QMainWindow):
     
     
     # TODO
+
     
     def show_sub_project_names(self, sub_project_list):
         '''
@@ -474,20 +476,20 @@ class Main_Screen(su.QMainWindow):
         if (self.subproject_widgets != []):
             # There is already a bunch of subprojects on screen, delete them.
             for widget in self.subproject_widgets:
-               # widget.clicked.connect(self.doNothing)
+                widget.clicked.connect(self.doNothing)
                 widget.deleteLater()
             
             self.subproject_widgets = []
 
         
-        posy = 20
+        posy = 25
         for sp in sub_project_list:
             new_sp_btn = QPushButton(str(sp.idx) + ".\t" + sp.name, self)
             
             # The delete key above it is at (540,0)
             new_sp_btn.move(540, posy)
-            new_sp_btn.resize(400,20)
-            posy += posy
+            new_sp_btn.resize(400, 35)
+            posy += 35
             
             new_sp_btn.show()
             
@@ -629,6 +631,27 @@ class Main_Screen(su.QMainWindow):
         
         e.setDropAction(Qt.MoveAction)
         e.accept()
+        
+            
+    def flush_delete_sp_buttons(self):
+        '''
+        A function to remove unnesscary widgets from screen when the last project is deleted or in ..
+        .. specific scnearios.
+        '''
+                
+        if (self.subproject_widgets != []):
+            for widget in self.subproject_widgets:
+                widget.clicked.connect(self.doNothing)
+                widget.deleteLater()
+            
+            self.subproject_widgets = []
+
+        if (self.delete_widgets != []):
+            for widget in self.delete_widgets:
+                widget.clicked.connect(self.doNothing)
+                widget.deleteLater()
+            
+            self.delete_widgets = []
 
     def debug(self):
         print("Click me harder!")
