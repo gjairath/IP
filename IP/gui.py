@@ -63,6 +63,9 @@ class Main_Screen(su.QMainWindow):
 
         # Delete each project widgets, dynamically made.
         self.delete_widgets = []
+        
+        # Each subproject button widgets.
+        self.subproject_widgets = []
         self.setAcceptDrops(True)
 
         # Taken from saving_utility.py Check superclass
@@ -173,7 +176,7 @@ class Main_Screen(su.QMainWindow):
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
             generic_window_sub_str = generic_window.display_data()
             
-            self.show_new_sub_project(generic_window_sub_str)
+            self.show_new_sub_project_clutter(generic_window_sub_str)
             self.isLabel = True
             
             print ("\n\n")
@@ -186,7 +189,7 @@ class Main_Screen(su.QMainWindow):
         # Reload delete keys, show the window, show-new-sub-project button.
         self.reload_delete_keys(self.manager.projects[list(self.manager.projects.keys())[0]][0])
         self.show()        
-        self.show_new_sub_project(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
+        self.show_new_sub_project_clutter(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
 
     def reload_delete_keys(self, some_project):
         '''
@@ -265,7 +268,6 @@ class Main_Screen(su.QMainWindow):
         except:
             my_Error.add_a_project(self)       
 
-# ======================================================================================================
         
     def doNothing(self):
         '''
@@ -396,6 +398,8 @@ class Main_Screen(su.QMainWindow):
         
         self.active_project_title = active_project.name
         self.active_button = desired_button
+        
+        self.active_project = active_project
 
         # ----------------------- Debugging ------------------------------
                                    # TODO        
@@ -407,7 +411,9 @@ class Main_Screen(su.QMainWindow):
             desired_window.show()
         # ----------------------- Debugging ------------------------------
         else:
-            self.show_new_sub_project(string, active_project)
+#            self.show_new_sub_project(string, active_project)
+            
+            self.show_sub_project_names(active_project.get_data())
             print (self.sender().text())
             
     def find_project_by_name(self, title):
@@ -449,24 +455,59 @@ class Main_Screen(su.QMainWindow):
             self.sub_project_counter += 1
             # The project on screen has changed, reload delete keys for this project.
             self.reload_delete_keys(active_project)    
-            self.show_new_sub_project(active_project.display_data())
+            self.show_sub_project_names(active_project.get_data())
         except:
             my_Error.add_a_project(self)
             return
     
-    def show_new_sub_project(self, string, project=None):
+    
+    # TODO
+    
+    def show_sub_project_names(self, sub_project_list):
+        '''
+        A modification to the function below this function.
+        This is more compact. Only shows the project's subproject names.
+        
+        Params: Array containing subprojects for THIS project.
+        '''
+        
+        if (self.subproject_widgets != []):
+            # There is already a bunch of subprojects on screen, delete them.
+            for widget in self.subproject_widgets:
+               # widget.clicked.connect(self.doNothing)
+                widget.deleteLater()
+            
+            self.subproject_widgets = []
+
+        
+        posy = 20
+        for sp in sub_project_list:
+            new_sp_btn = QPushButton(str(sp.idx) + ".\t" + sp.name, self)
+            
+            # The delete key above it is at (540,0)
+            new_sp_btn.move(540, posy)
+            new_sp_btn.resize(400,20)
+            posy += posy
+            
+            new_sp_btn.show()
+            
+            self.subproject_widgets.append(new_sp_btn)
+    
+    def show_new_sub_project_clutter(self, string, project=None):
         '''
         A function to clear the subproject label on screen incase a new project is clicked.
         I.e, 
                 Project a has x subtask. Project b has y subtask.
                 When a is clicked show x, when b is clicked, clear x and show y.
         '''
+        return
+    
         if(self.isLabel):
             self.string_label.clear()
             self.isLabel = False
 
         self.string_label = QLabel(string, self)
-        self.string_label.move(550,0)
+        self.string_label.move(550,30)
         self.string_label.show()
         self.string_label.adjustSize()
         self.isLabel = True 
@@ -492,7 +533,7 @@ class Main_Screen(su.QMainWindow):
         new_window = gui_h.New_Project_Window(new_project)
         new_project_sub_string = new_project.display_data()
 
-        self.show_new_sub_project(new_project_sub_string)
+        self.show_new_sub_project_clutter(new_project_sub_string)
         self.isLabel = True
 
         # Finally, increment the total tally of projects existing.

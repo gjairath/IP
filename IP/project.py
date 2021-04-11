@@ -41,13 +41,24 @@ class Project:
         new_sub_proj = SubProject(idx)        
         self.sub_tasks.append(new_sub_proj)
         self.num_sub_tasks = len(self.sub_tasks)
+        
+        
+    def get_data(self):
+        '''
+        A minor change to version 2-e. 2-d Showed alot of data it was ugly, display_data before.
+        This simply shows the subtask name.
+        More elegant.
+        
+        Returns: Array containing subtasks with respective data. [We only want names.]
+        '''
+        return self.sub_tasks
 
     def display_data(self):
         '''
         Display all data, subprojects/people/ETA's etc.
         '''
         dash = '-' * (len(self.name) + 1)
-        ta = "\n\n" + self.name + "\n{}\n".format(dash)
+        ta = self.name + "\n{}\n".format(dash)
 
         for i in range(self.num_sub_tasks):
             string_of_index = "[" +  str(self.sub_tasks[i].idx)  + "]" + "\t" + "\n"
