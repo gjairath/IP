@@ -556,6 +556,7 @@ class Main_Screen(su.QMainWindow):
             # There is a table on-screen, delete it first. 
             self.table_widget.deleteLater()
             self.table_widget = None
+            self.isLabel = False
 
         if (self.active_sp.members == 0):
             # The reason we let the clear happen is because:
@@ -667,14 +668,17 @@ class Main_Screen(su.QMainWindow):
             ok_pressed = new_dialog.exec_()
                 
             if (ok_pressed == 1):
-                # return [team_member_name, eta, fin_date]
-                data = new_dialog.extract_sp_data()    
+                # data = [john, michael, etc..]
+                # Data holds all the names to delete.
+                data = new_dialog.extract_data_for_deletion()    
             else:
                 return
             
-            edit_status = self.active_sp.edit_data(data)
-            if (edit_status == -1):
-                my_Error.edit_input_failure(self)
+            self.active_sp.delete_data(data)
+
+            if (self.active_sp.members == 0):
+                # We've deleted the last member, flush the floating table.
+                self.flush_sp_table()
                 
         except:
             my_Error.click_sp_first(self)
@@ -850,6 +854,7 @@ class Main_Screen(su.QMainWindow):
         delete_members_btn = QPushButton("Delete Members", self)
         delete_members_btn.move(1150, 0)
         delete_members_btn.resize(100, 20)
+        delete_members_btn.clicked.connect(self.delete_member_in_sp)
         
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
@@ -897,6 +902,17 @@ class Main_Screen(su.QMainWindow):
                 widget.deleteLater()
             
             self.delete_widgets = []
+
+    def flush_sp_table(self):
+        '''
+        Once you delet eall the SP members, there is a need to delete a floating table.
+        '''
+        if (self.isLabel == True and self.table_widget != None):
+            # There is a table on-screen, delete it first. 
+            self.table_widget.deleteLater()
+            self.table_widget = None
+            self.isLabel = False
+
 
     def debug(self):
         print("Click me harder!")

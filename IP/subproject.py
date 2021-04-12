@@ -52,3 +52,18 @@ class SubProject:
             return -1
         # Dont change self.members. It's edit.
         print ("Editd data to: {}\t{}".format(self.name, self.sp_dict))
+
+    def delete_data(self, data):
+        '''
+        Called from gui.py, onclick.
+        data is an array containing all names to delete.
+        '''
+        
+        # I forgot, if u delete and traverse the same dict, it causes problems.
+        for names in data:
+            del self.sp_dict[names]
+            
+            # MAN OVERBOARD!
+            self.members -= 1
+            
+        print ("Deleted these names: {}".format(data))

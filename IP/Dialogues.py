@@ -176,18 +176,26 @@ class Dialog(QDialog):
     def create_group_box_delete_members(self):
         self.form_group_box = QGroupBox("{}".format(self.active_project.name))
         
-        self.team_member_name = QCheckBox()
-
+        self.layout = QFormLayout()
+    
         self.layout.addRow(QLabel("Choose The Members: "))
+        
+        # Unique just to this TYPE of dialog, thus no point putting it in init.
+        self.check_box_array = []
         
         # Members exist in self.active_project because in this scope, when called from gui.py,
         # self.active_project is self.active_sp.
         # Read the init function.
-        for members in self.active_project.members:
-            pass
+                                    # The sp_dict contains {person: (eta, fin_date)} thus the eta_fin_tuple
+        for _, person in enumerate(self.active_project.sp_dict):
+            new_check_box = QCheckBox()
+            self.layout.addRow(QLabel("{}".format(person)), new_check_box)
+            
+            # Save the data in a checkbox array as person, check_box so it's easier to figure out,
+            # What checkbox was ticked to delete which Member.
+            desired_tuple = (person, new_check_box)
+            self.check_box_array.append(desired_tuple)
         
-        self.layout.addRow(self.team_member_name)
-
         self.form_group_box.setLayout(self.layout)
         
     def extract_qline(self, widget_name):
@@ -230,10 +238,23 @@ class Dialog(QDialog):
         new_project_name = self.extract_qline(self.new_project_name)
         new_sub_task_name = self.extract_qline(self.new_sub_task_name)
         # Get the Subtask that needs changing.
-        sub_task_to_change = self.extract_qbox(self.comboBox_2)
+        sub_task_to_change = self.extract_qbox(self.sub_project_idx)
         
         return [new_project_name, sub_task_to_change, new_sub_task_name]
 
+    
+    def extract_data_for_deletion(self):
+        '''
+        The deletion dialog is substantially different from add/edit,
+        Thus we need to do sick stuff.
+        '''
+        persons_to_delete =[]
+        for doublets in self.check_box_array:
+            # Doublets are (person, QCheckBox()) in this array.
+            if (doublets[1].isChecked() == True):
+                persons_to_delete.append(doublets[0])
+            
+        return persons_to_delete
 
     def extract_sp_data(self):
         '''
