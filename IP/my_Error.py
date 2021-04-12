@@ -70,6 +70,30 @@ class my_Error:
         msg.setWindowTitle("Error")
         msg.exec_()
         
+    def member_name_blank(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('Your Team Member must have a name!')
+        msg.setWindowTitle("Error")
+        msg.exec_()
+    
+    def confirm_blank_edit_members(self, name):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Question)
+        
+        msg.setText("Are you sure you want to Edit \"{}\" with Blank Fields?".format(name))
+        msg.setWindowTitle(IP_VERSION)
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        
+        retval = msg.exec_()
+        
+        # This OK thing is a macro that is 0x000400 or something.
+            # This is because the dialog contains a button in itself, OK and CANCEL.
+        if (retval == QMessageBox.Ok):
+            return 1
+        else:
+            return -1
 
         
     def click_button_first(self):

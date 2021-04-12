@@ -600,7 +600,10 @@ class Main_Screen(su.QMainWindow):
                 
             if (ok_pressed == 1):
                 # return [team_member_name, eta, fin_date]
-                data = new_dialog.extract_sp_data()    
+                data = new_dialog.extract_sp_data()
+                if (data[0] == ""):
+                    my_Error.member_name_blank(self)
+                    return
             else:
                 return
             
@@ -637,6 +640,11 @@ class Main_Screen(su.QMainWindow):
                 data = new_dialog.extract_sp_data()    
             else:
                 return
+
+            if (data[1][0] == " " and data[2] == ""):
+                    confirm_status = my_Error.confirm_blank_edit_members(self, data[0])
+                    if (confirm_status != 1):
+                        return
             
             edit_status = self.active_sp.edit_data(data)
             if (edit_status == -1):

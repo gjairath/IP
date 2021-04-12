@@ -26,8 +26,9 @@ class SubProject:
     def add_data(self, data):
         '''
         Accepts data from the "Add member" button.
-                data = [team_member_name, eta, fin_date]
+                data = [person_name, eta, fin_Date]
         '''
+        
         self.sp_dict[data[0]] = (data[1], data[2])
         self.members += 1
         

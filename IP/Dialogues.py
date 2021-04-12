@@ -155,7 +155,7 @@ class Dialog(QDialog):
         
         # No else, there is no placeholder for Combo boxes.
         self.fin_date.setPlaceholderText("01/01/2022")
-
+        self.eta_raw_value.setPlaceholderText('0')
         self.form_group_box.setLayout(self.layout)
         
     
