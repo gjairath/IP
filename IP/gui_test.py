@@ -590,22 +590,90 @@ class Main_Screen(su.QMainWindow):
         '''
         @Onclickevent for "Add Member"
         '''
-        
-        if (self.active_sp == None):
+        try:
+            if (self.active_sp == None):
+                my_Error.click_sp_first(self)
+                return
+                    
+            new_dialog = Dialog(self.active_sp, default="Add")
+            ok_pressed = new_dialog.exec_()
+                
+            if (ok_pressed == 1):
+                # return [team_member_name, eta, fin_date]
+                data = new_dialog.extract_sp_data()    
+            else:
+                return
+            
+            self.active_sp.add_data(data)
+            
+        except:
             my_Error.click_sp_first(self)
             return
+        
+    def edit_member_in_sp(self):
+        '''        
+        This function edits member details in a SP. 
+        @onclick for "Edit Members"
+        
+        Note to self: You see how I put this function below add member to SP like it is in GUI? 
+        '''
+        
+        # self.active_sp will always be initilaized no matter what.
+        # This is because the SP must be pressed to add members. 
+        #               So display an error if it's not.
+        
+        try:
+            # Display a Dialog to prompt the user to change a member, and update the relevant SP.
+            # Saving_utility.py will handle the rest [The superclass of the QMainWindow here.]
+            if (self.active_sp == None):
+                my_Error.click_sp_first(self)
+                return
+                    
+            new_dialog = Dialog(self.active_sp, default="Edit")
+            ok_pressed = new_dialog.exec_()
                 
-        new_dialog = Dialog(self.active_project, default=False)
-        ok_pressed = new_dialog.exec_()
+            if (ok_pressed == 1):
+                # return [team_member_name, eta, fin_date]
+                data = new_dialog.extract_sp_data()    
+            else:
+                return
             
-        if (ok_pressed == 1):
-            # return [team_member_name, eta, fin_date]
-            data = new_dialog.extract_sp_data()    
-        else:
+            edit_status = self.active_sp.edit_data(data)
+            if (edit_status == -1):
+                my_Error.edit_input_failure(self)
+                
+        except:
+            my_Error.click_sp_first(self)
             return
-        
-        self.active_sp.add_data(data)
-        
+    
+    def delete_member_in_sp(self):
+        '''
+        @Onclick event for deleting a member.
+        '''
+        try:
+            if (self.active_sp == None):
+                my_Error.click_sp_first(self)
+                return
+                    
+            new_dialog = Dialog(self.active_sp, default="Delete")
+            ok_pressed = new_dialog.exec_()
+                
+            if (ok_pressed == 1):
+                # return [team_member_name, eta, fin_date]
+                data = new_dialog.extract_sp_data()    
+            else:
+                return
+            
+            edit_status = self.active_sp.edit_data(data)
+            if (edit_status == -1):
+                my_Error.edit_input_failure(self)
+                
+        except:
+            my_Error.click_sp_first(self)
+            return
+
+        pass
+    
     def show_sub_project_names(self, sub_project_list):
         '''
         A modification to the function below this function.
@@ -765,14 +833,15 @@ class Main_Screen(su.QMainWindow):
         add_members_btn.resize(100, 20)
         add_members_btn.clicked.connect(self.add_new_member_to_sp)
 
-        delete_members_btn = QPushButton("Delete Members", self)
-        delete_members_btn.move(1050, 0)
-        delete_members_btn.resize(100, 20)
-
-
         edit_members_btn = QPushButton("Edit Members", self)
-        edit_members_btn.move(1150, 0)
+        edit_members_btn.move(1050, 0)
         edit_members_btn.resize(100, 20)
+        edit_members_btn.clicked.connect(self.edit_member_in_sp)
+
+
+        delete_members_btn = QPushButton("Delete Members", self)
+        delete_members_btn.move(1150, 0)
+        delete_members_btn.resize(100, 20)
         
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.

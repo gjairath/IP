@@ -26,7 +26,7 @@ class SubProject:
     def add_data(self, data):
         '''
         Accepts data from the "Add member" button.
-                return [team_member_name, eta, fin_date]
+                data = [team_member_name, eta, fin_date]
         '''
         self.sp_dict[data[0]] = (data[1], data[2])
         self.members += 1
@@ -34,3 +34,20 @@ class SubProject:
         
         print ("Aded data to: {}\t{}".format(self.name, self.sp_dict))
         
+    def edit_data(self, data):
+        '''
+        Accepts data from gui and basically changes the sp_dict for whichever higher project in charge of this 
+                ... bad boy
+                
+                data = [person_name, eta, fin_Date]
+        '''
+        is_found = False
+        for keys in self.sp_dict:
+            if (keys == data[0]):
+                self.sp_dict[keys] = (data[1], data[2])
+                is_Found = True
+                
+        if (is_found == False):
+            return -1
+        # Dont change self.members. It's edit.
+        print ("Editd data to: {}\t{}".format(self.name, self.sp_dict))

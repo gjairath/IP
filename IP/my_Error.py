@@ -54,6 +54,24 @@ class my_Error:
         msg.setWindowTitle("Error")
         msg.exec_()
         
+        
+    def unexpected_catch(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Something weird happened")
+        msg.setInformativeText('Something unexpected happened.')
+        msg.exec_()
+
+    def edit_input_failure(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('Your Team Members Name was not Found!')
+        msg.setWindowTitle("Error")
+        msg.exec_()
+        
+
+        
     def click_button_first(self):
         '''
         If you try moving a button without clicking it, it will cause an error.
