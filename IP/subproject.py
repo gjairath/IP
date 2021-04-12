@@ -45,7 +45,7 @@ class SubProject:
         for keys in self.sp_dict:
             if (keys == data[0]):
                 self.sp_dict[keys] = (data[1], data[2])
-                is_Found = True
+                is_found = True
                 
         if (is_found == False):
             return -1
