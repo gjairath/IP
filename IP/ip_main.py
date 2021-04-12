@@ -6,7 +6,8 @@ Created on Wed Mar 17 21:58:35 2021
 """
 
 import sys
-import gui as gui
+#import gui as gui
+import gui_test as gui
 
 from project import Project
 from project_manager import Project_Manager

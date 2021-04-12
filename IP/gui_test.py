@@ -13,7 +13,7 @@ from Dialogues import Dialog
 from project import Project
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
-                            QInputDialog, QCheckBox, QShortcut
+                            QInputDialog, QCheckBox, QShortcut, QWidget, QGridLayout, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QKeySequence, QDrag, QFont
 from PyQt5.QtCore import Qt, QMimeData
 
@@ -47,7 +47,15 @@ class Main_Screen(su.QMainWindow):
     def __init__(self, project_manager, parent = None):
         super(Main_Screen, self).__init__(project_manager, parent)
         self.title = "{} (CTRL+Q to quit)".format(IP_VERSION)
-        
+
+
+        self.widget = QWidget(self)
+        self.layout = QGridLayout()
+        self.widget.setLayout(self.layout)
+
+        self.setCentralWidget(self.widget)
+    
+    
         self.left = 10
         self.top = 10
         self.width = 640
@@ -89,6 +97,9 @@ class Main_Screen(su.QMainWindow):
         # Active SP on the screen.
         self.active_sp = None
         self.test_label = None
+        
+        
+
                             
     def center_object(self, desired_object):
         """
@@ -511,8 +522,7 @@ class Main_Screen(su.QMainWindow):
         except:
             my_Error.add_a_project(self)
             return
-        
-        
+                
     #TODO - 0
         # Once team members are added properly, Just show that data here once the button is clicked.
     def connect_sp_keys(self):
@@ -521,6 +531,9 @@ class Main_Screen(su.QMainWindow):
         Each project tab has subprojects, this function links them.
         
         Think as @onclick for subproject btns.
+        
+        Note to self: Dont try returning if there are no SP's. If there are no SPs there are no keys.
+                        lol. 3AM coding is fun isnt it
         '''
         sp_details = self.sender().text()
         sp_index = ""
@@ -537,54 +550,41 @@ class Main_Screen(su.QMainWindow):
         # Each SP class holds data like so:
         #                       self.sp_dict[data[0]] = (data[1], data[2])
         #           OR,         IT has a dict that holds {person: (ETA, FinishDate)}
-        # Thus, each SP class has people that through TOTALLY intentional coding skills is being saved.
-        # I dont know how but I dont care. Saving was a bitch to pull off, no documentaiton no stackoverflow
-        # Cant even do what a coder does best, google [Ben Awad]. Like 90% of this project was not online.
         # Also, I'm trying to invest in dogehouse before Microsoft acquires them.
         
-        # .. okay fine I do know how its pickle being OP but yeah whatever im going to bed f this
+        if (self.isLabel == True and self.table_widget != None):
+            # There is a table on-screen, delete it first. 
+            self.table_widget.deleteLater()
+            self.table_widget = None
 
-        print(self.active_sp.sp_dict)
-
-        if(self.isLabel == True and self.test_label != None):
-            self.test_label.clear()
-            self.isLabel = False
-        
-        # These two strings essentially hold the same data, just one has a smaller font, because Trust-By-Design.
-                # This increases the complexity since there can be issues,
-                # But I'm sure it's worth it.
-        person_string = ""
-        meta_data_string = ""
-        for person in self.active_sp.sp_dict:
-            # The below is ETA
-            meta_data_string += "\t\t\t\t\t" + self.active_sp.sp_dict[person][0]
-            # The below holds the Findate exactly below the position of the ETA in a new line
-            meta_data_string += "\n\t\t\t\t\t" + self.active_sp.sp_dict[person][1] + "\n"
+        if (self.active_sp.members == 0):
+            # The reason we let the clear happen is because:
+            # If I click SP X and it has 3 members, then sp Y and it has 0.
+            # I want to delete X's table on-screen but return before showing something for Y.
+            # self.isLabel doesn't need a bitswitch here.
+            return
             
-            person_string += person + "\t\tIn-Progress"
+        self.table_widget = QTableWidget(self.centralWidget())
+        self.table_widget.setRowCount(self.active_sp.members)       
+        self.table_widget.setColumnCount(3)
+        self.table_widget.move(950, 35)
+
+        size_y = 30
+        for idx, person in enumerate(self.active_sp.sp_dict):
+            self.table_widget.setItem(idx, 0, QTableWidgetItem(person))
+            self.table_widget.setItem(idx, 1, QTableWidgetItem(self.active_sp.sp_dict[person][0]))
+            self.table_widget.setItem(idx, 2, QTableWidgetItem(self.active_sp.sp_dict[person][1]))
+            size_y += 30
             
-            # Once we're done, add new lines.
-            person_string += "\n\n\n"
-            meta_data_string += "\n\n\n"
-        
-        self.person_label = QLabel(person_string, self)
-        self.person_label.move(950, 80)
-        # Fun fact: https://www.google.com/search?q=most+beloved+font+of+all+time&rlz=1C1CHBF_enUS907US907&oq=most+beloved+font+of+all+time&aqs=chrome..69i57j0i22i30.4135j0j7&sourceid=chrome&ie=UTF-8
-            # My decision making process is no joke.
-        self.person_label.setFont(QFont('Helvetica', 15))
-        self.person_label.adjustSize()
+        # This stops scrolling and is consistent behavior across devices.
+            # Because, we only have 3 items, thus the x value is same.
+            # The Y value adjusts with the amount of entries.
 
-        self.person_label.show()
+        self.table_widget.setFixedSize(330,size_y)       
+        self.table_widget.show()
         
-        self.meta_label = QLabel(meta_data_string, self)
-        self.meta_label.move(950,50)
-        self.meta_label.setFont(QFont('Helvetica', 10))
-        self.meta_label.adjustSize()
-        
-        self.meta_label.show()
-        self.isLabel = True 
-
-        pass
+        self.isLabel = True
+ #       self.layout.addWidget(self.tableWidget)
     
     def add_new_member_to_sp(self):
         '''
@@ -728,12 +728,17 @@ class Main_Screen(su.QMainWindow):
         Adds the "new sub project" button on to the screen
         
         This happens both in reinit or init.
-        '''   
+        '''
+        
+        # This widget is the table seen when you click a SP.
+        self.table_widget = None
+        
         new_project_btn = QPushButton("New Project\n Click on a project and hold right-click for drag!", self)
         new_project_btn.move(0,0)
         new_project_btn.resize(100,20)
         new_project_btn.clicked.connect(self.new_project_window) 
-        
+   #     self.layout.addWidget(new_project_btn)
+
 
         change_project_data_btn = QPushButton("Edit This Project", self)
         change_project_data_btn.move(100,0)        

@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # which defines a single set of axes as self.axes.
         sc = MplCanvas(self, width=5, height=4, dpi=100)
 
+
         # Create our pandas DataFrame with some simple
         # data and headers.
         df = pd.DataFrame([
