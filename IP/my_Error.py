@@ -94,6 +94,18 @@ class my_Error:
             return 1
         else:
             return -1
+        
+        
+    def name_exists_already(self):
+        '''
+        In a given SP, if you add a name that already exists, display the relevant message.
+        '''
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('This name already exists! Consider using "Edit-Member" instead.')
+        msg.setWindowTitle("Error")
+        msg.exec_()        
 
         
     def click_button_first(self):

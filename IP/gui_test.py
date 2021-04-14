@@ -97,7 +97,7 @@ class Main_Screen(su.QMainWindow):
         # Active SP on the screen.
         self.active_sp = None
         self.test_label = None
-        
+        self.active_sp_btn = None
         
 
                             
@@ -523,8 +523,8 @@ class Main_Screen(su.QMainWindow):
             my_Error.add_a_project(self)
             return
                 
-    #TODO - 0
-        # Once team members are added properly, Just show that data here once the button is clicked.
+    # TODO
+        # Under construction, I like the blue mark in the right columns
     def connect_sp_keys(self):
         '''
         A function to connect the SP keys once they're made.
@@ -547,6 +547,8 @@ class Main_Screen(su.QMainWindow):
         # initialize this sp so that we can use the "Add members" button.
         self.active_sp = self.active_project.sub_tasks[desired_sp_idx]
         
+        self.active_sp_btn = self.sender()
+        
         # Each SP class holds data like so:
         #                       self.sp_dict[data[0]] = (data[1], data[2])
         #           OR,         IT has a dict that holds {person: (ETA, FinishDate)}
@@ -558,11 +560,19 @@ class Main_Screen(su.QMainWindow):
             self.table_widget = None
             self.isLabel = False
 
-        if (self.active_sp.members == 0):
+        if (self.active_sp.members == 0 or self.active_sp.sp_dict == {}):
             # The reason we let the clear happen is because:
             # If I click SP X and it has 3 members, then sp Y and it has 0.
             # I want to delete X's table on-screen but return before showing something for Y.
             # self.isLabel doesn't need a bitswitch here.
+            
+                # This shouldn't happen, sometimes glitches occur, god knows why.
+                # Edit, I figured it out, if a user adds the same member thrice, some weird behavior happens.
+            if (self.active_sp.sp_dict == {}):
+                self.flush_sp_table()
+                self.active_sp.members = 0
+
+            self.isLabel = False
             return
             
         self.table_widget = QTableWidget(self.centralWidget())
@@ -581,11 +591,23 @@ class Main_Screen(su.QMainWindow):
             # Because, we only have 3 items, thus the x value is same.
             # The Y value adjusts with the amount of entries.
 
-        self.table_widget.setFixedSize(330,size_y)       
+        if (self.active_sp.members < 8):
+            # Basically, add to the dynamic table's size if the SP has less than 8 members.
+            # if not, it covers other data.
+            self.table_widget.resize(370, size_y)
+        else:
+            self.table_widget.resize(370, 30 * 8)
+            
         self.table_widget.show()
         
         self.isLabel = True
- #       self.layout.addWidget(self.tableWidget)
+        
+        
+        # This holds an array containing this:
+        # [total_effort_left, self.members, eta_from_now]
+        active_sp_data = self.active_sp.process_and_return_data()
+        
+        print (active_sp_data)
     
     def add_new_member_to_sp(self):
         '''
@@ -605,10 +627,19 @@ class Main_Screen(su.QMainWindow):
                 if (data[0] == ""):
                     my_Error.member_name_blank(self)
                     return
+                
+                if (self.active_sp.find_key_in_dict(data[0]) == 1):
+                    my_Error.name_exists_already(self)
+                    return
             else:
                 return
             
             self.active_sp.add_data(data)
+            
+            try:
+                self.active_sp_btn.click()
+            except:
+                print ("The click failed, however, data added.")
             
         except:
             my_Error.click_sp_first(self)

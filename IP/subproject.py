@@ -67,3 +67,69 @@ class SubProject:
             self.members -= 1
             
         print ("Deleted these names: {}".format(data))
+        
+        
+    def find_key_in_dict(self, data):
+        '''
+        A Function to find if a key exists in a dictionary,
+        
+        Params: Data, ideally a name or a string.
+        '''
+        
+        for keys in self.sp_dict:
+            if (keys == data):
+                return 1
+            
+        return -1
+    
+    
+    def process_and_return_data(self):
+        '''
+        Function to process SP data, return it to show in the GUI screen.
+        Following same abstraction.
+        
+        Returns, [total_time_minutes, # members, estimated date.]
+        '''
+        # Total effort in minutes.
+        total_effort_left = 0
+        for keys in self.sp_dict:
+            # sp_dict holds (eta, finish_date)
+            # The eta is a string with "Minutes" or "Years" or whatever.
+            # Process it first, then check the case.
+            
+            raw_string = self.sp_dict[keys][0]
+            # this split may seem risky but it will always work, this is because how the data is stored first.
+            raw_string_array = raw_string.split(' ')
+            time_left_int = raw_string_array[0]
+            
+            # This time_left_int may be something stupid like three hundred or maybe "TOM"
+            # isnumeric is good for fault tolerance.
+            
+            # These values come from the dialog like so:
+            #         self.eta_options.addItems(['Minutes', 'Hours', 'Days', 'Months', 'Years'])
+
+            if (time_left_int.isnumeric() == True):
+                time_left = int(time_left_int)
+                if (raw_string_array[1] == "Years"): 
+                    total_effort_left += time_left * 12 * 24 * 24 * 60
+                
+                elif (raw_string_array[1] == "Months"):
+                    # Average the month to 30; 366/12 = 30.50 days in a leap year
+                    total_effort_left += time_left * 30 * 24 * 60
+                    
+                elif (raw_string_array[1] == "Days"):
+                    total_effort_left += time_left * 24 * 60
+                
+                elif (raw_string_array[1] == "Hours"):
+                    total_effort_left += time_left * 60
+                
+                else:
+                    total_effort_left += time_left
+                    
+        from datetime import datetime, timedelta
+        eta_from_now = datetime.now() + timedelta(minutes=total_effort_left)
+        
+        
+        return [total_effort_left, self.members, eta_from_now]
+
+                
