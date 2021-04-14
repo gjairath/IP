@@ -168,8 +168,8 @@ class SubProject:
         ret_string = ""
         ret_string += "Number of Members: \t\t{} People\n".format(data[1])
         print ("HEY", data)
-        if (data[0] / 60 < 60):
-            ret_string += "Less than an hour left.\n"
+        if (data[0]  < 60):
+            ret_string += "Effort Remaining: \t\tLess than an hour left.\n"
         else:
             ret_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(data[0])
         ret_string += "Estimated Finish Date: \t\t{}\n".format(data[2])
