@@ -106,35 +106,35 @@ class SubProject:
         # Total effort in minutes.
         total_effort_left = 0
         for keys in self.sp_dict:
-            # sp_dict holds (eta, finish_date)
-            # The eta is a string with "Minutes" or "Years" or whatever.
-            # Process it first, then check the case.
-            
+            # sp_dict holds {name: (eta, finish_date)}
+            # Reminder: eta is time + mode.
+            # can be 3 days, 6 years, 69 years. I dont know.
+                        
             raw_string = self.sp_dict[keys][0]
             # this split may seem risky but it will always work, this is because how the data is stored first.
             raw_string_array = raw_string.split(' ')
             time_left_int = raw_string_array[0]
             
-            # This time_left_int may be something stupid like three hundred or maybe "TOM"
-            # isnumeric is good for fault tolerance.
+            # time_left_int is whatever the user put alongside the combo box option.
+            # ^ this can be 3, 5, 6, or "pineapples"
             
-            # These values come from the dialog like so:
-            #         self.eta_options.addItems(['Minutes', 'Hours', 'Days', 'Months', 'Years'])
-
+            # combo_box option is raw_string_array[1]
+            
             if (time_left_int.isnumeric() == True):
                 time_left = int(time_left_int)
                 if (raw_string_array[1] == "Years"): 
-                    total_effort_left += time_left * 12 * 24 * 24 * 60
+                    total_effort_left += time_left * 365 * 24
                 
                 elif (raw_string_array[1] == "Months"):
                     # Average the month to 30; 366/12 = 30.50 days in a leap year
-                    total_effort_left += time_left * 30 * 24 * 60
+                    # Based on this you get 730.001
+                    total_effort_left += time_left * 730.001
                     
                 elif (raw_string_array[1] == "Days"):
-                    total_effort_left += time_left * 24 * 60
+                    total_effort_left += time_left * 24
                 
                 elif (raw_string_array[1] == "Hours"):
-                    total_effort_left += time_left * 60
+                    total_effort_left += time_left
                 
                 else:
                     total_effort_left += time_left
@@ -167,8 +167,11 @@ class SubProject:
         
         ret_string = ""
         ret_string += "Number of Members: \t\t{} People\n".format(data[1])
-
-        ret_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(data[0] / 60)
+        print ("HEY", data)
+        if (data[0] / 60 < 60):
+            ret_string += "Less than an hour left.\n"
+        else:
+            ret_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(data[0])
         ret_string += "Estimated Finish Date: \t\t{}\n".format(data[2])
         ret_string += "AI Advice: \t\t\t<TBD>"
         

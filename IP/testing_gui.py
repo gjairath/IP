@@ -638,10 +638,11 @@ class Main_Screen(su.QMainWindow):
         
         self.sp_label = QLabel(self.active_sp.return_data_string(active_sp_data), self.widget)
         self.sp_label.move(950, 30*5+50)
-        self.sp_label.resize(300,100)
+        self.sp_label.resize(350,100)
+        # This works sometimes, adjustsize()
         self.sp_label.setFont(QFont('Times', 10))
 
-        print (list(self.active_sp.sp_dict.keys()),list(self.active_sp.sp_dict.values()) , active_sp_data[0])
+        print(active_sp_data)
 
         fig = graph_u.get_sp_graph(list(self.active_sp.sp_dict.keys()), list(self.active_sp.sp_dict.values()), active_sp_data[0])
         self.canvas = FigureCanvas(fig)
