@@ -61,7 +61,9 @@ class Main_Screen(su.QMainWindow):
         self.width = 640
         self.height = 480
         self.existing_offsety = 25
-                
+        
+#        self.setStyleSheet("background-color:lightgrey;")
+
         # Initiliaze a Project Manager Class Object.
         self.manager = project_manager        
     
@@ -604,10 +606,10 @@ class Main_Screen(su.QMainWindow):
         
         
         # This holds an array containing this:
-        # [total_effort_left, self.members, eta_from_now]
+        # [total_effort_left, self.members, date-string, time-string]
         active_sp_data = self.active_sp.process_and_return_data()
         
-        print (active_sp_data)
+        print (list(self.active_sp.sp_dict.keys()),list(self.active_sp.sp_dict.values()) , active_sp_data[0])
     
     def add_new_member_to_sp(self):
         '''

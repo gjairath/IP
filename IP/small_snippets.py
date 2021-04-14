@@ -1,58 +1,74 @@
 import sys
-import matplotlib
-matplotlib.use('Qt5Agg')
+import time
 
-from PyQt5 import QtCore, QtWidgets
+import numpy as np
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
+if is_pyqt5():
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
+else:
+    from matplotlib.backends.backend_qt4agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 
-import pandas as pd
+name_data = ['ye', "Ye's brother", "Ye's mother", '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', "Ye's Cunt"] 
+tuple_data = [('535 Minutes', ''), ('69 Minutes', ''), ('69 Minutes', '5353'), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', '')] 
+
+hour_data_for_names = []
+new_name_data = []
+for idx, value in enumerate(tuple_data):
+    num_hours = value[0].split(' ')[0]
+    if (num_hours.isnumeric()):
+        hour_data_for_names.append(int(num_hours) / 60)
+        new_name_data.append(name_data[idx])
 
 
-class MplCanvas(FigureCanvasQTAgg):
+hours_left = 673 / 60        
+print (hour_data_for_names, new_name_data, hours_left)
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+# Free memory    
+name_data.clear()
+tuple_data.clear()
 
+import matplotlib.pyplot as plt
+# Pie chart
+labels = ['Frogs', 'Hogs', 'Dogs', 'Logs']
+sizes = [15, 30, 45, 10]
+#colors
+colors = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+ 
+fig1, ax1 = plt.subplots()
+ax1.pie(hour_data_for_names, colors = colors, labels=new_name_data, autopct='%1.1f%%', startangle=90)
 
-class MainWindow(QtWidgets.QMainWindow):
+#draw circle
+centre_circle = plt.Circle((0,0),0.70,fc='lightgrey')
+fig = plt.gcf()
+fig.gca().add_artist(centre_circle)
+fig.set_facecolor('lightgrey')
 
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
-
-        # Create the maptlotlib FigureCanvas object, 
-        # which defines a single set of axes as self.axes.
-        sc = MplCanvas(self, width=5, height=4, dpi=100)
-
-
-        # Create our pandas DataFrame with some simple
-        # data and headers.
-        df = pd.DataFrame([
-           [0, 10], [5, 15], [2, 20], [15, 25], [4, 10], 
-        ], columns=['A', 'B'])
-
-        # plot the pandas DataFrame, passing in the 
-        # matplotlib Canvas axes.
-        df.plot(ax=sc.axes)
-
-        # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
-        toolbar = NavigationToolbar(sc, self)
-
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(toolbar)
-        layout.addWidget(sc)
-
-        # Create a placeholder widget to hold our toolbar and canvas.
-        widget = QtWidgets.QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-        self.show()
+# Equal aspect ratio ensures that pie is drawn as a circle
+plt.axis('equal')  
+plt.tight_layout()
 
 
-app = QtWidgets.QApplication(sys.argv)
-w = MainWindow()
-app.exec_()
+class ApplicationWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self._main = QtWidgets.QWidget()
+        self.setCentralWidget(self._main)
+        layout = QtWidgets.QVBoxLayout(self._main)
+
+        static_canvas = FigureCanvas(fig)
+        layout.addWidget(static_canvas)
+        self.addToolBar(NavigationToolbar(static_canvas, self))
+
+ #       self._static_ax = static_canvas.figure.subplots()
+#        self._static_ax.pie(hour_data_for_names, colors = colors, labels=new_name_data, autopct='%1.1f%%', startangle=90)
+
+
+if __name__ == "__main__":
+    qapp = QtWidgets.QApplication(sys.argv)
+    app = ApplicationWindow()
+    app.show()
+    qapp.exec_()

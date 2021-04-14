@@ -5,6 +5,19 @@ Created on Wed Mar 17 23:16:51 2021
 @author: garvi
 """
 
+months_array = ["Padding [Unknown]",
+          "January",
+          "Febuary",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"]
 
 class SubProject:
     # A sublist is the bottom-most layer.
@@ -88,7 +101,7 @@ class SubProject:
         Function to process SP data, return it to show in the GUI screen.
         Following same abstraction.
         
-        Returns, [total_time_minutes, # members, estimated date.]
+        Returns, [total_time_minutes, # members, date-string (the date to finish processed), time-string.]
         '''
         # Total effort in minutes.
         total_effort_left = 0
@@ -128,8 +141,16 @@ class SubProject:
                     
         from datetime import datetime, timedelta
         eta_from_now = datetime.now() + timedelta(minutes=total_effort_left)
+                
+        # month is a global array with months
+        # This is faster than using stfttime,  
+            # def _wrap_strftime(object, format, timetuple):
+        # Does lots of checking and other stuff I dont care much about
         
+        date_string = str(eta_from_now.day) + " " + str(months_array[eta_from_now.month]) + " " + str(eta_from_now.year)
+        time_string = eta_from_now.strftime("%I:%M %p")
+        print (date_string, time_string)
         
-        return [total_effort_left, self.members, eta_from_now]
+        return [total_effort_left, self.members, date_string, time_string]
 
                 
