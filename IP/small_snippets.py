@@ -12,6 +12,11 @@ else:
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
+                            QInputDialog, QCheckBox, QShortcut, QWidget, QGridLayout, QTableWidget, QTableWidgetItem
+from PyQt5.QtGui import QKeySequence, QDrag, QFont
+from PyQt5.QtCore import Qt, QMimeData
+
 name_data = ['ye', "Ye's brother", "Ye's mother", '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', "Ye's Cunt"] 
 tuple_data = [('535 Minutes', ''), ('69 Minutes', ''), ('69 Minutes', '5353'), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', ''), (' Minutes', '')] 
 
@@ -57,14 +62,18 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         super().__init__()
         self._main = QtWidgets.QWidget()
         self.setCentralWidget(self._main)
-        layout = QtWidgets.QVBoxLayout(self._main)
+        
+        self.plot_widget = QWidget(self._main)
+        self.plot_widget.setGeometry(250,180,500,600)
+        
 
         static_canvas = FigureCanvas(fig)
-        layout.addWidget(static_canvas)
         self.addToolBar(NavigationToolbar(static_canvas, self))
 
- #       self._static_ax = static_canvas.figure.subplots()
-#        self._static_ax.pie(hour_data_for_names, colors = colors, labels=new_name_data, autopct='%1.1f%%', startangle=90)
+        plot_box = QtWidgets.QVBoxLayout()
+        plot_box.addWidget(static_canvas)
+        self.plot_widget.setLayout(plot_box)
+#        self.table_widget = QTableWidget(self.centralWidget())
 
 
 if __name__ == "__main__":
