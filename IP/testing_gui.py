@@ -89,9 +89,6 @@ class Main_Screen(su.QMainWindow):
         # A counter to track the projects.
         self.counter = -1
     
-        # Islabel on screen for project?
-        self.isLabel = False
-
         # Delete each project widgets, dynamically made.
         self.delete_widgets = []
         
@@ -120,6 +117,9 @@ class Main_Screen(su.QMainWindow):
         self.test_label = None
         self.active_sp_btn = None
         self.canvas = None
+        self.sp_label = None
+        # Islabel on screen for project?
+        self.isLabel = False
         
 
                             
@@ -493,8 +493,10 @@ class Main_Screen(su.QMainWindow):
         if (self.active_project.num_sub_tasks == 0 or self.isLabel == True):
             self.flush_sp_table()
             self.isLabel = False
+            # Hiding these is fine, they are going to get replaced by the new one anyway, it's not wasting
+            # any space.
             if (self.canvas != None): self.canvas.hide()
-
+            if (self.sp_label != None): self.sp_label.hide()
         # ----------------------- Debugging ------------------------------
         if (self.debug_check.isChecked()):
                 # {button = (project, window, self.positionx, self.positiony)}
@@ -587,6 +589,7 @@ class Main_Screen(su.QMainWindow):
             self.table_widget = None
             self.isLabel = False
             if (self.canvas != None): self.canvas.hide()
+            if (self.sp_label != None): self.sp_label.hide()
 
         if (self.active_sp.members == 0 or self.active_sp.sp_dict == {}):
             # The reason we let the clear happen is because:
@@ -600,6 +603,7 @@ class Main_Screen(su.QMainWindow):
                 self.flush_sp_table()
                 self.active_sp.members = 0
                 if (self.canvas != None): self.canvas.hide()
+                if (self.sp_label != None): self.sp_label.hide()
 
             self.isLabel = False
             return
@@ -620,22 +624,23 @@ class Main_Screen(su.QMainWindow):
             # Because, we only have 3 items, thus the x value is same.
             # The Y value adjusts with the amount of entries.
 
-        if (self.active_sp.members < 8):
+        if (self.active_sp.members < 5):
             # Basically, add to the dynamic table's size if the SP has less than 8 members.
             # if not, it covers other data.
             self.table_widget.resize(370, size_y)
         else:
-            self.table_widget.resize(370, 30 * 8)
+            self.table_widget.resize(370, 30 * 5)
             
-        self.table_widget.show()
-        
-        self.isLabel = True
-        
         
         # This holds an array containing this:
         # [total_effort_left, self.members, date-string, time-string]
         active_sp_data = self.active_sp.process_and_return_data()
         
+        self.sp_label = QLabel(self.active_sp.return_data_string(active_sp_data), self.widget)
+        self.sp_label.move(950, 30*5+50)
+        self.sp_label.resize(300,100)
+        self.sp_label.setFont(QFont('Times', 10))
+
         print (list(self.active_sp.sp_dict.keys()),list(self.active_sp.sp_dict.values()) , active_sp_data[0])
 
         fig = graph_u.get_sp_graph(list(self.active_sp.sp_dict.keys()), list(self.active_sp.sp_dict.values()), active_sp_data[0])
@@ -645,8 +650,12 @@ class Main_Screen(su.QMainWindow):
 #        self.layout.addWidget(self.canvas)
         
         self.canvas.setParent(self.widget)
+
+        self.table_widget.show()
+        self.sp_label.show()
         self.canvas.show()
         
+        self.isLabel = True
         
     
     def add_new_member_to_sp(self):

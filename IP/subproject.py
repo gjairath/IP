@@ -154,3 +154,22 @@ class SubProject:
         return [total_effort_left, self.members, date_string, time_string]
 
                 
+    def return_data_string(self, data):
+        '''
+        Params: [total_effort_left, self.members, date-string, time-string]
+
+        Returns the following string:
+        Effort Remaining:
+        Number of Members:
+        Estimated Finish date:
+        AI Advice: <TBD>
+        '''
+        
+        ret_string = ""
+        ret_string += "Number of Members: \t\t{} People\n".format(data[1])
+
+        ret_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(data[0] / 60)
+        ret_string += "Estimated Finish Date: \t\t{}\n".format(data[2])
+        ret_string += "AI Advice: \t\t\t<TBD>"
+        
+        return ret_string
