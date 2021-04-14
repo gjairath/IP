@@ -487,6 +487,14 @@ class Main_Screen(su.QMainWindow):
         
         self.active_project = active_project
 
+        # This may seem slightly irrelevant but it is for the SP.
+        # If you click another project with no SP's, clear the previous SP's data displayed.
+        # SP = SUB-PROJECT.
+        if (self.active_project.num_sub_tasks == 0 or self.isLabel == True):
+            self.flush_sp_table()
+            self.isLabel = False
+            if (self.canvas != None): self.canvas.hide()
+
         # ----------------------- Debugging ------------------------------
         if (self.debug_check.isChecked()):
                 # {button = (project, window, self.positionx, self.positiony)}
@@ -553,13 +561,6 @@ class Main_Screen(su.QMainWindow):
         
         Think as @onclick for subproject btns.
         '''        
-        
-        if (self.active_project.num_sub_tasks == 0):
-            self.flush_sp_table()
-            self.isLabel = False
-            if (self.canvas != None): self.canvas.hide()
-            
-
         sp_details = self.sender().text()
         sp_index = ""
         for substr in sp_details:
@@ -637,10 +638,10 @@ class Main_Screen(su.QMainWindow):
         
         print (list(self.active_sp.sp_dict.keys()),list(self.active_sp.sp_dict.values()) , active_sp_data[0])
 
-        fig = graph_u.get_sp_graph(list(self.active_sp.sp_dict.keys()), list(self.active_sp.sp_dict.values()))
+        fig = graph_u.get_sp_graph(list(self.active_sp.sp_dict.keys()), list(self.active_sp.sp_dict.values()), active_sp_data[0])
         self.canvas = FigureCanvas(fig)
         self.canvas.move(950,300)
-        self.canvas.resize(380,300)
+        self.canvas.resize(380,330)
 #        self.layout.addWidget(self.canvas)
         
         self.canvas.setParent(self.widget)
@@ -721,6 +722,10 @@ class Main_Screen(su.QMainWindow):
             if (edit_status == -1):
                 my_Error.edit_input_failure(self)
                 
+            
+            # Update data in real-time by triggering a programatic click.
+            self.active_sp_btn.click()
+                
         except:
             my_Error.click_sp_first(self)
             return
@@ -749,7 +754,11 @@ class Main_Screen(su.QMainWindow):
             if (self.active_sp.members == 0):
                 # We've deleted the last member, flush the floating table.
                 self.flush_sp_table()
-                
+                if (self.canvas != None): self.canvas.hide()
+
+            # Update data in real-time by triggering a programatic click.
+            self.active_sp_btn.click()
+
         except:
             my_Error.click_sp_first(self)
             return
