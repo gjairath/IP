@@ -1037,7 +1037,7 @@ class Main_Screen(su.QMainWindow):
         delete_members_btn.clicked.connect(self.delete_member_in_sp)
         
         
-        hide_data_btn = QPushButton("Toggle Meta Data", self)
+        hide_data_btn = QPushButton("Toggle Meta-Data", self)
         hide_data_btn.move(1250, 0)
         hide_data_btn.resize(100, 20)
         hide_data_btn.clicked.connect(self.hide_data)
