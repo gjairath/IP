@@ -37,6 +37,20 @@ else:
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 
+# This is dedpulicatoin, will fix with a .__init__ file.
+months_array = ["Padding [Unknown]",
+          "January",
+          "Febuary",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"]
 
 IP_VERSION = "IP Version 2f"
 
@@ -120,8 +134,15 @@ class Main_Screen(su.QMainWindow):
         self.sp_label = None
         # Islabel on screen for project?
         self.isLabel = False
-        
+        # This is different from the above. It behaves quite similarly but its different I promise
+        self.is_total_label = False        
 
+        self.project_label = None
+        
+        
+        self.hidden_meta_data = False
+        
+        self.get_total_project_meta_data()
                             
     def center_object(self, desired_object):
         """
@@ -171,6 +192,9 @@ class Main_Screen(su.QMainWindow):
         except:
             su.closeEvent()
         
+        print(reloaded_dict)
+        print ("\n\n")
+        print (dynamic_widgets)
         assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again."
         
         # Do what init UI does on first run minus the show, until data processing is done.
@@ -237,6 +261,10 @@ class Main_Screen(su.QMainWindow):
             # ... People trust his app without fear of getting sodomized.
         
         self.show_sub_project_names(self.manager.projects[list(self.manager.projects.keys())[0]][0].get_data())
+        
+        # set active button as the first project_button by default.
+        self.active_button = list(self.manager.projects.keys())[0]
+        
 #        self.show_new_sub_project_clutter(self.manager.projects[list(self.manager.projects.keys())[0]][0].display_data())
 
     def reload_delete_keys(self, some_project):
@@ -690,6 +718,10 @@ class Main_Screen(su.QMainWindow):
                 self.active_sp_btn.click()
             except:
                 print ("The click failed, however, data added.")
+
+            # If something is added, something must have changed.
+            # But this change is not needed if the ETA field was blank.
+            if(data[1][0] != " "): self.get_total_project_meta_data()
             
         except:
             my_Error.click_sp_first(self)
@@ -735,6 +767,10 @@ class Main_Screen(su.QMainWindow):
             
             # Update data in real-time by triggering a programatic click.
             self.active_sp_btn.click()
+            
+            # If something is edited, something must have changed.
+            # But this change is not needed if the ETA field was blank.
+            if(data[1][0] != " "): self.get_total_project_meta_data()
                 
         except:
             my_Error.click_sp_first(self)
@@ -768,6 +804,10 @@ class Main_Screen(su.QMainWindow):
 
             # Update data in real-time by triggering a programatic click.
             self.active_sp_btn.click()
+
+            # If something is deleted, something must have changed.
+            # But this change is not needed if the ETA field was blank.
+            if(data[1][0] != " "): self.get_total_project_meta_data()
 
         except:
             my_Error.click_sp_first(self)
@@ -890,7 +930,58 @@ class Main_Screen(su.QMainWindow):
         
         # The project on screen has changed, reload delete keys.
         self.reload_delete_keys(new_project)
+        
+        
+    def get_total_project_meta_data(self):
+        '''
+        Find the total ETA/Findate for everything.
+                # Projects:             A Dictionary that contains {button: (projects, window, x, y)}
 
+        '''
+        # in minutes
+        total_time_left = 0
+        unique_member_set = set()
+        
+        all_names_in_sp_list = list()
+        
+        for buttons in self.manager.projects:
+            project = self.manager.projects[buttons][0]
+            for subprojects in project.sub_tasks:
+                # This returns an array with meta-data.
+                data_array = subprojects.process_and_return_data()
+                total_time_left += int(data_array[0])
+                
+                all_names_in_sp_list.extend(list(subprojects.sp_dict.keys()))
+        
+        for members in all_names_in_sp_list:
+            unique_member_set.add(members)
+        
+        from datetime import datetime, timedelta
+        total_fin_date = datetime.now() + timedelta(hours = total_time_left)
+        date_string = str(total_fin_date.day) + " " + str(months_array[total_fin_date.month]) + " " + str(total_fin_date.year)
+        time_string = total_fin_date.strftime("%I:%M %p")
+        
+        data_string = ""
+        if (total_time_left * 60  < 60):
+            data_string += "Effort Remaining: \t\tLess than an hour left.\n"
+        else:
+            data_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(total_time_left)
+        data_string += "Estimated Finish Date: \t\t{} AT {}\n".format(date_string, time_string)
+        data_string += "Number of Unique-Members: \t{} People".format(len(unique_member_set))
+        
+        if (self.is_total_label == True and self.project_label != None):
+            self.project_label.hide()
+ 
+           
+        self.project_label = QLabel(data_string, self)
+        self.project_label.move(560,450)
+#        self.project_label.resize(300,100)
+        self.project_label.setFont(QFont('Times', 10))
+        self.project_label.adjustSize()
+
+        self.project_label.show()
+        self.is_total_label = True
+        
     def add_new_project_button(self):
         '''
         Adds the "new project" button on to the screen
@@ -945,6 +1036,12 @@ class Main_Screen(su.QMainWindow):
         delete_members_btn.resize(100, 20)
         delete_members_btn.clicked.connect(self.delete_member_in_sp)
         
+        
+        hide_data_btn = QPushButton("Toggle Meta Data", self)
+        hide_data_btn.move(1250, 0)
+        hide_data_btn.resize(100, 20)
+        hide_data_btn.clicked.connect(self.hide_data)
+        
 
         # This adds a checkbox on the screen it will be removed later its just handy for debugging.
         # ----------------------- Debugging ------------------------------        
@@ -971,7 +1068,22 @@ class Main_Screen(su.QMainWindow):
         e.setDropAction(Qt.MoveAction)
         e.accept()
         
-            
+    def hide_data(self):
+        '''
+        Hide meta data as per the emperors command.
+        This is a super cheeky function lmao
+        '''
+        try:
+            if (self.hidden_meta_data == True):
+                self.active_sp_btn.click()
+                self.hidden_meta_data = False
+            else:
+                self.active_button.click()
+                self.hidden_meta_data = True
+        except:
+            print (self.active_button)
+            return
+        
     def flush_delete_sp_buttons(self):
         '''
         A function to remove unnesscary widgets from screen when the last project is deleted or in ..

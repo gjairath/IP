@@ -54,10 +54,10 @@ def conv_to_hours(random_time, random_time_mode):
         ret += random_time * 24
         
     elif (random_time_mode == "Hours"):
-        ret += random_time * 60
+        ret += random_time
         
     else:
-        ret += random_time
+        ret += random_time / 60
         
     return ret
 

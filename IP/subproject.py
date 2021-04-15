@@ -137,7 +137,7 @@ class SubProject:
                     total_effort_left += time_left
                 
                 else:
-                    total_effort_left += time_left
+                    total_effort_left += time_left / 60
                     
         from datetime import datetime, timedelta
         eta_from_now = datetime.now() + timedelta(minutes=total_effort_left)
@@ -168,7 +168,7 @@ class SubProject:
         ret_string = ""
         ret_string += "Number of Members: \t\t{} People\n".format(data[1])
         print ("HEY", data)
-        if (data[0]  < 60):
+        if (data[0] * 60  < 60):
             ret_string += "Effort Remaining: \t\tLess than an hour left.\n"
         else:
             ret_string += "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(data[0])
