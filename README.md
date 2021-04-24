@@ -9,4 +9,4 @@ Try python ip_main.py
 .\
 .\
 .\
-An intelligent planner for myself to replace the need of i-notes and word-pad files or word-files so I can find ways to not do things and have a computer shout at me.
+An intelligent planner for myself to replace the need of i-notes and word-pad files or word-files so I can find ways to not do things and have a computer track those things instead of actually doing them. 
