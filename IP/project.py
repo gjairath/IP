@@ -22,7 +22,7 @@ class Project:
     
     def __init__(self):
         # A new class is made, provide the user with a basic template.
-        placeholder = random.randint(1,10000)
+        placeholder = 0
         self.name = "Untitled_Project {}".format(placeholder)        
         self.is_active = True                
         empty_sub_task = self.make_sub_project_object(placeholder)

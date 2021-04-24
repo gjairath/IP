@@ -861,8 +861,9 @@ class Main_Screen(su.QMainWindow):
             self.reload_delete_keys(self.active_project)
 
         self.active_project_label = QLabel(self.active_project.name, self)
-        self.active_project_label.move(540, 40)
-        self.active_project_label.setFont(QFont('Times', 10))
+        self.active_project_label.move(540, 65)
+        self.active_project_label.setFont(QFont('Times', 15))
+        self.active_project_label.adjustSize()
         self.active_project_label.show()
 
     
