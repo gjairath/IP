@@ -171,7 +171,7 @@ class Main_Screen(su.QMainWindow):
 
         # To stop deduplicating code, reinit uses the same code block above.
         if (show == 1):
-            self.show()
+            self.showMaximized()
 
     def sort(self, sub_li):
         '''
@@ -253,7 +253,7 @@ class Main_Screen(su.QMainWindow):
 
         # Reload delete keys, show the window, show-new-sub-project button.
         self.reload_delete_keys(self.manager.projects[list(self.manager.projects.keys())[0]][0])
-        self.show()
+        self.showMaximized()
         
         # This scary line just shows the first projects subproject instances on a REINIT.
             # lol I saw a video called "Trust by Design" on TedEx where the airbnb guy talked about how ...

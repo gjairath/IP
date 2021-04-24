@@ -85,6 +85,8 @@ class Dialog(QDialog):
         self.new_project_name.setPlaceholderText(self.active_project.name)
 
         self.form_group_box.setLayout(self.layout)
+        
+        self.move(230, 90)
                 
     def create_group_box_add_members(self):
         '''
