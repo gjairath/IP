@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import  (QComboBox, QDialog,
                              QLabel, QLineEdit,\
                              QVBoxLayout, QWidget, QCheckBox)
 
-from my_Error import my_Error
+from my_error import my_Error
 # Lol I wrote this i forgot what it does.
 # NOte to self: This is the dialog class for "EDIT PROJECT"
 
@@ -59,33 +59,30 @@ class Dialog(QDialog):
         
     def create_group_box(self):
         self.form_group_box = QGroupBox("{}".format(self.active_project.name))
-    
-        self.sub_project_idx = QComboBox()
-        self.new_project_name = QLineEdit()
-        self.new_sub_task_name = QLineEdit()
-        
-        
+            
+        self.new_sub_task_names_array = []
         self.layout = QFormLayout()
-                
+        
+        self.new_project_name = QLineEdit()
         self.layout.addRow(QLabel("New Project Name:"), self.new_project_name)
         # This is like a new line, im really smart lol.
         self.layout.addRow(QLabel(""))
         
-        self.layout.addRow(QLabel("Sub-Project Index to change:"), self.sub_project_idx)
-        self.layout.addRow(QLabel("New Name of this Subtask:"), self.new_sub_task_name)
-
+        
         # indices is a word? Yeah no we speak my english here.
         sub_task_indexes = []
         for subprojects in self.active_project.sub_tasks:
+            self.new_sub_task_name = QLineEdit()
+            self.new_sub_task_name.setPlaceholderText("Name of Subtask")
+
+            self.layout.addRow(QLabel("New Name of Idx {}:".format(str(subprojects.idx))), self.new_sub_task_name)
+            
+            self.new_sub_task_names_array.append(self.new_sub_task_name)
+
             sub_task_indexes.append(str(subprojects.idx))
             
-        self.sub_project_idx.clear()
-        self.sub_project_idx.addItems(sub_task_indexes)
-
-
-
+        
         self.new_project_name.setPlaceholderText(self.active_project.name)
-        self.new_sub_task_name.setPlaceholderText("Name of Subtask")
 
         self.form_group_box.setLayout(self.layout)
                 
@@ -232,13 +229,15 @@ class Dialog(QDialog):
         
     def extract_data(self):        
         # Get the new project name
+        ret = []
         new_project_name = self.extract_qline(self.new_project_name)
-        new_sub_task_name = self.extract_qline(self.new_sub_task_name)
-        # Get the Subtask that needs changing.
-        sub_task_to_change = self.extract_qbox(self.sub_project_idx)
+        ret.append(new_project_name)
         
-        return [new_project_name, sub_task_to_change, new_sub_task_name]
-
+        for new_sub_task_names in self.new_sub_task_names_array:
+            new_sub_task_name = self.extract_qline(new_sub_task_names)
+            ret.append(new_sub_task_name)
+            
+        return ret
     
     def extract_data_for_deletion(self):
         '''

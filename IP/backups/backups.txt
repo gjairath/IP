@@ -1,31 +1,16 @@
 =====================
 Project + 0
 
-0. Empty-Sub-Task	Num_Members:2
-
-		Garvit		69 Minutes		04/24/2021
-		Satan		 Minutes		
+0. Stuff	Num_Members:0
 
 
-1. Empty-Sub-Task	Num_Members:0
+1. More Stuff	Num_Members:0
 
 
-2. Empty-Sub-Task	Num_Members:0
+2. Wow Stuff	Num_Members:0
 
 
-3. Empty-Sub-Task	Num_Members:0
-
-
-4. Empty-Sub-Task	Num_Members:0
-
-
-5. Empty-Sub-Task	Num_Members:0
-
-
-6. Empty-Sub-Task	Num_Members:0
-
-
-7. Empty-Sub-Task	Num_Members:0
+3. So much stuff	Num_Members:0
 =====================
 CP + 1
 

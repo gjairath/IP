@@ -17,7 +17,7 @@ import gui_helper as gui_h
 import saving_utility as su
 import graph_utility as graph_u
 
-from my_Error import my_Error
+from my_error import my_Error
 from Dialogues import Dialog
 from project import Project
 
@@ -349,11 +349,13 @@ class Main_Screen(su.QMainWindow):
             # Further, the button holding this value in the local cache should ALSO be changed.
             
 # ----------------------------------------------------------------------------------------
-            
-            index_of_subtask = self.find_sub_task_by_index(self.active_project, int(data[1]))
-
-            if(data[2] != ""): self.active_project.sub_tasks[index_of_subtask].name = data[2]
-            
+            del data[0]
+            for idx, values in enumerate(data):
+                # data is an array with new names of subtasks
+                
+                if (values != ""):
+                    self.active_project.sub_tasks[idx].name = values
+                        
             _, project_btn = self.find_button_by_project(self.active_project)
             project_btn.click()
         
