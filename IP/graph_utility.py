@@ -152,18 +152,16 @@ def get_sp_graph(name_array, tuple_data_array, effort_last):
     fig.set_facecolor('lightgrey')
     
     # Equal aspect ratio ensures that pie is drawn as a circle
+    
+    # This is stupid, it basically toggles the title based on max time.
+    # So, if X and Y are members with time say 5 minutes an 3 hours, the title must show ~ 3 hours.
+    
+    # It also shows which members data is being omitted, since user might enter dumb data.
+    
     plt.axis('equal')
     if (is_bad_data == False):
         if (effort_last <= 0):
             plt.title("Less than an hour left", fontsize = 'small')
-
-            # To avoid redudant code with 6 elif statements and display the MAX of time I've written this beauty.
-            
-            # If a user adds a member with 4 years ETA then someone with 4 days, the % on the 3.14chart will be....
-            # .... in hours, that doesn't matter, because ratio is ratio.
-            
-            # However, the graph TITLE must change accordingly to display the MAX of all values.
-            # For the above example, the ETA must be in # years. To compensate, the QLabel shows in hours.
         else:
             
             max_time, max_value = convert_max_string_to_string(max_string, total_hours)

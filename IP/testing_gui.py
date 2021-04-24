@@ -286,15 +286,21 @@ class Main_Screen(su.QMainWindow):
         #        self.debug_check.move(400,0)    
         #   The delete keys go to the right of the check mark. so this is useful if someone fiddles with this.
         posx = 540
-        #        new_sub_project_btn.resize(100,20)
+        posy = 0
+        is_second_row = True
         for i in range(some_project.num_sub_tasks):
             new_del_btn = QPushButton("Delete {}".format(i+1), self)
-            new_del_btn.move(posx,0)
+            new_del_btn.move(posx, posy)
             new_del_btn.resize(85,20)
             new_del_btn.show()
             
             self.delete_widgets.append(new_del_btn)
             posx += 85
+            
+            if (i >= 3 and is_second_row == True):
+                posy = 20
+                posx = 540
+                is_second_row = False
             
             # Connect the newly formed fresh keys from the oven.
             self.connect_delete_keys()
@@ -807,7 +813,7 @@ class Main_Screen(su.QMainWindow):
 
             # If something is deleted, something must have changed.
             # But this change is not needed if the ETA field was blank.
-            if(data[1][0] != " "): self.get_total_project_meta_data()
+            if(len(data) >= 2 and data[1][0] != " "): self.get_total_project_meta_data()
 
         except:
             my_Error.click_sp_first(self)

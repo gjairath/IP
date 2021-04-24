@@ -46,7 +46,7 @@ class SubProject:
         self.members += 1
         
         
-        print ("Aded data to: {}\t{}".format(self.name, self.sp_dict))
+        print ("Added data to: {}\t{}".format(self.name, self.sp_dict))
         
     def edit_data(self, data):
         '''

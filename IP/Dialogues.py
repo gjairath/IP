@@ -107,13 +107,10 @@ class Dialog(QDialog):
         self.eta_raw_value = QLineEdit()
         self.fin_date = QLineEdit()
 
-        self.layout = QFormLayout()
-        
+        self.layout = QFormLayout()        
         # This is a bit complicated so I'll explain for future-me:
             # TL;DR addRow doesnt have a method for 3 widgets.
-            # Thus you use nested widget + 1 widget for the 2-widget method.
-        
-            # I got this idea from StOverflow.
+            # Thus you use nested widget + 1 widget for the 2-widget method.        
         hBoxLayout = QHBoxLayout()
         hBoxLayout.addWidget(self.eta_raw_value)
         hBoxLayout.addWidget(self.eta_options)
