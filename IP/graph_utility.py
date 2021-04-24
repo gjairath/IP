@@ -82,7 +82,7 @@ def convert_max_string_to_string(max_s, total_hours):
     elif (max_s == 1):
         ret = "Hours"
     else:
-        ret = "Minutes"
+        ret = "Hours"
 
     return ret, total_hours
 
@@ -104,7 +104,7 @@ def get_sp_graph(name_array, tuple_data_array, effort_last):
     hour_data_for_names = []
     new_name_data = []
     bad_data = []
-    total_hours = 0
+    total_hours = 0.0
     
     for idx, value in enumerate(tuple_data_array):
         # value is basically an array of values related to keys in sp_dict.
@@ -115,10 +115,10 @@ def get_sp_graph(name_array, tuple_data_array, effort_last):
         
         if (random_time.isnumeric()):
             # The array comes in like this: ['3 hours', '3 years', '4 days']   
-            num_hours = conv_to_hours(int(random_time), tuple_string[1])
+            num_hours = conv_to_hours(float(random_time), tuple_string[1])
             total_hours += num_hours
             
-            hour_data_for_names.append((int(num_hours)) * (100 / effort_last))
+            hour_data_for_names.append((float(num_hours)) * (100 / effort_last))
             new_name_data.append(name_array[idx])
             
         else:

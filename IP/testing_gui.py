@@ -93,7 +93,7 @@ class Main_Screen(su.QMainWindow):
         self.top = 10
         self.width = 640
         self.height = 480
-        self.existing_offsety = 25
+        self.existing_offsety = 120
         
 #        self.setStyleSheet("background-color:lightgrey;")
 
@@ -112,6 +112,8 @@ class Main_Screen(su.QMainWindow):
 
         # Taken from saving_utility.py Check superclass
         arr = self.restored_array
+        self.active_sp = None
+        self.active_project_label = None
         
         if (arr != []):
             # Re-initialize all data.
@@ -127,7 +129,6 @@ class Main_Screen(su.QMainWindow):
             
         
         # Active SP on the screen.
-        self.active_sp = None
         self.test_label = None
         self.active_sp_btn = None
         self.canvas = None
@@ -140,8 +141,7 @@ class Main_Screen(su.QMainWindow):
         self.project_label = None
         
         
-        self.hidden_meta_data = False
-        
+        self.hidden_meta_data = False        
         self.get_total_project_meta_data()
                             
     def center_object(self, desired_object):
@@ -242,7 +242,6 @@ class Main_Screen(su.QMainWindow):
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
             generic_window_sub_str = generic_window.display_data()
             
-            self.show_new_sub_project_clutter(generic_window_sub_str)
             self.isLabel = True
             
             print ("\n\n")
@@ -508,6 +507,7 @@ class Main_Screen(su.QMainWindow):
         '''                
         desired_button = self.find_button_by_text(self.sender().text())
             # {button = (project, window, self.positionx, self.positiony)}
+ 
         active_project = self.manager.projects[desired_button][0]
         
         self.active_project_title = active_project.name
@@ -822,6 +822,9 @@ class Main_Screen(su.QMainWindow):
         
         Params: Array containing subprojects for THIS project.
         '''
+                        
+        if (self.active_sp != None):
+            previous_active_sp_idx = self.active_sp.idx
         
         if (self.subproject_widgets != []):
             # There is already a bunch of subprojects on screen, delete them.
@@ -830,12 +833,21 @@ class Main_Screen(su.QMainWindow):
                 widget.deleteLater()
             
             self.subproject_widgets = []
-
         
-        posy = 25
+        if(self.active_project_label != None):
+            self.active_project_label.clear()
+            self.active_project_label.deleteLater()
+            
+        
+        posy = 120
         for sp in sub_project_list:
+
             new_sp_btn = QPushButton(str(sp.idx) + ".\t" + sp.name, self)
             new_sp_btn.clicked.connect(self.connect_sp_keys)
+
+            if (self.active_sp != None and sp.idx == previous_active_sp_idx):
+                    self.active_sp_btn = new_sp_btn
+
             # The delete key above it is at (540,0)
             new_sp_btn.move(540, posy)
             new_sp_btn.resize(400, 35)
@@ -848,30 +860,11 @@ class Main_Screen(su.QMainWindow):
         if (self.active_project != None):
             self.reload_delete_keys(self.active_project)
 
-    
-    def show_new_sub_project_clutter(self, string, project=None):
-        '''
-        A function to clear the subproject label on screen incase a new project is clicked.
-        This shows a dirty label.
-        
-        
-        It's useless now since I changed the SP class, I dont have the will to remove it. 
-        It took me a while to write this.
-        '''
-        return
-    
-        if(self.isLabel):
-            self.string_label.clear()
-            self.isLabel = False
+        self.active_project_label = QLabel(self.active_project.name, self)
+        self.active_project_label.move(540, 40)
+        self.active_project_label.setFont(QFont('Times', 10))
+        self.active_project_label.show()
 
-        self.string_label = QLabel(string, self)
-        self.string_label.move(550,30)
-        self.string_label.show()
-        self.string_label.adjustSize()
-        self.isLabel = True 
-
-        if (project != None):
-            self.reload_delete_keys(project)
     
     def new_project_window(self):                
         '''
@@ -889,9 +882,7 @@ class Main_Screen(su.QMainWindow):
         
         # Make a brand new window.
         new_window = gui_h.New_Project_Window(new_project)
-        new_project_sub_string = new_project.display_data()
 
-        self.show_new_sub_project_clutter(new_project_sub_string)
         self.isLabel = True
 
         # Finally, increment the total tally of projects existing.
@@ -900,6 +891,7 @@ class Main_Screen(su.QMainWindow):
         # Make a brand new button.
         
         existing_project_btn = Button("{} + {}".format(button_name, self.counter), self)        
+
         self.manager.add(new_project, new_window, existing_project_btn)
         
         new_posx = self.manager.projects[existing_project_btn][2]
@@ -974,12 +966,14 @@ class Main_Screen(su.QMainWindow):
  
            
         self.project_label = QLabel(data_string, self)
-        self.project_label.move(560,450)
+        self.project_label.move(10,40)
 #        self.project_label.resize(300,100)
         self.project_label.setFont(QFont('Times', 10))
         self.project_label.adjustSize()
+        self.project_label.setStyleSheet("background-color: lightpink")
 
         self.project_label.show()
+        
         self.is_total_label = True
         
     def add_new_project_button(self):
@@ -1073,6 +1067,17 @@ class Main_Screen(su.QMainWindow):
         Hide meta data as per the emperors command.
         This is a super cheeky function lmao
         '''
+        
+        #http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        
+        # This was interesting, C++ is used by PyQt and deletes my SP button so self.active_sp_btn is gone.
+        # BUT python's garbage collector doesn't notice that, since PYQT uses C++
+        
+        # thats why self isn't enough. this will cause runtime error 
+        
+        # When the renewed sp_buttons are showed, the appr. update happens in show_sub_project_names
+            # That's faster than the previous O(num_subprojects) solution
+        
         try:
             if (self.hidden_meta_data == True):
                 self.active_sp_btn.click()
@@ -1080,6 +1085,8 @@ class Main_Screen(su.QMainWindow):
             else:
                 self.active_button.click()
                 self.hidden_meta_data = True
+                
+                self.last_sp_btn_index = self.active_sp.idx
         except:
             print (self.active_button)
             return
