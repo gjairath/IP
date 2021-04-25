@@ -199,12 +199,12 @@ class Main_Screen(su.QMainWindow):
         if (len(reloaded_dict) != len(dynamic_widgets)):
             print ("\n\n\n\n")
             
-            print ("Your data is corrupted. dont worry, though I dont know why, I do have a fix.")
+            print ("Your data is corrupted. dont worry, although I dont know why, I do have a fix.")
             print ("\nDrumroll...")
-            print ("\nYour data is deleted, but hey, atleast you have a text file in backups/ lol")
-            print ("\nI think it has something to do with delete and add working concurrently, I'll fix it later")
+            print ("\nYour data has been deleted.\nBut hey, atleast you have a text file in the backups/ directory lol")
+            print ("\nI think it has something to do with delete and add being used concurrently, I'll fix it later")
             
-            print ("\nBTW the backups.txt file overwrites with each launch.")
+            print ("\nBTW the backups.txt file overwrites with each launch.\n\n\n")
             self.delete_every_setting()
 
             exit()
