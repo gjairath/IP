@@ -728,8 +728,7 @@ class Main_Screen(su.QMainWindow):
                 print ("The click failed, however, data added.")
 
             # If something is added, something must have changed.
-            # But this change is not needed if the ETA field was blank.
-            if(data[1][0] != " "): self.get_total_project_meta_data()
+            self.get_total_project_meta_data()
             
         except:
             my_Error.click_sp_first(self)
@@ -815,7 +814,7 @@ class Main_Screen(su.QMainWindow):
 
             # If something is deleted, something must have changed.
             # But this change is not needed if the ETA field was blank.
-            if(len(data) >= 2 and data[1][0] != " "): self.get_total_project_meta_data()
+            self.get_total_project_meta_data()
 
         except:
             my_Error.click_sp_first(self)
