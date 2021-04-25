@@ -97,6 +97,8 @@ class QMainWindow(QtWidgets.QMainWindow):
         self.save_sub_projects()
         self.save(names_to_avoid)
         
+        #self.delete_every_setting()
+        
     def get_handled_types(self):
         return [QPushButton]
 
@@ -169,6 +171,8 @@ class QMainWindow(QtWidgets.QMainWindow):
               
        return ret_val
 
+    def delete_every_setting(self):
+        self.settings.clear()
 
     def add_setting(self, name, value):
         name_prefix = f"{self.settings_ui_user_name}/"

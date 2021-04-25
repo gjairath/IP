@@ -12,7 +12,7 @@ Created on Wed Mar 17 23:10:34 2021
 
 @author: garvi
 """
-
+import sys
 import gui_helper as gui_h
 import saving_utility as su
 import graph_utility as graph_u
@@ -195,7 +195,19 @@ class Main_Screen(su.QMainWindow):
         print(reloaded_dict)
         print ("\n\n")
         print (dynamic_widgets)
-        assert len(reloaded_dict) == len(dynamic_widgets), "\n\nYour data is corrupted, you modified the dat file or HKEY directory. Delete your entire HKEY to start again."
+        
+        if (len(reloaded_dict) != len(dynamic_widgets)):
+            print ("\n\n\n\n")
+            
+            print ("Your data is corrupted. dont worry, though I dont know why, I do have a fix.")
+            print ("\nDrumroll...")
+            print ("\nYour data is deleted, but hey, atleast you have a text file in backups/ lol")
+            print ("\nI think it has something to do with delete and add working concurrently, I'll fix it later")
+            
+            print ("\nBTW the backups.txt file overwrites with each launch.")
+            self.delete_every_setting()
+
+            exit()
         
         # Do what init UI does on first run minus the show, until data processing is done.
         self.init_UI(show = 0)
@@ -434,6 +446,8 @@ class Main_Screen(su.QMainWindow):
         
         # sometimes, the user deletes the last project, dont leave the lingering subtasks on screen
         print(self.active_project.name)
+        
+        self.get_total_project_meta_data()
     
     def connect_delete_keys(self):
         '''
@@ -981,6 +995,11 @@ class Main_Screen(su.QMainWindow):
         self.project_label.setStyleSheet("background-color: lightpink")
 
         self.project_label.show()
+        
+        self.info_label = QLabel("(Hold right-click to drag projects)", self)
+        self.info_label.move(540,90)
+        self.info_label.adjustSize()
+        self.info_label.show()
         
         self.is_total_label = True
         
