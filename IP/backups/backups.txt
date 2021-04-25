@@ -1,0 +1,16 @@
+=====================
+CP + 1
+
+0. Empty-Sub-Task	Num_Members:0
+=====================
+French + 3
+
+0. Empty-Sub-Task	Num_Members:0
+=====================
+Resume, Epix + 4
+
+0. Empty-Sub-Task	Num_Members:0
+=====================
+Rsrch + 4
+
+0. Empty-Sub-Task	Num_Members:0
