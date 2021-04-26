@@ -1,7 +1,0 @@
-=====================
-123 + 0
-
-0. James bond	Num_Members:2
-
-		Garvit		9.0 Minutes		
-		Marie, Anne-Marie		69 Minutes		

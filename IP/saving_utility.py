@@ -172,8 +172,11 @@ class QMainWindow(QtWidgets.QMainWindow):
        ret_val = [self.settings.value(i) for i in ret]
        
        print ("THIS", key_list)
-       last_login_time = self.settings.value(key_list[0])
-              
+       try:
+           last_login_time = self.settings.value(key_list[0])
+       except:
+           last_login_time = None
+           
        return last_login_time, ret_val
 
     def delete_every_setting(self):
