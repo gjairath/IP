@@ -86,6 +86,13 @@ def convert_max_string_to_string(max_s, total_hours):
 
     return ret, total_hours
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def get_sp_graph(name_array, tuple_data_array, effort_last):
     '''
     This graphs the SP time left and member data.
@@ -113,7 +120,7 @@ def get_sp_graph(name_array, tuple_data_array, effort_last):
         tuple_string = value[0].split(' ')
         random_time = tuple_string[0]
         
-        if (random_time.isnumeric()):
+        if (is_number(random_time)):
             # The array comes in like this: ['3 hours', '3 years', '4 days']   
             num_hours = conv_to_hours(float(random_time), tuple_string[1])
             total_hours += num_hours

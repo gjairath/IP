@@ -35,6 +35,16 @@ class SubProject:
         # The len of this dict is numm_members
         self.sp_dict = {}
     
+    def is_number(self, s):
+        '''
+        A simple function to check if something is numeric or not with float support
+        '''
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+        
     def process_and_return_data(self):
         '''
         Function to process SP data, return it to show in the GUI screen.
@@ -59,8 +69,13 @@ class SubProject:
             
             # combo_box option is raw_string_array[1]
             
-            if (time_left_int.isnumeric() == True):
-                time_left = int(time_left_int)
+            if (self.is_number(time_left_int) == True):
+                
+                try:
+                    time_left = int(time_left_int)
+                except:
+                    time_left = int(float(time_left_int))
+                    
                 if (raw_string_array[1] == "Years"): 
                     total_effort_left += time_left * 365 * 24
                 
