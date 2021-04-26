@@ -227,7 +227,7 @@ class Dialog(QDialog):
         eta_raw_value = children[1].text()
         eta_option_chosen = children[2].currentText()
         
-        return (eta_raw_value + " " + eta_option_chosen)
+        return ((eta_raw_value) + " " + eta_option_chosen)
         
     def extract_data(self):        
         # Get the new project name

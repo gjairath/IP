@@ -34,67 +34,6 @@ class SubProject:
         
         # The len of this dict is numm_members
         self.sp_dict = {}
-        
-
-    def add_data(self, data):
-        '''
-        Accepts data from the "Add member" button.
-                data = [person_name, eta, fin_Date]
-        '''
-        
-        self.sp_dict[data[0]] = (data[1], data[2])
-        self.members += 1
-        
-        
-        print ("Added data to: {}\t{}".format(self.name, self.sp_dict))
-        
-    def edit_data(self, data):
-        '''
-        Accepts data from gui and basically changes the sp_dict for whichever higher project in charge of this 
-                ... bad boy
-                
-                data = [person_name, eta, fin_Date]
-        '''
-        is_found = False
-        for keys in self.sp_dict:
-            if (keys == data[0]):
-                self.sp_dict[keys] = (data[1], data[2])
-                is_found = True
-                
-        if (is_found == False):
-            return -1
-        # Dont change self.members. It's edit.
-        print ("Editd data to: {}\t{}".format(self.name, self.sp_dict))
-
-    def delete_data(self, data):
-        '''
-        Called from gui.py, onclick.
-        data is an array containing all names to delete.
-        '''
-        
-        # I forgot, if u delete and traverse the same dict, it causes problems.
-        for names in data:
-            del self.sp_dict[names]
-            
-            # MAN OVERBOARD!
-            self.members -= 1
-            
-        print ("Deleted these names: {}".format(data))
-        
-        
-    def find_key_in_dict(self, data):
-        '''
-        A Function to find if a key exists in a dictionary,
-        
-        Params: Data, ideally a name or a string.
-        '''
-        
-        for keys in self.sp_dict:
-            if (keys == data):
-                return 1
-            
-        return -1
-    
     
     def process_and_return_data(self):
         '''
@@ -176,3 +115,86 @@ class SubProject:
         ret_string += "AI Advice: \t\t\t<TBD>"
         
         return ret_string
+
+
+    def add_data(self, data):
+        '''
+        Accepts data from the "Add member" button.
+                data = [person_name, eta, fin_Date]
+        '''
+        time_array = data[1].split(" ")
+        num_time = time_array[0]
+        time_mode = time_array[1]
+        
+        
+        self.sp_dict[data[0]] = (float(num_time), time_mode, data[2])
+        self.members += 1
+        
+        
+        print ("Added data to: {}\t{}".format(self.name, self.sp_dict))
+        
+    def edit_data(self, data):
+        '''
+        Accepts data from gui and basically changes the sp_dict for whichever higher project in charge of this 
+                ... bad boy
+                
+                data = [person_name, eta, fin_Date]
+        '''
+        is_found = False
+        for keys in self.sp_dict:
+            if (keys == data[0]):
+                self.sp_dict[keys] = (data[1], data[2])
+                is_found = True
+                
+        if (is_found == False):
+            return -1
+        # Dont change self.members. It's edit.
+        print ("Editd data to: {}\t{}".format(self.name, self.sp_dict))
+
+    def delete_data(self, data):
+        '''
+        Called from gui.py, onclick.
+        data is an array containing all names to delete.
+        '''
+        
+        # I forgot, if u delete and traverse the same dict, it causes problems.
+        for names in data:
+            del self.sp_dict[names]
+            
+            # MAN OVERBOARD!
+            self.members -= 1
+            
+        print ("Deleted these names: {}".format(data))
+        
+
+    def update_sp_dicts(self):
+        '''
+        An hour has passed, change all the data.
+        '''
+        
+        for members in self.sp_dict:
+            
+            # The tuple pair is (eta, fin_date)
+            # Eta can be anything, 55 minutes or 55 years [<- wat?]
+            time_array = self.sp_dict[members][0].split(' ')
+            
+            num_time = time_array[0]
+            time_mode = time_array[1]
+            
+            if (time_mode == "Years"):
+                pass
+            
+            pass
+    
+    def find_key_in_dict(self, data):
+        '''
+        A Function to find if a key exists in a dictionary,
+        
+        Params: Data, ideally a name or a string.
+        '''
+        
+        for keys in self.sp_dict:
+            if (keys == data):
+                return 1
+            
+        return -1

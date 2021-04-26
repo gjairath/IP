@@ -182,7 +182,7 @@ class Main_Screen(su.QMainWindow):
             self.last_logon_time = current_time
         else:
             if (self.last_logon_time.hour() - current_time.hour() >= 1 and \
-                self.last_logon_time.minute() - current_time.minute() == 0):
+                self.last_logon_time.minute() - current_time.minute() >= 0):
                 self.time_changed = True
                 
         label_time = current_time.toString('hh:mm:ss')
@@ -1089,6 +1089,20 @@ class Main_Screen(su.QMainWindow):
         new_project_label_txt += current_project_label_txt[idx_to_change:]
         
         self.project_label.setText(new_project_label_txt)
+        
+        
+        
+        # if we've come this far, every single project's subproject's member must be updated to reflect this change.
+            # If the ETA was less than an hour, remove him.
+            # If not, just subtract an hour.
+        
+        # This change will ripple into the SP data and so forth since data-GUI is abstracted safely as model-view
+        
+        for buttons in self.manager.projects:
+            #{button: (projects, window, x, y)}
+            
+            for subprojects in self.manager.projects[buttons].sub_tasks:
+                subprojects.update_sp_dicts()
         pass
         
         
