@@ -30,7 +30,7 @@ class QMainWindow(QtWidgets.QMainWindow):
         print(self.settings.fileName()) 
         
         
-        ra = self.restore()
+        self.last_logon_time, ra = self.restore()
         self.restored_array = []
 
         if (ra != []):
@@ -144,7 +144,9 @@ class QMainWindow(QtWidgets.QMainWindow):
                     if value is not None:
                         self.settings.setValue(name_prefix + child_name, value)
                         self.save_counter += 1
-                        
+        
+        time_val = "Last-Login"
+        self.settings.setValue(name_prefix + time_val, self.last_logon_time)
                                     
     def split_N(self, source, step):   
         return [source[i::step] for i in range(step)]
@@ -168,8 +170,11 @@ class QMainWindow(QtWidgets.QMainWindow):
        ret = [i for i in key_list if button_id in i]
        
        ret_val = [self.settings.value(i) for i in ret]
+       
+       
+       last_login_time = self.settings.value(key_list[0])
               
-       return ret_val
+       return last_login_time, ret_val
 
     def delete_every_setting(self):
         self.settings.clear()

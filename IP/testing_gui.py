@@ -24,7 +24,7 @@ from project import Project
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, \
                             QInputDialog, QCheckBox, QShortcut, QWidget, QGridLayout, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QKeySequence, QDrag, QFont
-from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtCore import Qt, QMimeData, QTimer, QTime
 
 import pickle
 
@@ -122,10 +122,12 @@ class Main_Screen(su.QMainWindow):
             self.init_UI()
             
         if (arr != []):
+            # This means this is the re-init.
             self.active_project_title = self.manager.projects[list(self.manager.projects.keys())[0]][0].name
         else:
             self.active_project_title = ""
             self.active_project = None
+            self.last_logon_time = None
             
         
         # Active SP on the screen.
@@ -141,9 +143,60 @@ class Main_Screen(su.QMainWindow):
         self.project_label = None
         
         
+        # An array holding meta-data
+        self.meta_data = []
+        
         self.hidden_meta_data = False        
         self.get_total_project_meta_data()
                             
+        self.add_timer()
+        self.time_changed = False
+    
+    def add_timer(self):
+        '''
+        Adds a timer to the overlay
+        '''
+        self.label_time = QLabel(self)
+        self.label_time.move(0,600)
+        timer = QTimer(self)
+        timer.timeout.connect(self.showTime)
+        timer.start(1000)
+        
+    # TODO
+    def showTime(self):
+        '''
+        Using the QT timer to programmatically update the time, display it on the title window.
+        
+        
+        This doesn't work real-time, if the user is online the save event wont happen.
+        It's not a bug it's a feature. 
+        
+        I could save it, reinit it real-time in like 2 lines with modules.
+        but it seems useless to do it real time.
+        '''
+        current_time = QTime.currentTime()
+
+        print ("THIS: ", self.last_logon_time)
+        
+        if (self.last_logon_time == None):
+            self.last_logon_time = current_time
+        else:
+            if (self.last_logon_time.hour() - current_time.hour() >= 1 and \
+                self.last_logon_time.minute() - current_time.minute() == 0):
+                self.time_changed = True
+                
+        label_time = current_time.toString('hh:mm:ss')
+        self.label_time.setText(label_time)
+        
+        self.title = "{} (CTRL-Q to quit)                       {}".format(IP_VERSION, self.label_time.text())
+        self.setWindowTitle(self.title)
+                
+        if (self.time_changed == True):
+            self.update_total_project_label(current_time)
+            
+            self.time_changed = False
+            self.last_logon_time = current_time
+    
     def center_object(self, desired_object):
         """
         Centers any object on to the desktop.
@@ -252,7 +305,6 @@ class Main_Screen(su.QMainWindow):
             
             # Make the window object so the appropriate segue happens upon clicking or better put, toggling.
             generic_window = gui_h.New_Project_Window(reloaded_dict[key][0])      
-            generic_window_sub_str = generic_window.display_data()
             
             self.isLabel = True
             
@@ -349,7 +401,6 @@ class Main_Screen(su.QMainWindow):
             
 
 # ----------------------------------------------------------------------------------------
-# TODO
             # change the name of the button.
       #      _, self.active_button = self.find_button_by_project(self.active_project)
        #     unique_id = self.active_button.text()[len(self.active_button.text()) - 4:]
@@ -604,8 +655,7 @@ class Main_Screen(su.QMainWindow):
         except:
             my_Error.add_a_project(self)
             return
-    # TODO
-        # Under construction, I like the blue mark in the right columns
+
     def connect_sp_keys(self):
         '''
         A function to connect the SP keys once they're made.
@@ -951,6 +1001,7 @@ class Main_Screen(su.QMainWindow):
         Find the total ETA/Findate for everything.
                 # Projects:             A Dictionary that contains {button: (projects, window, x, y)}
 
+        The meta data is gained from the SUBPROJECT.py class template
         '''
         # in minutes
         total_time_left = 0
@@ -983,6 +1034,9 @@ class Main_Screen(su.QMainWindow):
         data_string += "Estimated Finish Date: \t\t{} AT {}\n".format(date_string, time_string)
         data_string += "Number of Unique-Members: \t{} People".format(len(unique_member_set))
         
+        
+        self.meta_data = [total_time_left, date_string, time_string]
+        
         if (self.is_total_label == True and self.project_label != None):
             self.project_label.hide()
  
@@ -1002,6 +1056,41 @@ class Main_Screen(su.QMainWindow):
         self.info_label.show()
         
         self.is_total_label = True
+        
+    #TODO
+    def update_total_project_label(self, current_time):
+        '''
+        User starts -> Save the time in cache -> User Restarts -> Update the ETA if hour delta >= 1
+                    -> Set newlogon time as currrent time -> Change if it's restarted.
+                    
+                    
+        The update happens once, if the time delta is more than an hour, otherwise it's stupid.
+        All the meta-data is being held as an INT for obvious reasons
+        
+        self.logon_time holds this value, most recent exit
+        '''
+        # self.meta_data is an array holding the data for the project_label that is on the top left
+        eta_left = self.meta_data[0]
+        eta_left -= self.last_logon_time.hour() - current_time.hour()
+        
+        # For this eta, the string shows "Less than an hour left"
+        if (eta_left <= 1): return
+        
+        current_project_label_txt = self.project_label.text()
+        idx_to_change = current_project_label_txt.find("\n")
+        
+        # Change the first line to reflect time change.
+        new_line = "Effort Left: {}".format(eta_left)
+
+
+        new_project_label_txt = ""
+        new_project_label_txt += new_line
+        
+        new_project_label_txt += current_project_label_txt[idx_to_change:]
+        
+        self.project_label.setText(new_project_label_txt)
+        pass
+        
         
     def add_new_project_button(self):
         '''
