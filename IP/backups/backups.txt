@@ -1,23 +1,4 @@
 =====================
 123 + 0
 
-0. Sing a song	Num_Members:3
-
-		Jon		600 Months		
-		Jon's Mom		700 Months		
-		Cat		3 Minutes		
-
-
-1. Dance with someone	Num_Members:1
-
-		John's attractive sister		3 Minutes		
-
-
-2. Sleep with someone	Num_Members:1
-
-		Jonh's not so attractive sister		60 Minutes		
-
-
-3. Wake up with someone	Num_Members:1
-
-		John? wtf??		700 Minutes		
+0. Empty-Sub-Task	Num_Members:0

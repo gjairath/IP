@@ -172,8 +172,13 @@ class QMainWindow(QtWidgets.QMainWindow):
        ret_val = [self.settings.value(i) for i in ret]
        
        print ("THIS", key_list)
+       
+       # this is fine because its hardcoded during saving process
+       last_login_str = "Last-Login"
+       ret_login = [i for i in key_list if last_login_str in i]
+
        try:
-           last_login_time = self.settings.value(key_list[0])
+           last_login_time = self.settings.value(ret_login[0])
        except:
            last_login_time = None
            

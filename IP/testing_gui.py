@@ -942,7 +942,7 @@ class Main_Screen(su.QMainWindow):
             
         if (self.active_project != None):
             self.reload_delete_keys(self.active_project)
-
+        
         self.active_project_label = QLabel(self.active_project.name, self)
         self.active_project_label.move(540, 65)
         self.active_project_label.setFont(QFont('Times', 15))
