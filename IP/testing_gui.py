@@ -181,9 +181,16 @@ class Main_Screen(su.QMainWindow):
         if (self.last_logon_time == None):
             self.last_logon_time = current_time
         else:
-            if (current_time.hour() - self.last_logon_time.hour() >= 1 and \
-                current_time.minute() - self.last_logon_time.minute() >= 0):
+            if (current_time.hour() - self.last_logon_time.hour() >= 1):
+                
+                # If 1 hour has elapsed, it might just be that 30 minutes have, not the full hour.
+                # If 2 hours have elapsed, this border case is not a problem.
                 self.time_changed = True
+                
+                if (current_time.hour() - self.last_logon_time.hour() == 1):
+                    # handle the edge-case
+                    if (current_time.minute() - self.last_logon_time.minute() < 0):
+                        self.time_changed = False                
                 
         label_time = current_time.toString('hh:mm:ss')
         self.label_time.setText(label_time)
@@ -529,7 +536,11 @@ class Main_Screen(su.QMainWindow):
                 
         # click the button programatically to real-time update deleted subprojects.
         _, btn = self.find_button_by_project(self.active_project)
-        btn.click()        
+        btn.click()
+        
+        # If something is deleted, something must have changed.
+        self.get_total_project_meta_data()
+
         
     def get_text(self):
         '''
@@ -1080,7 +1091,7 @@ class Main_Screen(su.QMainWindow):
         idx_to_change = current_project_label_txt.find("\n")
         
         # Change the first line to reflect time change.
-        new_line = "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(eta_left)
+        new_line = "Effort Remaining: \t\t{:.0f} Hours Approximately".format(eta_left)
 
 
         new_project_label_txt = ""

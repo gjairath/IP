@@ -203,16 +203,22 @@ class SubProject:
             elif (time_mode == "Hours"):
                 num_time -= 1
                 
+                if (num_time <= 0):
+                    self.sp_dict[members] = ("Time's Up {}".format(members), "Was: {} {}".format(num_time, time_mode))
+                    continue
+
+                
             else:
                 if (num_time <= 60):
                     # Delete this
-                    new_eta_findate_tuple = ("Time's Up {}".format(members), "Was: {} {}", num_time, time_mode)
+                    self.sp_dict[members] = ("Time's Up {}".format(members), "Was: {} {}".format(num_time, time_mode))
+                    continue
                 else:
                     num_time -= 60
             
-                    new_num_time = str(num_time)
+            new_num_time = str(num_time)
                     
-                    new_eta_findate_tuple = (new_num_time + " " + time_mode, self.sp_dict[members][1])
+            new_eta_findate_tuple = (new_num_time + " " + time_mode, self.sp_dict[members][1])
             
             self.sp_dict[members] = new_eta_findate_tuple
             pass
