@@ -181,6 +181,7 @@ class Main_Screen(su.QMainWindow):
         if (self.last_logon_time == None):
             self.last_logon_time = current_time
         else:
+            print (self.last_logon_time)
             if (current_time.hour() - self.last_logon_time.hour() >= 1):
                 
                 # If 1 hour has elapsed, it might just be that 30 minutes have, not the full hour.
@@ -1085,13 +1086,14 @@ class Main_Screen(su.QMainWindow):
         eta_left -= current_time.hour() - self.last_logon_time.hour()
         
         # For this eta, the string shows "Less than an hour left"
-        if (eta_left <= 1): return
-        
         current_project_label_txt = self.project_label.text()
         idx_to_change = current_project_label_txt.find("\n")
-        
-        # Change the first line to reflect time change.
-        new_line = "Effort Remaining: \t\t{:.0f} Hours Approximately".format(eta_left)
+
+        if (eta_left <= 1): 
+            new_line = "Effort Remaining: \t\tLess than an hour left."
+        else:                    
+            # Change the first line to reflect time change.
+            new_line = "Effort Remaining: \t\t{:.0f} Hours Approximately".format(eta_left)
 
 
         new_project_label_txt = ""
