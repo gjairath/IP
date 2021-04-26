@@ -122,12 +122,7 @@ class SubProject:
         Accepts data from the "Add member" button.
                 data = [person_name, eta, fin_Date]
         '''
-        time_array = data[1].split(" ")
-        num_time = time_array[0]
-        time_mode = time_array[1]
-        
-        
-        self.sp_dict[data[0]] = (float(num_time), time_mode, data[2])
+        self.sp_dict[data[0]] = (data[1], data[2])
         self.members += 1
         
         
@@ -178,12 +173,33 @@ class SubProject:
             # Eta can be anything, 55 minutes or 55 years [<- wat?]
             time_array = self.sp_dict[members][0].split(' ')
             
-            num_time = time_array[0]
+            num_time = float(time_array[0])
             time_mode = time_array[1]
             
             if (time_mode == "Years"):
-                pass
+                num_time -= 0.000114155
             
+            elif (time_mode == "Months"):
+                num_time -= 0.00136986
+                
+            elif (time_mode == "Days"):
+                num_time -= 0.0417 
+                
+            elif (time_mode == "Hours"):
+                num_time -= 1
+                
+            else:
+                if (num_time <= 60):
+                    # Delete this
+                    new_eta_findate_tuple = ("Time's Up {}".format(members), "Was: {} {}", num_time, time_mode)
+                else:
+                    num_time -= 60
+            
+                    new_num_time = str(num_time)
+                    
+                    new_eta_findate_tuple = (new_num_time + " " + time_mode, self.sp_dict[members][1])
+            
+            self.sp_dict[members] = new_eta_findate_tuple
             pass
     
     def find_key_in_dict(self, data):

@@ -181,8 +181,8 @@ class Main_Screen(su.QMainWindow):
         if (self.last_logon_time == None):
             self.last_logon_time = current_time
         else:
-            if (self.last_logon_time.hour() - current_time.hour() >= 1 and \
-                self.last_logon_time.minute() - current_time.minute() >= 0):
+            if (current_time.hour() - self.last_logon_time.hour() >= 1 and \
+                current_time.minute() - self.last_logon_time.minute() >= 0):
                 self.time_changed = True
                 
         label_time = current_time.toString('hh:mm:ss')
@@ -1071,7 +1071,7 @@ class Main_Screen(su.QMainWindow):
         '''
         # self.meta_data is an array holding the data for the project_label that is on the top left
         eta_left = self.meta_data[0]
-        eta_left -= self.last_logon_time.hour() - current_time.hour()
+        eta_left -= current_time.hour() - self.last_logon_time.hour()
         
         # For this eta, the string shows "Less than an hour left"
         if (eta_left <= 1): return
@@ -1080,7 +1080,7 @@ class Main_Screen(su.QMainWindow):
         idx_to_change = current_project_label_txt.find("\n")
         
         # Change the first line to reflect time change.
-        new_line = "Effort Left: {}".format(eta_left)
+        new_line = "Effort Remaining: \t\t{:.0f} Hours Approximately\n".format(eta_left)
 
 
         new_project_label_txt = ""
@@ -1101,7 +1101,7 @@ class Main_Screen(su.QMainWindow):
         for buttons in self.manager.projects:
             #{button: (projects, window, x, y)}
             
-            for subprojects in self.manager.projects[buttons].sub_tasks:
+            for subprojects in self.manager.projects[buttons][0].sub_tasks:
                 subprojects.update_sp_dicts()
         pass
         

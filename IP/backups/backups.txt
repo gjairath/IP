@@ -3,10 +3,10 @@
 
 0. Do the dishes	Num_Members:2
 
-		Jesus		65 Minutes		
-		Jesus's Cat		55 Minutes		
+		Jesus		5.0 Minutes		
+		Jesus's Cat		Time's Up Jesus's Cat		xxxxxx
 
 
 1. Empty-Sub-Task	Num_Members:1
 
-		Jesus		600 Minutes		
+		Jesus		540.0 Minutes		
