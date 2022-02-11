@@ -20,6 +20,5 @@ https://creativitynotfound.herokuapp.com/
 
 
 # Deployment
+conda activate
 Try python ip_main.py
-
-
